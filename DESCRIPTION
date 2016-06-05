@@ -10,4 +10,6 @@ Description: A variety of functions useful in (vegetation) community analyses an
 License: GPL (>= 2)
 LazyData: TRUE
 Imports: vegan, fields
+URL: http://github.com/fgoral/goeveg
+BugReports: http://github.com/fgoral/goeveg/issues
 RoxygenNote: 5.0.1
