@@ -19,7 +19,7 @@
 #' @export
 
 racurves <-  function(matrix, main = "Rank-abundance diagram", bw = TRUE) {
-  if(!is.data.frame(samples)) {
+  if(!is.data.frame(matrix)) {
     matrix <- data.frame(matrix)
   }
 

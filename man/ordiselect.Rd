@@ -49,9 +49,13 @@ If no limit is defined for one of the arguments all species are displayed.
 limited <- ordiselect(meadows, meadows.dca, ablim = 0.3)
 limited
 
-## Use the result in plotting with orditorp
-orditorp(meadows.dca, display = "species", select = limited,
-   pch = 3, col = "red", cex = 0.7, air = 0.5)
+## Use the result in plotting
+plot(meadows.dca, display="n")
+points(meadows.dca, display="sites")
+points(meadows.dca, display="species",
+   select = limited, pch=3, col="red", cex=0.7)
+ordipointlabel(meadows.dca, display="species",
+   select = limited, col="red", cex=0.7, add=T)
 
 ## Select the 30\% most frequent species with 50\% best axis fit
 limited <- ordiselect(meadows, meadows.dca, ablim = 0.3,
