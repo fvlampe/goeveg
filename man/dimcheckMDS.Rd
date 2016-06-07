@@ -4,7 +4,8 @@
 \alias{dimcheckMDS}
 \title{Plot the stress values of NMDS for tested dimensions}
 \usage{
-dimcheckMDS(matrix, distance = "bray", k = 6, trymax = 20)
+dimcheckMDS(matrix, distance = "bray", k = 6, trymax = 20,
+  autotransform = TRUE)
 }
 \arguments{
 \item{matrix}{Community data, a matrix-like object with samples in rows and species in columns.}
@@ -13,7 +14,9 @@ dimcheckMDS(matrix, distance = "bray", k = 6, trymax = 20)
 
 \item{k}{Number of dimensions.}
 
-\item{trymax}{Maximum number of random starts in search of stable solution.}
+\item{trymax}{Maximum number of random configuration for iterative search search of stable solution.}
+
+\item{autotransform}{Whether to use transformation (see \code{\link[vegan]{metaMDS}}) or not. Default is \code{autotransform = TRUE}.}
 }
 \description{
 This function provides a simple plot of stress values for a given number of tested dimensions (default \code{k = 6}) in NMDS.
@@ -21,9 +24,17 @@ It is based on function \code{\link[vegan]{metaMDS}} (\code{vegan} package) and 
 }
 \section{Details}{
 
-The plot shows the border of the 0.2 stress value limit.
+Goodness of Non-metric multidimensional scaling (NMDS) is measured by stress value.
+The lower the stress value, the better fit of original distances/dissimilarities and projected distances in ordination diagram is reached.
+Stress value depends on dimensionality; it is decreasing with increasing dimensionality. On the other hand, stress-reduction does not mean to maximise interpretation capability.
+Low-dimensional projections are often better to interprete. and are so preferable for interpretation issues.
+The stress plot (or sometimes also called scree plot) is a diagnostic plots to explore both, dimensionality and interpretative value.
+It provides dimension-dependant stress reduction and curve estimate gives indices for meaningful stress reduction with increasing dimensionality.
+Furthermore, another diagnostic plot for detecting best dimension for projection of NMDS, the Shepard diagram (\code{\link[vegan]{stressplot}}) is recommended for detecting best dimensionality in NMDS.
+
 \cite{Clarke 1993} suggests the following guidelines for acceptable stress values:
 <0.05 = excellent, <0.10 = good, <0.20 = usable, >0.20 = not acceptable.
+The plot shows the border of the 0.2 stress value limit.
 }
 \examples{
 ## Use of function with default values
@@ -33,7 +44,7 @@ dimcheckMDS(meadows)
 dimcheckMDS(meadows, k = 10)
 }
 \author{
-Jenny Schellenberg and Friedemann Goral \email{fgoral@gwdg.de}
+Jenny Schellenberg \email{jschell@gwdg.de} and Friedemann Goral \email{fgoral@gwdg.de}
 }
 \references{
 Clarke, K. R. (1993). Non-parametric multivariate analysis of changes in community structure. \emph{Austral J Ecol} \strong{18:} 117-143.

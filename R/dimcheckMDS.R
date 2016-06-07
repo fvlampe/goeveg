@@ -5,10 +5,19 @@
 #' @param distance Dissimilarity index used in vegdist.
 #' @param k Number of dimensions.
 #' @param trymax Maximum number of random configuration for iterative search search of stable solution.
+#' @param autotransform Whether to use transformation (see \code{\link[vegan]{metaMDS}}) or not. Default is \code{autotransform = TRUE}.
 #' @section Details:
-#' The plot shows the border of the 0.2 stress value limit.
+#' Goodness of Non-metric multidimensional scaling (NMDS) is measured by stress value.
+#' The lower the stress value, the better fit of original distances/dissimilarities and projected distances in ordination diagram is reached.
+#' Stress value depends on dimensionality; it is decreasing with increasing dimensionality. On the other hand, stress-reduction does not mean to maximise interpretation capability.
+#' Low-dimensional projections are often better to interprete. and are so preferable for interpretation issues.
+#' The stress plot (or sometimes also called scree plot) is a diagnostic plots to explore both, dimensionality and interpretative value.
+#' It provides dimension-dependant stress reduction and curve estimate gives indices for meaningful stress reduction with increasing dimensionality.
+#' Furthermore, another diagnostic plot for detecting best dimension for projection of NMDS, the Shepard diagram (\code{\link[vegan]{stressplot}}) is recommended for detecting best dimensionality in NMDS.
+#'
 #' \cite{Clarke 1993} suggests the following guidelines for acceptable stress values:
 #' <0.05 = excellent, <0.10 = good, <0.20 = usable, >0.20 = not acceptable.
+#' The plot shows the border of the 0.2 stress value limit.
 #' @examples
 #' ## Use of function with default values
 #' dimcheckMDS(meadows)
@@ -20,7 +29,7 @@
 #' @author Jenny Schellenberg \email{jschell@gwdg.de} and Friedemann Goral \email{fgoral@gwdg.de}
 #' @export
 
-dimcheckMDS <- function(matrix, distance = "bray", k = 6,  trymax = 20, , autotransform = FALSE) {
+dimcheckMDS <- function(matrix, distance = "bray", k = 6,  trymax = 20, autotransform = TRUE) {
   if(!is.data.frame(matrix)) {
     matrix <- data.frame(matrix)
   }
@@ -31,6 +40,7 @@ dimcheckMDS <- function(matrix, distance = "bray", k = 6,  trymax = 20, , autotr
   stress[i]<-nmds_i$stress
   }
   plot(seq(1,k,1), stress, main="Stress value in tested dimensions", xlab="Dimension", ylab="Stress", ylim=c(0,0.3), pch=19, col="black")
+  lines(seq(1,k,1), stress)
   abline(0.2, 0, col="red", lty = 2)
   print(stress)
 }
