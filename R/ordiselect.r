@@ -3,7 +3,7 @@
 #' @description This function simplifies the selection of relevant species in ordination diagrams. It works with results from the \code{vegan} package. The selection can be based upon cover abundance values and/or species fit.
 #' The resulting object contains the names of the selected species and can be used for the \code{select} argument in ordination plots.
 #' @param matrix Community data, a matrix-like object with samples in rows and species in columns.
-#' @param ord \code{Vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}}, \code{\link[vegan]{rda}} or \code{\link[vegan]{metaMDS}}).
+#' @param ord \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}}, \code{\link[vegan]{rda}} or \code{\link[vegan]{metaMDS}}).
 #' @param ablim Proportion of species with highest abundances displayed.
 #' @param fitlim Proportion of species with best fit displayed.
 #' @param choices Axes shown.
@@ -12,15 +12,16 @@
 #' @param freq It this is set on \code{TRUE}, the frequency of species is used instead of cover-abundance values.
 #' @section Details:
 #' Two methods for species fit are implemented.
-#' \itemize{\item In eigenvalue-based methods the species fit is usually based on the fit to the axes, i.e. species scores are used (\code{method = "axes"}). This is the default method.
-#' \item In distance-based methods axes have no direct meaning so it seams more reasonable to fit the species to the environmental variables (\code{method = "vars"}).
-#' Here the Euclidean distance between species and environment variable centroids is calculated.}
+#' \itemize{\item In \code{method = "axes"} species scores are used for fitting. This is the default method.
+#' \item In (\code{method = "vars"}) environmental variables are used for fitting. Here the Euclidean distance between species and environment variable centroids is calculated.}
 #' If \code{method = "vars"} is used, the environmental variables need to be fitted with \code{\link[vegan]{envfit}} and the result of this function must be provided to the \code{env} argument.
 #' The function uses only significant variables (p < 0.05).
 #' If there are no significant variables, only cover abundance values are used and a warning message is displayed.
 #'
-#' Despite these recommendations, the two described methods work well both in eigenvalue-based and in distance-based ordinations.
+#' The two described methods work well both in eigenvalue-based and in distance-based ordinations.
 #' If axes fit should be applied on distance-based ordination, species scores need to be calculated during the analysis, e.g. by selecting \code{wascores = TRUE} in \code{\link[vegan]{metaMDS}}.
+#' However, contrary to eigenvalue-based methods axes do not have a direct meaning in distance-based methods.
+#' Alternatively a fit to the environmental variables is provided.
 #'
 #' If no limit is defined for one of the arguments all species are displayed.
 #' @examples
@@ -40,7 +41,7 @@
 #' ## in NDMS for axes 1 & 3
 #' limited13 <- ordiselect(meadows, nmds3, ablim = 0.3, fitlim = 0.6,
 #'    choices = c(1,3), method = "vars", env = env13)
-#' @author Friedemann Goral (\email{fgoral@gwdg.de}) and Jenny Schellenberg
+#' @author Friedemann Goral \email{fgoral@gwdg.de} and Jenny Schellenberg
 #' @export
 
 

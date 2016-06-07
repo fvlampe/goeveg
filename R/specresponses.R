@@ -1,20 +1,20 @@
 #' Draw multiple species response curves
 #' @description This function draws multiple species response curves for rough interpretation of species responses to environmental variables or ordination axes.
-#' Is is based on \code{\link[stats]{smooth.spline}} which fits a cubic smoothing spline to the supplied data.
+#' It is based on \code{\link[stats]{smooth.spline}} which fits a cubic smoothing spline to the supplied data.
 #' In contrast to \code{\link{specresponse}} this function can draw multiple curves into one plot, but will not draw points.
 #' @param matrix Community data, a matrix-like object with samples in rows and species in columns. Response curves are drawn for all selected columns (species).
-#' @param var Vector containing environmental variable (per plot) \strong{OR} \code{Vegan} ordination result object if \code{method = "ord"}.
+#' @param var Vector containing environmental variable (per plot) \strong{OR} \code{vegan} ordination result object if \code{method = "ord"}.
 #' @param main Optional: Main title.
 #' @param xlab Optional: Label of x-axis.
-#' @param method The method defining the type of variable. Default \code{method = "env"} fits a response curve to environmental variables. Alternatively \code{method = "ord"} fits a response along ordination axes.
-#' @param axis The ordination axis to be used for sample scores (only if \code{method = "ord"}).
+#' @param method Method defining the type of variable. Default \code{method = "env"} fits a response curve to environmental variables. Alternatively \code{method = "ord"} fits a response along ordination axes.
+#' @param axis Ordination axis (only if \code{method = "ord"}).
 #' @param df Desired equivalent number of degrees of freedom (trace of the smoother matrix).
 #' @param bw If set on \code{TRUE} the lines will be drawn in black/white with different line types instead of colours.
 #' @section Details:
 #' For response curves based on environmental variables the argument \code{var} takes a single vector containing the variable corresponding to the species abundances.
 #'
 #' For a response to ordination axes (\code{method = "ord"}) the argument \code{var} requires a \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}}, \code{\link[vegan]{rda}} or \code{\link[vegan]{metaMDS}}).
-#' The default axis used is 1.
+#' First axis is used as default.
 #'
 #' If you plot a response curve for only one species the use of \code{\link{specresponse}} is recommended for correct labels and the display of points.
 #' @seealso \code{\link{specresponse}}
@@ -35,7 +35,7 @@
 #' ## Plot with manually log-transformed abundances
 #' specresponses(log(meadows[ ,c(2,4,7)]+1), env$pH)
 #'
-#' @author Friedemann Goral (\email{fgoral@gwdg.de})
+#' @author Friedemann Goral \email{fgoral@gwdg.de}
 #' @export
 
 specresponses <- function(matrix, var, main, xlab, method="env", axis=1, df=5, bw = FALSE) {
@@ -45,7 +45,7 @@ specresponses <- function(matrix, var, main, xlab, method="env", axis=1, df=5, b
   }
 
   if(missing(main)) {
-    main <- "matrix response curves"
+    main <- "Species response curves"
   }
 
   if(length(matrix) >= 1) {

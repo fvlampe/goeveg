@@ -19,21 +19,21 @@ If you wish to draw a simple rank-abundance curve see \link{racurve}.
 }
 \section{Details}{
 
+Rank abundance curves or Whittaker plots (see \cite{Whittaker 1965}) are used to display relative species abundance as biodiversity component.
+They are a means to visualise species richness and species evenness.
+
 The axes of the diagram will be scaled according automatically.
 As the line type is used to differenciate between samples, a maximum of 6 curves per diagram is feasible.
 }
 \examples{
-## Draw simple rank-abundance curve
-racurve(meadows)
-
-## Draw simple rank-abundance curve with log-scaled axis
-racurve(meadows, ylog=T)
-
 ## Draw multiple rank-abundance curves for selected samples
-racurve(meadows[c(22,31,45), ]
+racurves(meadows[c(22,31,45), ]
 }
 \author{
-Friedemann Goral (\email{fgoral@gwdg.de})
+Friedemann Goral \email{fgoral@gwdg.de}
+}
+\references{
+Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260.
 }
 \seealso{
 \code{\link{racurve}}

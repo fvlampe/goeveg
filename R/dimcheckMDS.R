@@ -5,6 +5,10 @@
 #' @param distance Dissimilarity index used in vegdist.
 #' @param k Number of dimensions.
 #' @param trymax Maximum number of random starts in search of stable solution.
+#' @section Details:
+#' The plot shows the border of the 0.2 stress value limit.
+#' \cite{Clarke 1993} suggests the following guidelines for acceptable stress values:
+#' <0.05 = excellent, <0.10 = good, <0.20 = usable, >0.20 = not acceptable.
 #' @examples
 #' ## Use of function with default values
 #' dimcheckMDS(meadows)
@@ -12,7 +16,8 @@
 #' ## Use of function for testing 10 dimensions
 #' dimcheckMDS(meadows, k = 10)
 #' @seealso \code{\link[vegan]{metaMDS}} \code{\link[vegan]{stressplot}}
-#' @author Friedemann Goral (\email{fgoral@gwdg.de}) and Jenny Schellenberg
+#' @references Clarke, K. R. (1993). Non-parametric multivariate analysis of changes in community structure. \emph{Austral J Ecol} \strong{18:} 117-143.
+#' @author Jenny Schellenberg and Friedemann Goral \email{fgoral@gwdg.de}
 #' @export
 
 dimcheckMDS <- function(matrix, distance = "bray", k = 6,  trymax = 20) {
@@ -26,6 +31,6 @@ dimcheckMDS <- function(matrix, distance = "bray", k = 6,  trymax = 20) {
   stress[i]<-nmds_i$stress
   }
   plot(seq(1,k,1), stress, main="Stress value in tested dimensions", xlab="Dimension", ylab="Stress", ylim=c(0,0.3), pch=19, col="black")
-  abline(0.2, 0, col="red")
+  abline(0.2, 0, col="red", lty = 2)
   print(stress)
 }

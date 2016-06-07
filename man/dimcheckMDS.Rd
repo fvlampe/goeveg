@@ -19,6 +19,12 @@ dimcheckMDS(matrix, distance = "bray", k = 6, trymax = 20)
 This function provides a simple plot of stress values for a given number of tested dimensions (default \code{k = 6}) in NMDS.
 It is based on function \code{\link[vegan]{metaMDS}} (\code{vegan} package) and uses the \code{monoMDS} engine.
 }
+\section{Details}{
+
+The plot shows the border of the 0.2 stress value limit.
+\cite{Clarke 1993} suggests the following guidelines for acceptable stress values:
+<0.05 = excellent, <0.10 = good, <0.20 = usable, >0.20 = not acceptable.
+}
 \examples{
 ## Use of function with default values
 dimcheckMDS(meadows)
@@ -27,7 +33,10 @@ dimcheckMDS(meadows)
 dimcheckMDS(meadows, k = 10)
 }
 \author{
-Friedemann Goral (\email{fgoral@gwdg.de}) and Jenny Schellenberg
+Jenny Schellenberg and Friedemann Goral \email{fgoral@gwdg.de}
+}
+\references{
+Clarke, K. R. (1993). Non-parametric multivariate analysis of changes in community structure. \emph{Austral J Ecol} \strong{18:} 117-143.
 }
 \seealso{
 \code{\link[vegan]{metaMDS}} \code{\link[vegan]{stressplot}}

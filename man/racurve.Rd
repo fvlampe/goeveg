@@ -17,18 +17,23 @@ racurve(matrix, main = "Rank-abundance diagram", ylog = FALSE)
 This function draws a rank-abundance curve for community data.
 If you wish to draw multiple rank-abundance curves for selected samples use \link{racurves}.
 }
+\section{Details}{
+
+Rank abundance curves or Whittaker plots (see \cite{Whittaker 1965}) are used to display relative species abundance as biodiversity component.
+They are a means to visualise species richness and species evenness.
+}
 \examples{
 ## Draw simple rank-abundance curve
 racurve(meadows)
 
 ## Draw simple rank-abundance curve with log-scaled axis
 racurve(meadows, ylog=T)
-
-## Draw multiple rank-abundance curves for selected samples
-racurve(meadows, samples=c(22,31,45))
 }
 \author{
-Friedemann Goral (\email{fgoral@gwdg.de})
+Friedemann Goral \email{fgoral@gwdg.de}
+}
+\references{
+Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260.
 }
 \seealso{
 \code{\link{racurves}}
