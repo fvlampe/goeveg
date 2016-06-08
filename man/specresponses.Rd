@@ -44,10 +44,10 @@ If you plot a response curve for only one species the use of \code{\link{specres
 \examples{
 ## Species (columns) need to be selected; call names() to get column numbers
 names(schedenveg)
-## Draw multiple species response curves on environmental variable in black/white
+## Draw multiple species response curves on variable in black/white
 specresponses(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, bw = TRUE)
 
-## Draw multiple species response curves on environmental variable with
+## Draw multiple species response curves on variable with
 ## custom x-axis label and lower df
 specresponses(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, df = 3,
     xlab = "Height of herb layer (cm)")

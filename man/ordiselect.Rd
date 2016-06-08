@@ -20,7 +20,7 @@ ordiselect(matrix, ord, ablim = 1, fitlim = 1, choices = c(1, 2),
 
 \item{method}{The species fit method: \code{"axes"} or \code{"vars"}.}
 
-\item{env}{Fitted environmental variabes (must be result object of \code{\link[vegan]{envfit}}). Only used if \code{method = "vars"}.}
+\item{env}{Fitted environmental variabes (minimum = 2 variables, must be result object of \code{\link[vegan]{envfit}}). Only used if \code{method = "vars"}.}
 
 \item{freq}{It this is set on \code{TRUE}, the frequency of species is used instead of cover-abundance values.}
 }

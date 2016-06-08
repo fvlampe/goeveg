@@ -23,7 +23,7 @@ Rank abundance curves or Whittaker plots (see \cite{Whittaker 1965}) are used to
 They are a means to visualise species richness and species evenness.
 
 The axes of the diagram will be scaled according automatically.
-As the line type is used to differenciate between samples, a maximum of 6 curves per diagram is feasible.
+As the line type is used to differenciate between samples, a maximum of 6 curves per diagram is feasible in black/white mode.
 }
 \examples{
 ## Draw multiple rank-abundance curves for selected samples
