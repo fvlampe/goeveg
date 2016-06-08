@@ -20,10 +20,10 @@
 #' The plot shows the border of the 0.2 stress value limit.
 #' @examples
 #' ## Use of function with default values
-#' dimcheckMDS(meadows)
+#' dimcheckMDS(schedenveg)
 #'
 #' ## Use of function for testing 10 dimensions
-#' dimcheckMDS(meadows, k = 10)
+#' dimcheckMDS(schedenveg, k = 10)
 #' @seealso \code{\link[vegan]{metaMDS}} \code{\link[vegan]{stressplot}}
 #' @references Clarke, K. R. (1993). Non-parametric multivariate analysis of changes in community structure. \emph{Austral J Ecol} \strong{18:} 117-143.
 #' @author Jenny Schellenberg \email{jschell@gwdg.de} and Friedemann Goral \email{fgoral@gwdg.de}

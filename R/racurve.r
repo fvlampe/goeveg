@@ -11,10 +11,10 @@
 #' They are a means to visualise species richness and species evenness.
 #' @examples
 #' ## Draw simple rank-abundance curve
-#' racurve(meadows)
+#' racurve(schedenveg)
 #'
 #' ## Draw simple rank-abundance curve with log-scaled axis
-#' racurve(meadows, ylog=T)
+#' racurve(schedenveg, ylog = TRUE)
 #' @seealso \code{\link{racurves}}
 #' @references Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260.
 #' @author Friedemann Goral \email{fgoral@gwdg.de}

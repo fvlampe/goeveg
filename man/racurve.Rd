@@ -24,10 +24,10 @@ They are a means to visualise species richness and species evenness.
 }
 \examples{
 ## Draw simple rank-abundance curve
-racurve(meadows)
+racurve(schedenveg)
 
 ## Draw simple rank-abundance curve with log-scaled axis
-racurve(meadows, ylog=T)
+racurve(schedenveg, ylog = TRUE)
 }
 \author{
 Friedemann Goral \email{fgoral@gwdg.de}

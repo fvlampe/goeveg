@@ -38,10 +38,10 @@ The plot shows the border of the 0.2 stress value limit.
 }
 \examples{
 ## Use of function with default values
-dimcheckMDS(meadows)
+dimcheckMDS(schedenveg)
 
 ## Use of function for testing 10 dimensions
-dimcheckMDS(meadows, k = 10)
+dimcheckMDS(schedenveg, k = 10)
 }
 \author{
 Jenny Schellenberg \email{jschell@gwdg.de} and Friedemann Goral \email{fgoral@gwdg.de}

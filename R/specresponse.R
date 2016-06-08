@@ -15,19 +15,26 @@
 #'
 #' For a response to ordination axes (\code{method = "ord"}) the argument \code{var} requires a \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}}, \code{\link[vegan]{rda}} or \code{\link[vegan]{metaMDS}}).
 #' First axis is used as default.
+#'
+#' A minimum of 10 occurences is recommenced to use response curves. Curves for species with less than 5 occurences are not drawn.
+#' It is recommended to filter the vegetation matrix for species with a minimum frequency of 10 before using this function.
 #' @seealso \code{\link{specresponses}}
 #' @examples
 #' ## Draw species response curve on environmental variable
-#' specresponse(meadows$CarxDemi, env$pH)
+#' specresponse(schedenveg$ArrElat, schedenenv$soil_depth)
 #'
 #' ## Draw species response curve on environmental variable with
 #' ## custom labels, lower df and log-scaled y-axis
-#' specresponse(meadows$CarxEchi, env$Ca, main = "Carex echinata",
-#'        xlab = "Ca", df = 3, ylog = T)
+#' specresponse(schedenveg$ArrElat, schedenenv$soil_depth, main = "Arrhenatherum elatius",
+#'        xlab = "Soil depth", df = 3, ylog = TRUE)
 #'
 #' ## Draw species response curve on ordination axes
-#' specresponse(meadows$CarxDemi, meadows.dca, method = "ord")
-#' specresponse(meadows$CarxDemi, meadows.dca, method = "ord", axis = 2)
+#' ## First calculate DCA
+#' library(vegan)
+#' scheden.dca <- decorana(schedenveg)
+#'
+#' specresponse(schedenveg$ArrElat, scheden.dca, method = "ord")
+#' specresponse(schedenveg$ArrElat, scheden.dca, method = "ord", axis = 2)
 #' @author Friedemann Goral \email{fgoral@gwdg.de} and Jenny Schellenberg
 #' @export
 

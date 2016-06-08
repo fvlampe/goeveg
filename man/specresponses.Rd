@@ -36,24 +36,31 @@ For response curves based on environmental variables the argument \code{var} tak
 For a response to ordination axes (\code{method = "ord"}) the argument \code{var} requires a \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}}, \code{\link[vegan]{rda}} or \code{\link[vegan]{metaMDS}}).
 First axis is used as default.
 
+A minimum of 10 occurences is recommenced to use response curves. Curves for species with less than 5 occurences are not drawn.
+It is recommended to filter the vegetation matrix for species with a minimum frequency of 10 before using this function.
+
 If you plot a response curve for only one species the use of \code{\link{specresponse}} is recommended for correct labels and the display of points.
 }
 \examples{
 ## Species (columns) need to be selected; call names() to get column numbers
-names(meadows)
+names(schedenveg)
 ## Draw multiple species response curves on environmental variable in black/white
-specresponses(meadows[ ,c(2,44,67,132)], env$pH, bw=T)
+specresponses(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, bw = TRUE)
 
 ## Draw multiple species response curves on environmental variable with
 ## custom x-axis label and lower df
-specresponses(meadows[ ,c(2,4,7)], env$pH, df=3, xlab = "Soil pH")
+specresponses(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, df = 3,
+    xlab = "Height of herb layer (cm)")
 
 ## Draw multiple species response curves on ordination axes
-specresponses(meadows[ ,c(10:20)], meadows.dca, method="ord")
-specresponses(meadows[ ,c(10:20)], meadows.dca, method="ord", axis = 2)
+## First calculate DCA
+library(vegan)
+scheden.dca <- decorana(schedenveg)
+specresponses(schedenveg[ ,c(9,18,14,19)], scheden.dca, method = "ord")
+specresponses(schedenveg[ ,c(9,18,14,19)], scheden.dca, method = "ord", axis = 2)
 
 ## Plot with manually log-transformed abundances
-specresponses(log(meadows[ ,c(2,4,7)]+1), env$pH)
+specresponses(log(schedenveg[ ,c(9,18,14,19)]+1), schedenenv$height_herb)
 
 }
 \author{

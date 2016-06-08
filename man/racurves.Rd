@@ -27,7 +27,7 @@ As the line type is used to differenciate between samples, a maximum of 6 curves
 }
 \examples{
 ## Draw multiple rank-abundance curves for selected samples
-racurves(meadows[c(22,31,45), ]
+racurves(schedenveg[c(1,7,20,25),])
 }
 \author{
 Friedemann Goral \email{fgoral@gwdg.de}

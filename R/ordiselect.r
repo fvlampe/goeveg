@@ -16,7 +16,7 @@
 #' \item In (\code{method = "vars"}) environmental variables are used for fitting. Here the Euclidean distance between species and environment variable centroids is calculated.}
 #' If \code{method = "vars"} is used, the environmental variables need to be fitted with \code{\link[vegan]{envfit}} and the result of this function must be provided to the \code{env} argument.
 #' The function uses only significant variables (p < 0.05).
-#' If there are no significant variables, only cover abundance values are used and a warning message is displayed.
+#' If there are less than \emph{two} significant variables, only cover abundance values are used and a warning message is displayed.
 #'
 #' The two described methods work well both in eigenvalue-based and in distance-based ordinations.
 #' If axes fit should be applied on distance-based ordination, species scores need to be calculated during the analysis, e.g. by selecting \code{wascores = TRUE} in \code{\link[vegan]{metaMDS}}.
@@ -25,25 +25,31 @@
 #'
 #' If no limit is defined for one of the arguments all species are displayed.
 #' @examples
+#' ## Calculate DCA
+#' library(vegan)
+#' scheden.dca <- decorana(schedenveg)
+#'
 #' ## Select the 30% most abundant species and call the result
-#' limited <- ordiselect(meadows, meadows.dca, ablim = 0.3)
+#' limited <- ordiselect(schedenveg, scheden.dca, ablim = 0.3)
 #' limited
 #'
 #' ## Use the result in plotting
-#' plot(meadows.dca, display="n")
-#' points(meadows.dca, display="sites")
-#' points(meadows.dca, display="species",
+#' plot(scheden.dca, display="n")
+#' points(scheden.dca, display="sites")
+#' points(scheden.dca, display="species",
 #'    select = limited, pch=3, col="red", cex=0.7)
-#' ordipointlabel(meadows.dca, display="species",
-#'    select = limited, col="red", cex=0.7, add=T)
+#' ordipointlabel(scheden.dca, display="species",
+#'    select = limited, col="red", cex=0.7, add = TRUE)
 #'
 #' ## Select the 30% most frequent species with 50% best axis fit
-#' limited <- ordiselect(meadows, meadows.dca, ablim = 0.3,
-#'    fitlim = 0.5, freq = T)
+#' limited <- ordiselect(schedenveg, scheden.dca, ablim = 0.3,
+#'    fitlim = 0.5, freq = TRUE)
 #'
 #' ## Select the 30% most abundant species with 60% best environmental fit
 #' ## in NDMS for axes 1 & 3
-#' limited13 <- ordiselect(meadows, nmds3, ablim = 0.3, fitlim = 0.6,
+#' nmds <- metaMDS(schedenveg, k = 3)   # run NMDS
+#' env13 <- envfit(nmds, schedenenv[,2:10], choices=c(1,3))
+#' limited13 <- ordiselect(schedenveg, nmds, ablim = 0.3, fitlim = 0.6,
 #'    choices = c(1,3), method = "vars", env = env13)
 #' @author Friedemann Goral \email{fgoral@gwdg.de} and Jenny Schellenberg
 #' @export
@@ -91,6 +97,12 @@ ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1,2), me
 
         names(abund[abund >= quantile(abund, 1 - ablim)])
 
+      } else if(nrow(scores_env) == 1) {
+
+        print("WARNING: Only 1 significant environmental variable. Only abundance limit used for selection.")
+
+        names(abund[abund >= quantile(abund, 1 - ablim)])
+
       } else {
 
         euclid<-data.frame(rdist(scores_spec, scores_env))
@@ -98,9 +110,10 @@ ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1,2), me
         rownames(euclid)<-names(matrix)
 
         best_fit<-euclid[abund > quantile(abund, 1 - ablim) &
-                       (euclid <= quantile(unlist(euclid), 0.5*fitlim) |
-                       euclid >= quantile(unlist(euclid), 1-0.5*fitlim)),]
+                           (euclid <= quantile(unlist(euclid), 0.5*fitlim) |
+                              euclid >= quantile(unlist(euclid), 1-0.5*fitlim)),]
         rownames(best_fit[complete.cases(best_fit),])
+
       }
       }
     }  else {
