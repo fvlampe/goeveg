@@ -8,7 +8,8 @@
 #' @param fitlim Proportion of species with best fit displayed.
 #' @param choices Axes shown.
 #' @param method The species fit method: \code{"axes"} or \code{"vars"}.
-#' @param env Fitted environmental variabes (minimum = 2 variables, must be result object of \code{\link[vegan]{envfit}}). Only used if \code{method = "vars"}.
+#' @param env Fitted environmental variabes (must be result object of \code{\link[vegan]{envfit}}). Only used if \code{method = "vars"}.
+#' @param p.max Significance limit for variables used in \code{method = "vars"}.
 #' @param freq It this is set on \code{TRUE}, the frequency of species is used instead of cover-abundance values.
 #' @section Details:
 #' Two methods for species fit are implemented.
@@ -55,7 +56,7 @@
 #' @export
 
 
-ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1,2), method = "axes", env, freq = FALSE) {
+ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1,2), method = "axes", env, p.max = 0.05, freq = FALSE) {
   if(!is.data.frame(matrix)) {
     matrix <- data.frame(matrix)
   }
@@ -89,7 +90,7 @@ ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1,2), me
 
       sig <- env$vectors$pvals
       scores_env <- data.frame(scores(env, display="vectors"))
-      scores_env <- scores_env[sig<0.05,]
+      scores_env <- scores_env[sig<p.max,]
 
       if(nrow(scores_env) == 0) {
 
