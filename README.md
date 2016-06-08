@@ -5,7 +5,7 @@ A collection of small functions useful in (vegetation) community analyses and or
 
 Includes:
 * Automatic selection of species for ordination diagrams (`ordiselect()` - function)
-* Species reponse curves (`specresponse()` and `specresponses()` - functions)
-* Rank-abundance curves (`racurve()` and `racurve()` - functions)
+* Species reponse curves (`specresponse()` and `specresponses()` - functions; the latter for multiple species)
+* Rank-abundance curves (`racurve()` and `racurves()` - functions; the latter for (multiple) samples)
 * Stress/scree plots for NMDS (`dimcheckMDS()` - function)
 
