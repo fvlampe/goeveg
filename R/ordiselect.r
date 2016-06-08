@@ -14,7 +14,7 @@
 #' @section Details:
 #' Two methods for species fit are implemented.
 #' \itemize{\item In \code{method = "axes"} species scores are used for fitting. This is the default method.
-#' \item In (\code{method = "vars"}) environmental variables are used for fitting. Here the Euclidean distance between species and environment variable centroids is calculated.}
+#' \item In \code{method = "vars"} environmental variables are used for fitting. Here the Euclidean distance between species and environment variable centroids is calculated.}
 #' If \code{method = "vars"} is used, the environmental variables need to be fitted with \code{\link[vegan]{envfit}} and the result of this function must be provided to the \code{env} argument.
 #' The function uses only significant variables (p < 0.05).
 #' If there are less than \emph{two} significant variables, only cover abundance values are used and a warning message is displayed.
