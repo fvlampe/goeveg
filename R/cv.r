@@ -1,7 +1,7 @@
 #' Coefficient of variation (CV)
 #' @description
 #' Compute the coefficient of variation (CV). The CV, also known as relative standard deviation (RSD), is a standardized measure of dispersion of a probability distribution or frequency distribution.
-#' It is often expressed as a percentage, and is defined as the ratio of the standard deviation to the mean.
+#' It is defined as the ratio of the standard deviation to the mean and is often expressed as a percentage.
 #' In contrast to the standard deviation, it enables comparison between datasets as the CV is independent of the unit in which the measurement has been taken.
 #' If \code{na.rm} is \code{TRUE} then missing values are removed before computation proceeds.
 #' @param x a numeric vector

@@ -30,7 +30,7 @@ racurve(schedenveg)
 racurve(schedenveg, ylog = TRUE)
 }
 \author{
-Friedemann Goral (email{fgoral@gwdg.de})
+Friedemann Goral (\email{fgoral@gwdg.de})
 }
 \references{
 Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260.
