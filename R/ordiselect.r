@@ -1,30 +1,34 @@
 #' Select species for ordination plots
 #'
-#' @description This function simplifies the selection of relevant species in ordination diagrams. It works with results from the \code{vegan} package. The selection can be based upon cover abundance values and/or species fit.
-#' The resulting object contains the names of the selected species and can be used for the \code{select} argument in ordination plots.
-#' @param matrix Community data, a matrix-like object with samples in rows and species in columns.
+#' @description This function simplifies the selection of relevant species in ordination diagrams. It works with result objects from \code{vegan} package. The selection can be based upon cover abundance, frequency values and/or species fit to multivariate analysis.
+#' The resulting object contains a vector of names of the selected species and can be used for the \code{select} argument in ordination plots.
+#' @param matrix Community data, a matrix-like object with samples in rows and species in columns. 
 #' @param ord \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}}, \code{\link[vegan]{rda}} or \code{\link[vegan]{metaMDS}}).
-#' @param ablim Proportion of species with highest abundances displayed.
-#' @param fitlim Proportion of species with best fit displayed.
+#' @param ablim Proportion (\code{c(0,1)} of species with highest abundances to be displayed. 
+#' @param fitlim Proportion (\code{c(0,1)} of species with best fit to be displayed.
 #' @param choices Axes shown.
-#' @param method The species fit method: \code{"axes"} or \code{"vars"}.
-#' @param env Fitted environmental variabes (must be result object of \code{\link[vegan]{envfit}}). Only used if \code{method = "vars"}.
+#' @param method The species fit method: \code{"axes"} or \code{"vars"}. See details for methods.
+#' @param env Fitted environmental variabes (result object of \code{\link[vegan]{envfit}}). Only used if \code{method = "vars"}. If only unfitted environmental data is provided, it will be fitted automatically using method \code{envfit} of \code{vegan} package.
 #' @param p.max Significance limit for variables used in \code{method = "vars"}.
-#' @param freq It this is set on \code{TRUE}, the frequency of species is used instead of cover-abundance values.
+#' @param freq Whether to use percentage cover or frequency of \code{matrix}. Default is \code{FALSE} for regarding cover percentage, if \code{TRUE}, frequencies of species is used instead of cover-abundance values.
 #' @section Details:
 #' Two methods for species fit are implemented.
-#' \itemize{\item In \code{method = "axes"} species scores are used for fitting. This is the default method.
-#' \item In \code{method = "vars"} environmental variables are used for fitting. Here the Euclidean distance between species and environment variable centroids is calculated.}
+#' \itemize{\item In \code{method = "axes"} species scores are used for selecting best fitting species. This is the default method. The basing assumption is that species that show high correlations to ordination axes have good fit. High scores along ordination axes mean high correlation. In this method, all species with high correlations to ordination axes will be filtered.  
+#' \item In \code{method = "vars"} environmental variables are used for selecting best fitting species. This is a distance-based approach for showing the species with best species-environment-correlation in ordination diagram. Therefore Euclidean distances between species and environment variable centroids are calculated. Only high-responding species with very close or very far distances were considered. 
 #' If \code{method = "vars"} is used, the environmental variables need to be fitted with \code{\link[vegan]{envfit}} and the result of this function must be provided to the \code{env} argument.
-#' The function uses only significant variables (p < 0.05).
-#' If there are less than \emph{two} significant variables, only cover abundance values are used and a warning message is displayed.
-#'
+#' 
 #' The two described methods work well both in eigenvalue-based and in distance-based ordinations.
-#' If axes fit should be applied on distance-based ordination, species scores need to be calculated during the analysis, e.g. by selecting \code{wascores = TRUE} in \code{\link[vegan]{metaMDS}}.
-#' However, contrary to eigenvalue-based methods axes do not have a direct meaning in distance-based methods.
-#' Alternatively a fit to the environmental variables is provided.
+#' But note, that the distance-based approach for species fit is recommended for also distance-based methods (e.g. NMDS), as axes are meaningless.
+#' If axes fit should be applied on distance-based ordination although, species scores need to be calculated during the analysis, e.g. by selecting \code{wascores = TRUE} in \code{\link[vegan]{metaMDS}}.
+#' On the other hand, distance calculation may be meaningless in Eigenvalue-based approaches. 
+#' However, both methods provide good option of objective reduction of visible species in ordination plot for better interpretation issues.
 #'
-#' If no limit is defined for one of the arguments all species are displayed.
+#' The \code{p.max} argument allows selection of only significant variables, default is \code{p.max = 0.05}. 
+#'
+#' The default for \code{matrix} input is a cover-abundance-matrix with absolute percentage values of species cover. This matrix should also be used for ordination.
+#'
+#' If no limit is defined for one of the arguments \code{ablim, fitlim}, all species are displayed.
+
 #' @examples
 #' ## Calculate DCA
 #' library(vegan)
@@ -100,9 +104,12 @@ ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1,2), me
 
       } else if(nrow(scores_env) == 1) {
 
-        print("WARNING: Only 1 significant environmental variable. Only abundance limit used for selection.")
-
-        names(abund[abund >= quantile(abund, 1 - ablim)])
+        euclid<-data.frame(rdist(scores_spec, scores_env))
+        names(euclid)<-rownames(scores_env)
+        rownames(euclid)<-names(matrix)
+        rownames(data.frame(euclid[abund > quantile(abund, 1 - ablim) &
+                           (euclid <= quantile(unlist(euclid), 0.5*fitlim) |
+                            euclid >= quantile(unlist(euclid), 1-0.5*fitlim)), ,drop=FALSE]))
 
       } else {
 
