@@ -8,7 +8,7 @@
 #' @param fitlim Proportion (\code{c(0,1)} of species with best fit to be displayed.
 #' @param choices Axes shown.
 #' @param method The species fit method: \code{"axes"} or \code{"vars"}. See details for methods.
-#' @param env Fitted environmental variabes (result object of \code{\link[vegan]{envfit}}). Only used if \code{method = "vars"}. If only unfitted environmental data is provided, it will be fitted automatically using method \code{envfit} of \code{vegan} package.
+#' @param env Fitted environmental variabes (result object of \code{\link[vegan]{envfit}}). Only used if \code{method = "vars"}.
 #' @param p.max Significance limit for variables used in \code{method = "vars"}.
 #' @param freq Whether to use cover abundances (= default) or frequencies of \code{matrix}. If \code{TRUE}, frequencies of species are used.
 #' @section Details:
