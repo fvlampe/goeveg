@@ -9,6 +9,7 @@
 #' @param method Method defining the type of variable. Default \code{method = "env"} fits a response curve to environmental variables. Alternatively \code{method = "ord"} fits a response along ordination axes.
 #' @param axis Ordination axis (only if \code{method = "ord"}).
 #' @param df Desired equivalent number of degrees of freedom (trace of the smoother matrix).
+#' @param log For displaying logarithmic  axes in plot (\code{log=c("","x", "y", "xy")}. Default is to not log any axis in plot \code{log=""}. 
 #' @param bw If set on \code{TRUE} the lines will be drawn in black/white with different line types instead of colours.
 #' @section Details:
 #' For response curves based on environmental gradients the argument \code{var} takes a single vector containing the variable corresponding to the species abundances.
@@ -45,11 +46,13 @@
 #' @author Friedemann Goral \email{fgoral@gwdg.de}
 #' @export
 
-specresponses <- function(matrix, var, main, xlab, method="env", axis=1, df=5, bw = FALSE) {
+specresponses <- function(matrix, var, main, xlab, method="env", axis=1, df=5, log="", bw = FALSE) {
 
   if(!is.data.frame(matrix)) {
     matrix <- data.frame(matrix)
   }
+
+  matrix<-matrix+0.1
 
   if(missing(main)) {
     main <- "Species response curves"
@@ -76,7 +79,7 @@ specresponses <- function(matrix, var, main, xlab, method="env", axis=1, df=5, b
 
       plot(var[matrix[,1]>0], matrix[matrix[,1]>0,1], main = main, type="n",
                xlab = xlab, ylab="Abundance", ylim = c(min(matrix), max(matrix)),
-               xlim = c(min(varrange), max(varrange)))
+               xlim = c(min(varrange), max(varrange)), log=log)
 
         for(i in 1:ls) {
           if(length(matrix[matrix[,i]>0,i]) < 5) {
@@ -120,7 +123,7 @@ specresponses <- function(matrix, var, main, xlab, method="env", axis=1, df=5, b
 
       plot(var[matrix[,1]>0], matrix[matrix[,1]>0,1], main = main, type="n",
            xlab = xlab, ylab="Abundance", ylim = c(min(matrix), max(matrix)),
-           xlim = c(min(varrange), max(varrange)))
+           xlim = c(min(varrange), max(varrange)), log=log)
 
       for(i in 1:ls) {
         if(length(matrix[matrix[,i]>0,i]) < 5) {
