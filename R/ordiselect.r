@@ -1,11 +1,11 @@
-#' Select species for ordination plots
+#' Species selection for ordination plots
 #'
 #' @description This function simplifies the selection of relevant species in ordination diagrams. It works with result objects from \code{vegan} package. The selection can be based upon cover abundances, frequency values and/or species fit to multivariate analysis.
-#' The resulting object contains a vector of names of the selected species and can be used for the \code{select} argument in ordination plots.
+#' The result is a vector of names of the selected species and can be used for the \code{select} argument in ordination plots.
 #' @param matrix Community data, a matrix-like object with samples in rows and species in columns.
 #' @param ord \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}}, \code{\link[vegan]{rda}} or \code{\link[vegan]{metaMDS}}).
-#' @param ablim Proportion (\code{c(0,1)} of species with highest abundances to be displayed.
-#' @param fitlim Proportion (\code{c(0,1)} of species with best fit to be displayed.
+#' @param ablim Proportion of species with highest abundances to be displayed. Value between 0 and 1.
+#' @param fitlim Proportion of species with best fit to be displayed. Value between 0 and 1.
 #' @param choices Axes shown.
 #' @param method The species fit method: \code{"axes"} or \code{"vars"}. See details for methods.
 #' @param env Fitted environmental variabes (result object of \code{\link[vegan]{envfit}}). Only used if \code{method = "vars"}.
@@ -13,22 +13,20 @@
 #' @param freq Whether to use cover abundances (= default) or frequencies of \code{matrix}. If \code{TRUE}, frequencies of species are used.
 #' @section Details:
 #' Two methods for species fit are implemented.
-#' \itemize{\item In \code{method = "axes"} species scores are used for selecting best fitting species. This is the default method. The basing assumption is that species that show high correlations to ordination axes have good fit. High scores along ordination axes mean high correlation. In this method, all species with high correlations to ordination axes will be filtered.
-#' \item In \code{method = "vars"} environmental variables are used for selecting best fitting species. This is a distance-based approach for showing the species with best species-environment-correlation in ordination diagram. Therefore Euclidean distances between species and environment variable centroids are calculated. Only high-responding species with very close or very far distances were considered.
+#' \itemize{\item In \code{method = "axes"} species scores are used for selecting best fitting species. This is the default method. The basic assumption is that species that show high correlations to ordination axes have good fit to the gradient. High scores along ordination axes mean high correlation. In this method, all species with high correlations to ordination axes will be filtered.
+#' \item In \code{method = "vars"} environmental variables are used for selecting best fitting species. This is a distance-based approach for showing the species with best species-environment-correlation in ordination diagrams. Therefore Euclidean distances between species and environment variable centroids are calculated. Only high-responding species with very close or very far distances are considered.}
 #' If \code{method = "vars"} is used, the environmental variables need to be fitted with \code{\link[vegan]{envfit}} and the result of this function must be provided to the \code{env} argument.
+#' The \code{p.max} argument allows selection of only significant variables, default is \code{p.max = 0.05}.
 #'
 #' The two described methods work well both in eigenvalue-based and in distance-based ordinations.
-#' But note, that the distance-based approach for species fit is recommended for also distance-based methods (e.g. NMDS), as axes are meaningless.
+#' But note, that the distance-based approach for species fit is recommended for distance-based methods (e.g. NMDS), in which axes are arbitrary.
 #' If axes fit should be applied on distance-based ordination, species scores need to be calculated during the analysis, e.g. by selecting \code{wascores = TRUE} in \code{\link[vegan]{metaMDS}}.
 #' On the other hand, distance calculation may be meaningless in Eigenvalue-based approaches.
 #' However, both methods provide good option of objective reduction of visible species in ordination plot for better interpretation issues.
 #'
-#' The \code{p.max} argument allows selection of only significant variables, default is \code{p.max = 0.05}.
-#'
 #' The default for \code{matrix} input is a cover-abundance-matrix. This matrix should also be used for ordination.
 #'
 #' If no limit is defined for one of the arguments \code{ablim, fitlim}, all species are displayed.
-
 #' @examples
 #' ## Calculate DCA
 #' library(vegan)
@@ -56,7 +54,7 @@
 #' env13 <- envfit(nmds, schedenenv[,2:10], choices=c(1,3))
 #' limited13 <- ordiselect(schedenveg, nmds, ablim = 0.3, fitlim = 0.6,
 #'    choices = c(1,3), method = "vars", env = env13)
-#' @author Friedemann Goral \email{fgoral@gwdg.de} and Jenny Schellenberg
+#' @author Friedemann Goral (\email{fgoral@gwdg.de}) and Jenny Schellenberg
 #' @export
 
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/racurve.r
 \name{racurve}
 \alias{racurve}
-\title{Draw rank-abundance curves}
+\title{Rank-abundance curves}
 \usage{
 racurve(matrix, main = "Rank-abundance diagram", ylog = FALSE)
 }
@@ -30,7 +30,7 @@ racurve(schedenveg)
 racurve(schedenveg, ylog = TRUE)
 }
 \author{
-Friedemann Goral \email{fgoral@gwdg.de}
+Friedemann Goral (email{fgoral@gwdg.de})
 }
 \references{
 Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260.

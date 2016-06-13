@@ -2,7 +2,7 @@
 % Please edit documentation in R/dimcheckMDS.R
 \name{dimcheckMDS}
 \alias{dimcheckMDS}
-\title{Plot the stress values of NMDS for tested dimensions}
+\title{Stress plot/Scree plot for NMDS}
 \usage{
 dimcheckMDS(matrix, distance = "bray", k = 6, trymax = 20,
   autotransform = TRUE)
@@ -20,6 +20,7 @@ dimcheckMDS(matrix, distance = "bray", k = 6, trymax = 20,
 }
 \description{
 This function provides a simple plot of stress values for a given number of tested dimensions (default \code{k = 6}) in NMDS.
+This stress plot (or scree plot) shows the decrease in ordination stress with an increase in the number of ordination dimensions.
 It is based on function \code{\link[vegan]{metaMDS}} (\code{vegan} package) and uses the \code{monoMDS} engine.
 }
 \section{Details}{
@@ -34,7 +35,7 @@ Furthermore, another diagnostic plot for detecting best dimension for projection
 
 \cite{Clarke 1993} suggests the following guidelines for acceptable stress values:
 <0.05 = excellent, <0.10 = good, <0.20 = usable, >0.20 = not acceptable.
-The plot shows the border of the 0.2 stress value limit.
+The plot shows the border of the 0.20 stress value limit. Solutions with higher stress values should be interpreted with caution and those with stress above 0.30 are highly suspect.
 }
 \examples{
 ## Use of function with default values
@@ -44,7 +45,7 @@ dimcheckMDS(schedenveg)
 dimcheckMDS(schedenveg, k = 10)
 }
 \author{
-Jenny Schellenberg \email{jschell@gwdg.de} and Friedemann Goral \email{fgoral@gwdg.de}
+Jenny Schellenberg (\email{jschell@gwdg.de}) and Friedemann Goral (\email{fgoral@gwdg.de})
 }
 \references{
 Clarke, K. R. (1993). Non-parametric multivariate analysis of changes in community structure. \emph{Austral J Ecol} \strong{18:} 117-143.

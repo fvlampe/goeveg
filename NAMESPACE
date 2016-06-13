@@ -4,11 +4,13 @@ export(racurve)
 export(racurves)
 export(specresponse)
 export(specresponses)
+export(cv)
+export(sem)
 
 import(
   vegan,
   fields
 )
 
-importFrom("graphics", "abline", "legend", "lines", "plot")
-importFrom("stats", "complete.cases", "quantile", "smooth.spline")
+importFrom("graphics", "abline", "legend", "lines", "plot", "points")
+importFrom("stats", "complete.cases", "quantile", "smooth.spline", "sd")

@@ -1,4 +1,4 @@
-#' Draw multiple species response curves
+#' Multiple species response curves
 #' @description This function draws multiple species response curves for rough interpretation of species responses to environmental gradients or ordination axes.
 #' It is based on \code{\link[stats]{smooth.spline}} which fits a cubic smoothing spline to the supplied data.
 #' In contrast to \code{\link{specresponse}} this function can draw multiple curves into one plot, but will not draw points.
@@ -42,7 +42,7 @@
 #' ## Plot with manually log-transformed abundances
 #' specresponses(log(schedenveg[ ,c(9,18,14,19)]+1), schedenenv$height_herb)
 #'
-#' @author Friedemann Goral \email{fgoral@gwdg.de}
+#' @author Friedemann Goral (\email{fgoral@gwdg.de})
 #' @export
 
 specresponses <- function(matrix, var, main, xlab, method="env", axis=1, df=5, bw = FALSE) {
