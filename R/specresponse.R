@@ -1,19 +1,20 @@
 #' Draw species response curves
-#' @description This function draws species response curves for rough interpretation of a species response to environmental variables or ordination axes.
+#' @description This function draws species response curves for rough interpretation of a species response to environmental gradients or ordination axes.
 #' It is based on \code{\link[stats]{smooth.spline}} which fits a cubic smoothing spline to the supplied data.
 #' For drawing multiple curves into one plot use \code{\link{specresponses}}.
 #' @param species Vector containing species abundances (per plot).
 #' @param var Vector containing environmental variable (per plot) \strong{OR} \code{vegan} ordination result object if \code{method = "ord"}.
 #' @param main Optional: Main title.
 #' @param xlab Optional: Label of x-axis.
-#' @param method Method defining the type of variable. Default \code{method = "env"} fits a response curve to environmental variables. Alternatively \code{method = "ord"} fits a response along ordination axes.
+#' @param method Method defining the type of variable. Default \code{method = "env"} fits a response curve to environmental variables. Alternatively \code{method = "ord"} fits a response along an ordination axis.
 #' @param axis Ordination axis (only if \code{method = "ord"}).
 #' @param df Desired equivalent number of degrees of freedom (trace of the smoother matrix). Default = 5.
-#' @param ylog If set on \code{TRUE} the y-axis is displayed on a log-scale.
+#' @param ylog If set on \code{TRUE} the y-axis is displayed on a log-scale. Default is to not log y-axis.
 #' @section Details:
-#' For response curves based on environmental variables the argument \code{var} takes a single vector containing the variable corresponding to the species abundances.
+#' For response curves based on environmental variable gradients the argument \code{var} takes a single vector containing the variable corresponding to the species abundances. The direct response of a species to the environmental variable is shown.
 #'
-#' For a response to ordination axes (\code{method = "ord"}) the argument \code{var} requires a \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}}, \code{\link[vegan]{rda}} or \code{\link[vegan]{metaMDS}}).
+#' For a response to ordination axis (\code{method = "ord"}) the argument \code{var} requires a \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}}, \code{\link[vegan]{rda}} or \code{\link[vegan]{metaMDS}}).
+#' Response of species to axis is shown; note that meaning of axis differ in unconstrained and constrained methods. 
 #' First axis is used as default.
 #'
 #' A minimum of 10 occurences is recommenced to use response curves. Curves for species with less than 5 occurences are not drawn.
