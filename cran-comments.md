@@ -7,7 +7,8 @@
 
 0 errors | 0 warnings | 1 note
 
-* This is a new release.
+* Days since last update: 0
+(sorry for that, next time it'll take longer and more additions...)
 
 ## Reverse dependencies
 
