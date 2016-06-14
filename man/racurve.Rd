@@ -4,17 +4,24 @@
 \alias{racurve}
 \title{Rank-abundance curves}
 \usage{
-racurve(matrix, main = "Rank-abundance diagram", ylog = FALSE)
+racurve(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = FALSE)
 }
 \arguments{
 \item{matrix}{Community data, a matrix-like object with samples in rows.}
 
 \item{main}{The main title.}
 
+\item{nlab}{Number of labeled species (default = 0). Species are labeled in decreasing order beginning from the highest relative abundance.}
+
 \item{ylog}{If set on \code{TRUE} the y-axis is displayed on a log-scale.}
 }
+\value{
+Returns an (invisible) list composed of:
+  \item{\code{abund }}{abundance of each species (in decreasing order)}
+  \item{\code{rel.abund }}{relative abundance of each species (in decreasing order)}
+}
 \description{
-This function draws a rank-abundance curve for community data.
+This function draws a rank-abundance curve for community data. You can optionally add labels for a selected number of species.
 If you wish to draw multiple rank-abundance curves for selected samples use \link{racurves}.
 }
 \section{Details}{
@@ -25,6 +32,8 @@ They are a means to visualise species richness and species evenness.
 \examples{
 ## Draw simple rank-abundance curve
 racurve(schedenveg)
+
+racurve(schedenveg, nlab = 5)
 
 ## Draw simple rank-abundance curve with log-scaled axis
 racurve(schedenveg, ylog = TRUE)
