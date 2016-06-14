@@ -6,7 +6,7 @@ Date: 2016-06-13
 Author: Friedemann Goral [aut, cre],
   Jenny Schellenberg [aut]
 Maintainer: Friedemann Goral <fgoral@gwdg.de>
-Description: A collection of small functions useful in (vegetation) community analyses and ordinations, mainly to facilitate plotting and interpretation. Includes automatic selection of species for ordination diagrams, species reponse curves and rank-abundance curves.
+Description: A collection of functions useful in (vegetation) community analyses and ordinations, mainly to facilitate plotting and interpretation. Includes automatic species selection for ordination diagrams, species response curves and rank-abundance curves.
 License: GPL (>= 2)
 LazyData: TRUE
 Depends: R (>= 2.10)
