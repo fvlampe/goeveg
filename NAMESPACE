@@ -13,4 +13,5 @@ import(
 )
 
 importFrom("graphics", "abline", "legend", "lines", "plot", "points", "text")
-importFrom("stats", "complete.cases", "quantile", "smooth.spline", "sd", "utils", "head")
+importFrom("stats", "complete.cases", "quantile", "smooth.spline", "sd")
+importFrom("utils", "head")
