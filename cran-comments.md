@@ -11,10 +11,6 @@
 
 ## Reverse dependencies
 
-This is a new release, so there are no reverse dependencies.
-
----
-
-* There are currently no downstream dependencies for this package 
+There are currently no downstream dependencies for this package 
 
 
