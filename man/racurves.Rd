@@ -9,7 +9,7 @@ racurves(matrix, main = "Rank-abundance diagram", bw = TRUE)
 \arguments{
 \item{matrix}{Community data, a matrix-like object with samples in rows and species in columns. Rank-abundance curves are drawn for all selected rows (samples).}
 
-\item{main}{The main title.}
+\item{main}{The main title (optional).}
 
 \item{bw}{If set on \code{FALSE} the lines will be drawn in colours instead of black/white lines with different line types.}
 }

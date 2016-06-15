@@ -10,7 +10,7 @@ racurve(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = FALSE,
 \arguments{
 \item{matrix}{Community data, a matrix-like object with samples in rows.}
 
-\item{main}{The main title.}
+\item{main}{The main title (optional).}
 
 \item{nlab}{Number of labeled species (default = 0). Species are labeled in decreasing order beginning from the highest relative abundance.}
 
