@@ -27,7 +27,7 @@
 #' racurve(schedenveg, ylog = TRUE)
 #'
 #' ## Draw rank-abundance curve with frequencies and no main title
-#' racurve(schedenveg, frequency = T, nlab = 1, main = "")
+#' racurve(schedenveg, frequency = TRUE, nlab = 1, main = "")
 #' @seealso \code{\link{racurves}}
 #' @references Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260.
 #' @author Friedemann Goral (\email{fgoral@gwdg.de})

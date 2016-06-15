@@ -13,6 +13,9 @@
 #' @examples
 #' ## Draw multiple rank-abundance curves for selected samples
 #' racurves(schedenveg[c(1,7,20,25), ])
+#'
+#' ## Draw multiple rank-abundance curves for selected samples with coloured lines
+#' racurves(schedenveg[c(1,7,20,25), ], bw = FALSE)
 #' @seealso \code{\link{racurve}}
 #' @references Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260.
 #' @author Friedemann Goral (\email{fgoral@gwdg.de})
