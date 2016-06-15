@@ -4,7 +4,7 @@
 #' If you wish to draw multiple rank-abundance curves for selected samples use \link{racurves}.
 #'
 #' @param matrix Community data, a matrix-like object with samples in rows.
-#' @param main The main title.
+#' @param main The main title (optional).
 #' @param nlab Number of labeled species (default = 0). Species are labeled in decreasing order beginning from the highest relative abundance.
 #' @param ylog If set on \code{TRUE} the y-axis is displayed on a log-scale.
 #' @param frequency If set on \code{TRUE} frequencies of species are calculated instead of relative abundances.
