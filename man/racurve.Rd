@@ -4,7 +4,8 @@
 \alias{racurve}
 \title{Rank-abundance curves}
 \usage{
-racurve(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = FALSE)
+racurve(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = FALSE,
+  frequency = FALSE)
 }
 \arguments{
 \item{matrix}{Community data, a matrix-like object with samples in rows.}
@@ -14,11 +15,14 @@ racurve(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = FALSE)
 \item{nlab}{Number of labeled species (default = 0). Species are labeled in decreasing order beginning from the highest relative abundance.}
 
 \item{ylog}{If set on \code{TRUE} the y-axis is displayed on a log-scale.}
+
+\item{frequency}{If set on \code{TRUE} frequencies of species are calculated instead of relative abundances.}
 }
 \value{
 Returns an (invisible) list composed of:
   \item{\code{abund }}{abundance of each species (in decreasing order)}
   \item{\code{rel.abund }}{relative abundance of each species (in decreasing order)}
+  \item{\code{freq }}{frequency of each species (in decreasing order)}
 }
 \description{
 This function draws a rank-abundance curve for community data. You can optionally add labels for a selected number of species.
@@ -30,13 +34,17 @@ Rank abundance curves or Whittaker plots (see \cite{Whittaker 1965}) are used to
 They are a means to visualise species richness and species evenness.
 }
 \examples{
-## Draw simple rank-abundance curve
+## Draw rank-abundance curve
 racurve(schedenveg)
 
+## Draw rank-abundance curve and label first 5 species
 racurve(schedenveg, nlab = 5)
 
-## Draw simple rank-abundance curve with log-scaled axis
+## Draw rank-abundance curve with log-scaled axis
 racurve(schedenveg, ylog = TRUE)
+
+## Draw rank-abundance curve with frequencies and no main title
+racurve(schedenveg, frequency = TRUE, nlab = 1, main = "")
 }
 \author{
 Friedemann Goral (\email{fgoral@gwdg.de})

@@ -20,7 +20,7 @@
 #' ## Draw rank-abundance curve
 #' racurve(schedenveg)
 #'
-#' Draw rank-abundance curve and label first 5 species
+#' ## Draw rank-abundance curve and label first 5 species
 #' racurve(schedenveg, nlab = 5)
 #'
 #' ## Draw rank-abundance curve with log-scaled axis
