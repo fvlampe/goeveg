@@ -1,4 +1,4 @@
-# goeveg 0.2
+# goeveg 0.2.0
 
 - Added functionality to use frequencies in racurve()
 - Added functionality to label species in racurve()
