@@ -2,6 +2,7 @@
 
 - Added functionality to use frequencies in racurve()
 - Added functionality to label species in racurve()
+- New (invisible) output in racurve()
 - Package checked and tested on OS X
 
 # goeveg 0.1.6
