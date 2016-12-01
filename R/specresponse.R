@@ -52,18 +52,18 @@ specresponse <- function(species, var, main, xlab, method="env", axis=1, df=5, y
     }
 
     if(ylog == TRUE) {
-        plot(var[species>0], species[species>0], pch=19, col="dimgrey", main = main,
+        plot(var, species, pch=19, col="dimgrey", main = main,
              xlab = xlab, ylab="Abundance", log="y")
 
-        lines(smooth.spline(var[species>0], species[species>0], df=df), col=2)
+        lines(smooth.spline(var, species, df=df), col=2)
 
 
     } else {
 
-        plot(var[species>0], species[species>0], pch=19, col="dimgrey", main = main,
+        plot(var, species, pch=19, col="dimgrey", main = main,
              xlab = xlab, ylab="Abundance")
 
-        lines(smooth.spline(var[species>0], species[species>0], df=df), col=2)
+        lines(smooth.spline(var, species, df=df), col=2)
     }
 
   } else if(method=="ord") {
