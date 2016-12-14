@@ -9,9 +9,12 @@ export(sem)
 
 import(
   vegan,
-  fields
+  fields,
+  mgcv
 )
 
 importFrom("graphics", "abline", "legend", "lines", "plot", "points", "text")
-importFrom("stats", "complete.cases", "quantile", "smooth.spline", "sd")
+importFrom("stats", "complete.cases", "quantile", "sd")
 importFrom("utils", "head")
+importFrom("grDevices", "col2rgb", "rgb")
+importFrom("stats", "glm", "predict", "step")

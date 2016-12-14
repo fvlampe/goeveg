@@ -4,11 +4,11 @@
 \alias{specresponses}
 \title{Multiple species response curves}
 \usage{
-specresponses(matrix, var, main, xlab, method = "env", axis = 1, df = 5,
-  bw = FALSE)
+specresponses(matrix, var, main, xlab, model = "unimodal", method = "env",
+  axis = 1, points = FALSE, bw = FALSE)
 }
 \arguments{
-\item{matrix}{Community data, a matrix-like object with samples in rows and species in columns. Response curves are drawn for all selected columns (species).}
+\item{matrix}{Community data, a matrix-like object with samples in rows and species in columns. Response curves are drawn for all (selected) columns (species).}
 
 \item{var}{Vector containing environmental variable (per plot) \strong{OR} \code{vegan} ordination result object if \code{method = "ord"}.}
 
@@ -16,18 +16,20 @@ specresponses(matrix, var, main, xlab, method = "env", axis = 1, df = 5,
 
 \item{xlab}{Optional: Label of x-axis.}
 
+\item{model}{Defining the assumed species responses: Default \code{method = "unimodal"} fits unimodal responses. Other methods are \code{method = "linear"} (linear responses), \code{method = "bimodal"} (bimodal responses), \code{method = "auto"} (automatic selection based on AIC) and \code{method = "gam"} (using GAM with smoother).}
+
 \item{method}{Method defining the type of variable. Default \code{method = "env"} fits a response curve to environmental variables. Alternatively \code{method = "ord"} fits a response along ordination axes.}
 
 \item{axis}{Ordination axis (only if \code{method = "ord"}).}
 
-\item{df}{Desired equivalent number of degrees of freedom (trace of the smoother matrix).}
+\item{points}{If set on \code{TRUE} the species occurences are shown as points. To avoid overlapping they are shown with vertical offset.}
 
 \item{bw}{If set on \code{TRUE} the lines will be drawn in black/white with different line types instead of colours.}
 }
 \description{
-This function draws multiple species response curves for rough interpretation of species responses to environmental gradients or ordination axes.
-It is based on \code{\link[stats]{smooth.spline}} which fits a cubic smoothing spline to the supplied data.
-In contrast to \code{\link{specresponse}} this function can draw multiple curves into one plot, but will not draw points.
+This function fits  multiple species response curves to visualize species responses to environmental gradients or ordination axes.
+It is based on Logistic Regression using Generalised Linear Models (GLMs) or Generalized Additive Models (GAMs) with integrated smoothness estimation.
+In contrast to \code{\link{specresponse}} this function can draw multiple curves into one plot.
 }
 \section{Details}{
 
@@ -36,10 +38,7 @@ For response curves based on environmental gradients the argument \code{var} tak
 For a response to ordination axis (\code{method = "ord"}) the argument \code{var} requires a \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}}, \code{\link[vegan]{rda}} or \code{\link[vegan]{metaMDS}}).
 First axis is used as default.
 
-A minimum of 10 occurences is recommenced to use response curves. Curves for species with less than 5 occurences are not drawn.
-It is recommended to filter the vegetation matrix for species with a minimum frequency of 10 before using this function.
-
-If you plot a response curve for only one species the use of \code{\link{specresponse}} is recommended for correct labels and the display of points.
+If you plot a response curve for only one species the use of \code{\link{specresponse}} is recommended.
 }
 \examples{
 ## Species (columns) need to be selected; call names() to get column numbers
@@ -47,10 +46,13 @@ names(schedenveg)
 ## Draw multiple species response curves on variable in black/white
 specresponses(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, bw = TRUE)
 
+## Draw the same curves based on GAM
+specresponses(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, bw = TRUE, model = "gam")
+
 ## Draw multiple species response curves on variable with
-## custom x-axis label and lower df
-specresponses(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, df = 3,
-    xlab = "Height of herb layer (cm)")
+## custom x-axis label and points of occurences
+specresponses(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb,
+    xlab = "Height of herb layer (cm)", points = TRUE)
 
 ## Draw multiple species response curves on ordination axes
 ## First calculate DCA
@@ -59,8 +61,6 @@ scheden.dca <- decorana(schedenveg)
 specresponses(schedenveg[ ,c(9,18,14,19)], scheden.dca, method = "ord")
 specresponses(schedenveg[ ,c(9,18,14,19)], scheden.dca, method = "ord", axis = 2)
 
-## Plot with manually log-transformed abundances
-specresponses(log(schedenveg[ ,c(9,18,14,19)]+1), schedenenv$height_herb)
 
 }
 \author{

@@ -4,8 +4,8 @@
 \alias{specresponse}
 \title{Species response curves}
 \usage{
-specresponse(species, var, main, xlab, method = "env", axis = 1, df = 5,
-  ylog = FALSE)
+specresponse(species, var, main, xlab, model = "unimodal", method = "env",
+  axis = 1)
 }
 \arguments{
 \item{species}{Vector containing species abundances (per plot).}
@@ -16,17 +16,18 @@ specresponse(species, var, main, xlab, method = "env", axis = 1, df = 5,
 
 \item{xlab}{Optional: Label of x-axis.}
 
+\item{model}{Defining the assumed species response: Default \code{method = "unimodal"} fits a unimodal response. Other methods are \code{method = "linear"} (linear response), \code{method = "bimodal"} (bimodal response), \code{method = "auto"} (automatic selection based on AIC) and \code{method = "gam"} (using GAM with smoother)}
+
 \item{method}{Method defining the type of variable. Default \code{method = "env"} fits a response curve to environmental variables. Alternatively \code{method = "ord"} fits a response along an ordination axis.}
 
 \item{axis}{Ordination axis (only if \code{method = "ord"}).}
-
-\item{df}{Desired equivalent number of degrees of freedom (trace of the smoother matrix). Default = 5.}
-
-\item{ylog}{If set on \code{TRUE} the y-axis is displayed on a log-scale. Default is to not log y-axis.}
+}
+\value{
+Returns an (invisible) object \code{specresponse} containing the model results
 }
 \description{
-This function draws species response curves for rough interpretation of a species response to environmental gradients or ordination axes.
-It is based on \code{\link[stats]{smooth.spline}} which fits a cubic smoothing spline to the supplied data.
+This function fits species response curves to visalize a species response to environmental gradients or ordination axes.
+It is based on Logistic Regression using Generalised Linear Models (GLMs) or Generalized Additive Models (GAMs) with integrated smoothness estimation.
 For drawing multiple curves into one plot use \code{\link{specresponses}}.
 }
 \section{Details}{
@@ -36,25 +37,24 @@ For response curves based on environmental variable gradients the argument \code
 For a response to ordination axis (\code{method = "ord"}) the argument \code{var} requires a \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}}, \code{\link[vegan]{rda}} or \code{\link[vegan]{metaMDS}}).
 Response of species to axis is shown; note that meaning of axis differ in unconstrained and constrained methods.
 First axis is used as default.
-
-A minimum of 10 occurences is recommenced to use response curves. Curves for species with less than 5 occurences are not drawn.
-It is recommended to filter the vegetation matrix for species with a minimum frequency of 10 before using this function.
 }
 \examples{
 ## Draw species response curve on environmental variable
 specresponse(schedenveg$ArrElat, schedenenv$soil_depth)
 
 ## Draw species response curve on environmental variable with
-## custom labels, lower df and log-scaled y-axis
+## custom labels
 specresponse(schedenveg$ArrElat, schedenenv$soil_depth, main = "Arrhenatherum elatius",
-       xlab = "Soil depth", df = 3, ylog = TRUE)
+       xlab = "Soil depth")
 
 ## Draw species response curve on ordination axes
 ## First calculate DCA
 library(vegan)
 scheden.dca <- decorana(schedenveg)
 
-specresponse(schedenveg$ArrElat, scheden.dca, method = "ord")
+# Using a linear model on first axis
+specresponse(schedenveg$ArrElat, scheden.dca, method = "ord", model = "linear")
+# Using an unimodal model on second axis
 specresponse(schedenveg$ArrElat, scheden.dca, method = "ord", axis = 2)
 }
 \author{
