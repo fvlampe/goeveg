@@ -1,3 +1,8 @@
+# goeveg 0.3.1
+
+- Fixed use of external functions (gam, rdist)
+- max. of 3 polynomials in automatic GLM selection of specresponse()
+
 # goeveg 0.3.0
 
 - Fixed and renewed function specresponse()/specresponses(): now works also with NMDS, includes zero values and is based on presence/absence data (logistic regression). Instead of cubic smoothing splines the function now uses GLMs/GAMs.

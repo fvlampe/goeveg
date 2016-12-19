@@ -102,7 +102,7 @@ ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1,2), me
 
       } else if(nrow(scores_env) == 1) {
 
-        euclid<-data.frame(rdist(scores_spec, scores_env))
+        euclid<-data.frame(fields::rdist(scores_spec, scores_env))
         names(euclid)<-rownames(scores_env)
         rownames(euclid)<-names(matrix)
         rownames(data.frame(euclid[abund > quantile(abund, 1 - ablim) &
@@ -111,7 +111,7 @@ ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1,2), me
 
       } else {
 
-        euclid<-data.frame(rdist(scores_spec, scores_env))
+        euclid<-data.frame(fields::rdist(scores_spec, scores_env))
         names(euclid)<-rownames(scores_env)
         rownames(euclid)<-names(matrix)
 

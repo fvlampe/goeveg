@@ -23,7 +23,7 @@ specresponse(species, var, main, xlab, model = "unimodal", method = "env",
 \item{axis}{Ordination axis (only if \code{method = "ord"}).}
 }
 \value{
-Returns an (invisible) object \code{specresponse} containing the model results
+Returns an (invisible) object containing the model results
 }
 \description{
 This function fits species response curves to visalize a species response to environmental gradients or ordination axes.

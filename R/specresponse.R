@@ -107,7 +107,7 @@ specresponse <- function(species, var, main, xlab, model="unimodal", method="env
   } else if (model == "auto") {
 
     full <- suppressWarnings(glm(species ~ var + I(var^2) +
-                                   I(var^3) + I(var^4), family="binomial"))
+                                   I(var^3), family="binomial"))
     specresponse <- suppressWarnings(step(full, trace = 0))
 
     xneu <- seq(min(var), max(var), len = 101)
@@ -116,7 +116,7 @@ specresponse <- function(species, var, main, xlab, model="unimodal", method="env
 
   } else if (model == "gam") {
 
-    specresponse <- suppressWarnings(gam(species ~ s(var, k = 6),
+    specresponse <- suppressWarnings(mgcv::gam(species ~ s(var, k = 6),
                                          family="binomial"))
 
     xneu <- seq(min(var), max(var), len = 101)

@@ -92,7 +92,7 @@ specresponses <- function(matrix, var, main, xlab, model = "unimodal", method="e
 
     for(i in 1:ls) {
 
-      if(length(matrix[matrix[,i]>0,i]) <= 3) {
+      if(length(matrix[matrix[,i]>0,i]) <= 5) {
         # tried warning instead of print
         warning(paste("Only", length(matrix[matrix[,i]>0,i]), "occurences of", names(matrix)[i], "."))
       }
@@ -137,7 +137,7 @@ specresponses <- function(matrix, var, main, xlab, model = "unimodal", method="e
 
       } else if (model == "gam") {
 
-        specresponse <- suppressWarnings(gam(matrix[,i] ~ s(var, k = 6),
+        specresponse <- suppressWarnings(mgcv::gam(matrix[,i] ~ s(var, k = 6),
                                              family="binomial"))
 
         xneu <- seq(min(var), max(var), len = 101)
