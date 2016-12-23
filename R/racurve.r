@@ -49,7 +49,7 @@ racurve <-  function(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = F
   if(frequency == FALSE) {
 
     if(ylog == TRUE) {
-      plot(rel.abund, xlab="Abundance Rank", ylab="Relative abundance",
+      plot(rel.abund, xlab="Abundance Rank", ylab="Relative Abundance",
            main=main, log="y")
       lines(rel.abund)
       if(nlab != 0) {
@@ -57,7 +57,7 @@ racurve <-  function(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = F
       }
 
     } else {
-      plot(rel.abund, xlab="Abundance Rank", ylab="Relative abundance",
+      plot(rel.abund, xlab="Abundance Rank", ylab="Relative Abundance",
            main=main)
       lines(rel.abund)
       if(nlab != 0) {

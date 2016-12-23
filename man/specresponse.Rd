@@ -4,11 +4,11 @@
 \alias{specresponse}
 \title{Species response curves}
 \usage{
-specresponse(species, var, main, xlab, model = "unimodal", method = "env",
-  axis = 1)
+specresponse(species, var, main, xlab, model = "auto", method = "env",
+  axis = 1, points = FALSE, bw = FALSE)
 }
 \arguments{
-\item{species}{Vector containing species abundances (per plot).}
+\item{species}{Species data (either a community matrix object with samples in rows and species in columns - response curves are drawn for all (selected) columns; or a single vector containing species abundances per plot).}
 
 \item{var}{Vector containing environmental variable (per plot) \strong{OR} \code{vegan} ordination result object if \code{method = "ord"}.}
 
@@ -16,36 +16,38 @@ specresponse(species, var, main, xlab, model = "unimodal", method = "env",
 
 \item{xlab}{Optional: Label of x-axis.}
 
-\item{model}{Defining the assumed species response: Default \code{method = "unimodal"} fits a unimodal response. Other methods are \code{method = "linear"} (linear response), \code{method = "bimodal"} (bimodal response), \code{method = "auto"} (automatic selection based on AIC) and \code{method = "gam"} (using GAM with smoother)}
+\item{model}{Defining the assumed species response: Default \code{method = "auto"} selects the method automatically based on AIC. Other methods are \code{method = "linear"} (linear response), \code{method = "unimodal"} (unimodal response), \code{method = "bimodal"} (bimodal response) and \code{method = "gam"} (using GAM with smoother).}
 
-\item{method}{Method defining the type of variable. Default \code{method = "env"} fits a response curve to environmental variables. Alternatively \code{method = "ord"} fits a response along an ordination axis.}
+\item{method}{Method defining the type of variable. Default \code{method = "env"} fits a response curve to environmental variables. Alternatively \code{method = "ord"} fits a response along ordination axes.}
 
 \item{axis}{Ordination axis (only if \code{method = "ord"}).}
-}
-\value{
-Returns an (invisible) object containing the model results
+
+\item{points}{If set on \code{TRUE} the species occurences are shown as points. To avoid overlapping they are shown with vertical offset.}
+
+\item{bw}{If set on \code{TRUE} the lines will be drawn in black/white with different line types instead of colours.}
 }
 \description{
-This function fits species response curves to visalize a species response to environmental gradients or ordination axes.
+This function fits species response curves to visualize species responses to environmental gradients or ordination axes.
 It is based on Logistic Regression using Generalised Linear Models (GLMs) or Generalized Additive Models (GAMs) with integrated smoothness estimation.
-For drawing multiple curves into one plot use \code{\link{specresponses}}.
+The function can draw response curves for single or multiple species.
 }
 \section{Details}{
 
-For response curves based on environmental variable gradients the argument \code{var} takes a single vector containing the variable corresponding to the species abundances. The direct response of a species to the environmental variable is shown.
+For response curves based on environmental gradients the argument \code{var} takes a single vector containing the variable corresponding to the species abundances.
 
 For a response to ordination axis (\code{method = "ord"}) the argument \code{var} requires a \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}}, \code{\link[vegan]{rda}} or \code{\link[vegan]{metaMDS}}).
-Response of species to axis is shown; note that meaning of axis differ in unconstrained and constrained methods.
 First axis is used as default.
+
+By default the response curves are drawn with automatic GLM model selection based on AIC with 1 - 3 polynomial degrees. The GAM model choses automatically between an upper limit of 3 - 6 degrees of freedom for the regression smoother.
 }
 \examples{
-## Draw species response curve on environmental variable
-specresponse(schedenveg$ArrElat, schedenenv$soil_depth)
+## Draw species response curve for one species on environmental variable
+## with points of occurences
+specresponse(schedenveg$ArrElat, schedenenv$soil_depth, points = TRUE)
 
-## Draw species response curve on environmental variable with
-## custom labels
-specresponse(schedenveg$ArrElat, schedenenv$soil_depth, main = "Arrhenatherum elatius",
-       xlab = "Soil depth")
+## Draw species response curve on environmental variable with custom labels
+specresponse(schedenveg$ArrElat, schedenenv$soil_depth, points = TRUE,
+       main = "Arrhenatherum elatius", xlab = "Soil depth")
 
 ## Draw species response curve on ordination axes
 ## First calculate DCA
@@ -55,12 +57,27 @@ scheden.dca <- decorana(schedenveg)
 # Using a linear model on first axis
 specresponse(schedenveg$ArrElat, scheden.dca, method = "ord", model = "linear")
 # Using an unimodal model on second axis
-specresponse(schedenveg$ArrElat, scheden.dca, method = "ord", axis = 2)
+specresponse(schedenveg$ArrElat, scheden.dca, method = "ord", axis = 2, model = "unimodal")
+
+## Community data: species (columns) need to be selected; call names() to get column numbers
+names(schedenveg)
+## Draw multiple species response curves on variable in black/white
+specresponse(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, bw = TRUE)
+
+## Draw the same curves based on GAM
+specresponse(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, bw = TRUE, model = "gam")
+
+## Draw multiple species response curves on variable with
+## custom x-axis label and points of occurences
+specresponse(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb,
+    xlab = "Height of herb layer (cm)", points = TRUE)
+
+## Draw multiple species response curves on ordination axes
+specresponse(schedenveg[ ,c(9,18,14,19)], scheden.dca, method = "ord")
+specresponse(schedenveg[ ,c(9,18,14,19)], scheden.dca, method = "ord", axis = 2)
+
 }
 \author{
-Friedemann Goral (\email{fgoral@gwdg.de}) and Jenny Schellenberg
-}
-\seealso{
-\code{\link{specresponses}}
+Friedemann Goral (\email{fgoral@gwdg.de})
 }
 
