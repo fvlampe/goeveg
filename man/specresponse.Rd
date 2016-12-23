@@ -16,7 +16,7 @@ specresponse(species, var, main, xlab, model = "auto", method = "env",
 
 \item{xlab}{Optional: Label of x-axis.}
 
-\item{model}{Defining the assumed species response: Default \code{method = "auto"} selects the method automatically based on AIC. Other methods are \code{method = "linear"} (linear response), \code{method = "unimodal"} (unimodal response), \code{method = "bimodal"} (bimodal response) and \code{method = "gam"} (using GAM with smoother).}
+\item{model}{Defining the assumed species response: Default \code{model = "auto"} selects the model automatically based on AIC. Other methods are \code{model = "linear"} (linear response), \code{model = "unimodal"} (unimodal response), \code{model = "bimodal"} (bimodal response) and \code{model = "gam"} (using GAM with regression smoother).}
 
 \item{method}{Method defining the type of variable. Default \code{method = "env"} fits a response curve to environmental variables. Alternatively \code{method = "ord"} fits a response along ordination axes.}
 
@@ -38,7 +38,7 @@ For response curves based on environmental gradients the argument \code{var} tak
 For a response to ordination axis (\code{method = "ord"}) the argument \code{var} requires a \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}}, \code{\link[vegan]{rda}} or \code{\link[vegan]{metaMDS}}).
 First axis is used as default.
 
-By default the response curves are drawn with automatic GLM model selection based on AIC with 1 - 3 polynomial degrees. The GAM model choses automatically between an upper limit of 3 - 6 degrees of freedom for the regression smoother.
+By default the response curves are drawn with automatic GLM model selection based on AIC out of GLMs with 1 - 3 polynomial degrees. The GAM model choses automatically between an upper limit of 3 - 6 degrees of freedom for the regression smoother.
 }
 \examples{
 ## Draw species response curve for one species on environmental variable
