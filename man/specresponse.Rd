@@ -38,7 +38,10 @@ For response curves based on environmental gradients the argument \code{var} tak
 For a response to ordination axis (\code{method = "ord"}) the argument \code{var} requires a \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}}, \code{\link[vegan]{rda}} or \code{\link[vegan]{metaMDS}}).
 First axis is used as default.
 
-By default the response curves are drawn with automatic GLM model selection based on AIC out of GLMs with 1 - 3 polynomial degrees. The GAM model choses automatically between an upper limit of 3 - 6 degrees of freedom for the regression smoother.
+By default the response curves are drawn with automatic GLM model selection based on AIC out of GLMs with 1 - 3 polynomial degrees (thus excluding bimodal responses which must be manually defined). The GAM model is more flexible and choses automatically between an upper limit of 3 - 6 degrees of freedom for the regression smoother.
+
+Available information about species is reduced to presence-absence as species abundances can contain much noise (beeing affected by complex factors) and the results of Logistic Regression are easier to interpret showing the "probabilities of occurence".
+One should be aware that response curves are only a simplification of reality (model) and their shape is strongly dependent on the available dataset.
 }
 \examples{
 ## Draw species response curve for one species on environmental variable

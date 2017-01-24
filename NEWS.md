@@ -1,3 +1,6 @@
+# goeveg 0.3.3
+- Fixes in documentation
+
 # goeveg 0.3.2
 - Merged specresponses()/specresponse() into one single function specresponse()
 - Better selection method of polynomial GLMs and GAMs in specresponse()
