@@ -97,33 +97,33 @@ syntable <- function(spec, cluster, abund = "perc", type = "percfreq") {
       } else if (type=="percfreq") {
     samplesize <- tapply(rep(1,length(cluster)),cluster,sum)
     for (i in 1:max(cluster)) {
-      syntab[,i] <- round(apply(spec[cluster==i,]>0,2,sum)*(100/samplesize[i]), digit=0)}
+      syntab[,i] <- round(apply(spec[cluster==i,]>0,2,sum)*(100/samplesize[i]), digits = 0)}
     result <- list("syntable" = syntab, "samplesize" = samplesize)
 
   } else if (type=="mean" & abund=="perc") {
     samplesize <- tapply(rep(1,length(cluster)),cluster,sum)
-    for (i in 1:max(cluster)) { syntab[,i] <- round(apply(spec[cluster==i,],2,mean), digit=0) }
+    for (i in 1:max(cluster)) { syntab[,i] <- round(apply(spec[cluster==i,],2,mean), digits = 0) }
     result <- list("syntable" = syntab, "samplesize" = samplesize)
 
   } else if (type=="mean" & abund=="freq") {
-    stop("Can´t calculate mean cover in clusters with frequency values.")
+    stop("Can??t calculate mean cover in clusters with frequency values.")
 
   } else if (type=="median" & abund=="cover") {
-    for (i in 1:max(cluster)) { syntab[,i] <- round(apply(spec[cluster==i,],2,median), digit=0)   }
+    for (i in 1:max(cluster)) { syntab[,i] <- round(apply(spec[cluster==i,],2,median), digits = 0)   }
     result <- list("syntable" = syntab, "samplesize" = samplesize)
 
   } else if (type=="median" & abund=="freq") {
-    stop("Can´t calculate median cover in clusters with frequency values.")
+    stop("Can??t calculate median cover in clusters with frequency values.")
 
   } else if (type=="median" & abund=="perc") {
     samplesize <- tapply(rep(1,length(cluster)),cluster,sum)
-    for (i in 1:max(cluster)) { syntab[,i] <- round(apply(spec[cluster==i,],2,median), digit=0) }
+    for (i in 1:max(cluster)) { syntab[,i] <- round(apply(spec[cluster==i,],2,median), digits = 0) }
     result <- list("syntable" = syntab, "samplesize" = samplesize)
 
   } else if (type=="diffspec") {
     samplesize <- tapply(rep(1,length(cluster)),cluster,sum)
     for (i in 1:max(cluster)) {
-      syntab[,i] <- round(apply(spec[cluster==i,]>0,2,sum)*(100/samplesize[i]), digit=0)}
+      syntab[,i] <- round(apply(spec[cluster==i,]>0,2,sum)*(100/samplesize[i]), digits=0)}
     syn <- syntab
 
     small <- data.frame(matrix(NA, nrow=length(rownames(syn)), ncol=length(group)))

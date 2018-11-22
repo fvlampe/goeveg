@@ -63,7 +63,7 @@
 #' @import stats
 #' @import grDevices
 #' @importFrom mgcv gam
-#' @importFrom vegan scores
+#' @importFrom vegan scores decostand
 
 specresponse <- function(species, var, main, xlab, model = "auto", method = "env", axis = 1, points = FALSE, bw = FALSE) {
 

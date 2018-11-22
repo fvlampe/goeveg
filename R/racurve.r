@@ -33,6 +33,7 @@
 #' @author Friedemann Goral (\email{fgoral@gwdg.de})
 #' @export
 #' @import graphics
+#' @importFrom utils head
 
 racurve <-  function(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = FALSE, frequency = FALSE) {
   if(!is.data.frame(matrix)) {
