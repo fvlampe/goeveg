@@ -10,7 +10,7 @@ Description: A collection of functions useful in (vegetation) community analyses
 License: GPL (>= 2)
 LazyData: TRUE
 Depends: R (>= 2.10)
-Imports: vegan, fields, mgcv, Hmisc
+Imports: vegan, fields, mgcv, Hmisc, cluster
 Suggests: vegdata, BiodiversityR
 URL: http://github.com/fgoral/goeveg
 BugReports: http://github.com/fgoral/goeveg/issues
