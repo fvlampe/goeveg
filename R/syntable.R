@@ -106,14 +106,14 @@ syntable <- function(spec, cluster, abund = "perc", type = "percfreq") {
     result <- list("syntable" = syntab, "samplesize" = samplesize)
 
   } else if (type=="mean" & abund=="freq") {
-    stop("Can??t calculate mean cover in clusters with frequency values.")
+    stop("Can't calculate mean cover in clusters with frequency values.")
 
   } else if (type=="median" & abund=="cover") {
     for (i in 1:max(cluster)) { syntab[,i] <- round(apply(spec[cluster==i,],2,median), digits = 0)   }
     result <- list("syntable" = syntab, "samplesize" = samplesize)
 
   } else if (type=="median" & abund=="freq") {
-    stop("Can??t calculate median cover in clusters with frequency values.")
+    stop("Can't calculate median cover in clusters with frequency values.")
 
   } else if (type=="median" & abund=="perc") {
     samplesize <- tapply(rep(1,length(cluster)),cluster,sum)
