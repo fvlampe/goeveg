@@ -1,7 +1,7 @@
 #' Rank-abundance curves
 #'
 #' @description This function draws a rank-abundance curve for community data. You can optionally add labels for a selected number of species.
-#' If you wish to draw multiple rank-abundance curves for selected samples use \link{racurves}.
+#' If you wish to draw multiple rank-abundance curves for selected samples use \code{\link{racurves}}.
 #'
 #' @param matrix Community data, a matrix-like object with samples in rows.
 #' @param main The main title (optional).
@@ -28,10 +28,11 @@
 #'
 #' ## Draw rank-abundance curve with frequencies and no main title
 #' racurve(schedenveg, frequency = TRUE, nlab = 1, main = "")
-#' @seealso \code{\link{racurves}}
+#' @seealso \code{\link{racurves}} for multiple curves and \code{\link[BiodiversityR]{rankabundance}} from package \code{BiodiversityR} for a more sophisticated function
 #' @references Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260.
 #' @author Friedemann Goral (\email{fgoral@gwdg.de})
 #' @export
+#' @import graphics
 
 racurve <-  function(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = FALSE, frequency = FALSE) {
   if(!is.data.frame(matrix)) {

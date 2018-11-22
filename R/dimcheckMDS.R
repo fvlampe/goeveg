@@ -14,7 +14,7 @@
 #' Low-dimensional projections are often better to interprete. and are so preferable for interpretation issues.
 #' The stress plot (or sometimes also called scree plot) is a diagnostic plots to explore both, dimensionality and interpretative value.
 #' It provides dimension-dependant stress reduction and curve estimate gives indices for meaningful stress reduction with increasing dimensionality.
-#' Furthermore, another diagnostic plot for detecting best dimension for projection of NMDS, the Shepard diagram (\code{\link[vegan]{stressplot}}) is recommended for detecting best dimensionality in NMDS.
+#' Furthermore, another diagnostic plot for detecting best dimension for projection of NMDS, the Shepard diagram (\code{\link[vegan:goodness.metaMDS]{stressplot}}) is recommended for detecting best dimensionality in NMDS.
 #'
 #' \cite{Clarke 1993} suggests the following guidelines for acceptable stress values:
 #' <0.05 = excellent, <0.10 = good, <0.20 = usable, >0.20 = not acceptable.
@@ -25,10 +25,12 @@
 #'
 #' ## Use of function for testing 10 dimensions
 #' dimcheckMDS(schedenveg, k = 10)
-#' @seealso \code{\link[vegan]{metaMDS}} \code{\link[vegan]{stressplot}}
+#' @seealso \code{\link[vegan]{metaMDS}} \code{\link[vegan:goodness.metaMDS]{stressplot}}
 #' @references Clarke, K. R. (1993). Non-parametric multivariate analysis of changes in community structure. \emph{Austral J Ecol} \strong{18:} 117-143.
 #' @author Jenny Schellenberg (\email{jschell@gwdg.de}) and Friedemann Goral (\email{fgoral@gwdg.de})
 #' @export
+#' @import graphics
+#' @importFrom vegan metaMDS
 
 dimcheckMDS <- function(matrix, distance = "bray", k = 6,  trymax = 20, autotransform = TRUE) {
   if(!is.data.frame(matrix)) {
@@ -37,9 +39,10 @@ dimcheckMDS <- function(matrix, distance = "bray", k = 6,  trymax = 20, autotran
   stress <- 0
 
   for (i in 1:k) {
-  nmds_i<-metaMDS(matrix, distance = distance, k = i, trymax = trymax, engine = "monoMDS", autotransform = autotransform)
-  stress[i]<-nmds_i$stress
+  nmds_i <- metaMDS(matrix, distance = distance, k = i, trymax = trymax, engine = "monoMDS", autotransform = autotransform)
+  stress[i] <- nmds_i$stress
   }
+
   plot(seq(1,k,1), stress, main="Stress value in tested dimensions", xlab="Dimension", ylab="Stress",
        ylim=c(0,0.3), type="n")
   lines(seq(1,k,1), stress)

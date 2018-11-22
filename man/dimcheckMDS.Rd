@@ -31,12 +31,13 @@ Stress value depends on dimensionality; it is decreasing with increasing dimensi
 Low-dimensional projections are often better to interprete. and are so preferable for interpretation issues.
 The stress plot (or sometimes also called scree plot) is a diagnostic plots to explore both, dimensionality and interpretative value.
 It provides dimension-dependant stress reduction and curve estimate gives indices for meaningful stress reduction with increasing dimensionality.
-Furthermore, another diagnostic plot for detecting best dimension for projection of NMDS, the Shepard diagram (\code{\link[vegan]{stressplot}}) is recommended for detecting best dimensionality in NMDS.
+Furthermore, another diagnostic plot for detecting best dimension for projection of NMDS, the Shepard diagram (\code{\link[vegan:goodness.metaMDS]{stressplot}}) is recommended for detecting best dimensionality in NMDS.
 
 \cite{Clarke 1993} suggests the following guidelines for acceptable stress values:
 <0.05 = excellent, <0.10 = good, <0.20 = usable, >0.20 = not acceptable.
 The plot shows the border of the 0.20 stress value limit. Solutions with higher stress values should be interpreted with caution and those with stress above 0.30 are highly suspect.
 }
+
 \examples{
 ## Use of function with default values
 dimcheckMDS(schedenveg)
@@ -44,13 +45,12 @@ dimcheckMDS(schedenveg)
 ## Use of function for testing 10 dimensions
 dimcheckMDS(schedenveg, k = 10)
 }
-\author{
-Jenny Schellenberg (\email{jschell@gwdg.de}) and Friedemann Goral (\email{fgoral@gwdg.de})
-}
 \references{
 Clarke, K. R. (1993). Non-parametric multivariate analysis of changes in community structure. \emph{Austral J Ecol} \strong{18:} 117-143.
 }
 \seealso{
-\code{\link[vegan]{metaMDS}} \code{\link[vegan]{stressplot}}
+\code{\link[vegan]{metaMDS}} \code{\link[vegan:goodness.metaMDS]{stressplot}}
 }
-
+\author{
+Jenny Schellenberg (\email{jschell@gwdg.de}) and Friedemann Goral (\email{fgoral@gwdg.de})
+}

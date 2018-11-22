@@ -1,6 +1,6 @@
 #' Multiple rank-abundance curves
 #' @description This function draws multiple rank-abundance curves for selected samples into one diagram.
-#' If you wish to draw a simple rank-abundance curve see \link{racurve}.
+#' If you wish to draw a simple rank-abundance curve see \code{\link{racurve}}.
 #' @param matrix Community data, a matrix-like object with samples in rows and species in columns. Rank-abundance curves are drawn for all selected rows (samples).
 #' @param main The main title (optional).
 #' @param bw If set on \code{FALSE} the lines will be drawn in colours instead of black/white lines with different line types.
@@ -16,10 +16,12 @@
 #'
 #' ## Draw multiple rank-abundance curves for selected samples with coloured lines
 #' racurves(schedenveg[c(1,7,20,25), ], bw = FALSE)
-#' @seealso \code{\link{racurve}}
+#' @seealso \code{\link{racurve}} for a simple curve and \code{\link[BiodiversityR]{rankabundance}} from package \code{BiodiversityR} for a more sophisticated function
 #' @references Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260.
 #' @author Friedemann Goral (\email{fgoral@gwdg.de})
 #' @export
+#' @import graphics
+
 
 racurves <-  function(matrix, main = "Rank-abundance diagram", bw = TRUE) {
   if(!is.data.frame(matrix)) {

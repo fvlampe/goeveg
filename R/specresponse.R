@@ -14,7 +14,7 @@
 #' @section Details:
 #' For response curves based on environmental gradients the argument \code{var} takes a single vector containing the variable corresponding to the species abundances.
 #'
-#' For a response to ordination axis (\code{method = "ord"}) the argument \code{var} requires a \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}}, \code{\link[vegan]{rda}} or \code{\link[vegan]{metaMDS}}).
+#' For a response to ordination axis (\code{method = "ord"}) the argument \code{var} requires a \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}} or \code{\link[vegan]{metaMDS}}).
 #' First axis is used as default.
 #'
 #' By default the response curves are drawn with automatic GLM model selection based on AIC out of GLMs with 1 - 3 polynomial degrees (thus excluding bimodal responses which must be manually defined). The GAM model is more flexible and choses automatically between an upper limit of 3 - 6 degrees of freedom for the regression smoother.
@@ -59,8 +59,13 @@
 #'
 #' @author Friedemann Goral (\email{fgoral@gwdg.de})
 #' @export
+#' @import graphics
+#' @import stats
+#' @import grDevices
+#' @importFrom mgcv gam
+#' @importFrom vegan scores
 
-specresponse <- function(species, var, main, xlab, model = "auto", method="env", axis=1, points = FALSE, bw = FALSE) {
+specresponse <- function(species, var, main, xlab, model = "auto", method = "env", axis = 1, points = FALSE, bw = FALSE) {
 
   if(!is.data.frame(species)) {
 

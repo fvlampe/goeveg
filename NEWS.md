@@ -1,3 +1,6 @@
+# goeveg 0.4.0
+- Added new functions for calculation and sorting of synoptic tables: syntable() and synsort()
+
 # goeveg 0.3.3
 - Fixes in documentation
 

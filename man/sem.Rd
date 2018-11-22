@@ -21,6 +21,7 @@ If \code{na.rm} is \code{TRUE} then missing values are removed before computatio
 The SEM of a zero-length vector (after removal of \code{NA}s if \code{na.rm = TRUE}) is not defined and gives an error.
 The SEM of a length-one vector is \code{NA}.
 }
+
 \examples{
 ## Calculate mean and SEM for variable soil depth
 mean(schedenenv$soil_depth)
@@ -29,4 +30,3 @@ sem(schedenenv$soil_depth)
 \seealso{
 \code{\link[stats]{sd}}
 }
-

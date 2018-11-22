@@ -17,4 +17,3 @@ Locations at the study site are based on the diploma thesis from \cite{Eichholz 
 Eichholz, A. (1997): Wiesen und Magerrasen am Suedhang des Hohen Hagen. Diplomarbeit Biologie, University of Goettingen.
 }
 \keyword{datasets}
-

@@ -3,7 +3,7 @@
 #' @description This function simplifies the selection of relevant species in ordination diagrams. It works with result objects from \code{vegan} package. The selection can be based upon cover abundances, frequency values and/or species fit to multivariate analysis.
 #' The result is a vector of names of the selected species and can be used for the \code{select} argument in ordination plots.
 #' @param matrix Community data, a matrix-like object with samples in rows and species in columns.
-#' @param ord \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}}, \code{\link[vegan]{rda}} or \code{\link[vegan]{metaMDS}}).
+#' @param ord \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}} or \code{\link[vegan]{metaMDS}}).
 #' @param ablim Proportion of species with highest abundances to be displayed. Value between 0 and 1.
 #' @param fitlim Proportion of species with best fit to be displayed. Value between 0 and 1.
 #' @param choices Axes shown.
@@ -56,7 +56,9 @@
 #'    choices = c(1,3), method = "vars", env = env13)
 #' @author Friedemann Goral (\email{fgoral@gwdg.de}) and Jenny Schellenberg
 #' @export
-
+#' @import stats
+#' @importFrom fields rdist
+#' @importFrom vegan scores
 
 ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1,2), method = "axes", env, p.max = 0.05, freq = FALSE) {
   if(!is.data.frame(matrix)) {

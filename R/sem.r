@@ -13,6 +13,7 @@
 #' sem(schedenenv$soil_depth)
 #' @seealso \code{\link[stats]{sd}}
 #' @export
+#' @import stats
 
 sem <- function(x, na.rm = FALSE)  {
   	sd(x, na.rm = na.rm)/sqrt(length(x))

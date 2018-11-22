@@ -28,6 +28,7 @@ However, this is considered as a rule of thumb. In studies of highly variable sy
 The CV of a zero-length vector (after removal of \code{NA}s if \code{na.rm = TRUE}) is not defined and gives an error.
 If there is only a single value, \code{sd} is \code{NA} and \code{cv} returns \code{NA}.
 }
+
 \examples{
 ## Calculate CV for variable soil depth
 cv(schedenenv$soil_depth)
@@ -40,4 +41,3 @@ Dormann, C. (2013). Parametrische Statistik. Verteilungen, maximum likelihood un
 \seealso{
 \code{\link[stats]{sd}}
 }
-
