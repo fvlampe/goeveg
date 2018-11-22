@@ -27,12 +27,12 @@ The function returns a list of result components.
   \item{\code{$others }}{names vector of species that are not included in synoptic table due to failing treshold values for
   \code{min1} and/or \code{min2}}
   \item{\code{$samplesize }}{total samples in clusters}
-Additionally for differential taxa calulation:
+Additionally for differential taxa calculation:
   \item{\code{$onlydiff }}{synoptic table only with differentiating taxa}
   \item{\code{$differentials }}{lists diagnostic taxa for each cluster}
 }
 \description{
-This function calulates an unordered synoptic table for vegetation unit analysis from
+This function calculates an unordered synoptic table for vegetation unit analysis from
 a species-sample dataframe and a numeric vector of cluster identity input.
 Synoptic table options for displaying species in clusters is absolute or percentage frequency, mean/median cover values,
 differential character (positive, negative, positive-negative, according to Tsiripidis et al. 2009) or fidelity phi
@@ -50,11 +50,11 @@ For synoptic table calculation, six types are available.
    Synoptic table gives specification of positive (p), negative (n), positive-negative (pn) or no differential character (-).
    Consider that differential character is always restricted to some and not necessarily all of the other
    units, so regarding percentage frequency is essential for correct interpretation of diagnostic character of species.}
-  \item{\code{type = "phi" }}{Calulates fidelity measure phi (algorithm basing on Sokal & Rohlf 1995, Bruelheide 2000).
+  \item{\code{type = "phi" }}{Calculates fidelity measure phi (algorithm basing on Sokal & Rohlf 1995, Bruelheide 2000).
    Values are ranging between -1 and 1 with high values near 1 indicating high fidelity.}}
 
 For sorting synoptic tables, use \code{\link{synsort}} function.
-See also \code{\link[vegdata]{syntab}} function from \code{vegdata} package for creating ordered synotpic tables from turboveg
+See also \code{\link[vegdata]{syntab}} function from \code{vegdata} package for creating ordered synoptic tables from turboveg
 inputs.
 }
 

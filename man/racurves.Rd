@@ -11,7 +11,7 @@ racurves(matrix, main = "Rank-abundance diagram", bw = TRUE)
 
 \item{main}{The main title (optional).}
 
-\item{bw}{If set on \code{FALSE} the lines will be drawn in colours instead of black/white lines with different line types.}
+\item{bw}{If set on \code{FALSE} the lines will be drawn in colors instead of black/white lines with different line types.}
 }
 \description{
 This function draws multiple rank-abundance curves for selected samples into one diagram.
@@ -20,7 +20,7 @@ If you wish to draw a simple rank-abundance curve see \code{\link{racurve}}.
 \section{Details}{
 
 Rank abundance curves or Whittaker plots (see \cite{Whittaker 1965}) are used to display relative species abundance as biodiversity component.
-They are a means to visualise species richness and species evenness.
+They are a means to visualize species richness and species evenness.
 
 The axes of the diagram will be scaled according automatically.
 As the line type is used to differenciate between samples, a maximum of 6 curves per diagram is feasible in black/white mode.

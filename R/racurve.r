@@ -10,7 +10,7 @@
 #' @param frequency If set on \code{TRUE} frequencies of species are calculated instead of relative abundances.
 #' @section Details:
 #' Rank abundance curves or Whittaker plots (see \cite{Whittaker 1965}) are used to display relative species abundance as biodiversity component.
-#' They are a means to visualise species richness and species evenness.
+#' They are a means to visualize species richness and species evenness.
 #' @return
 #' Returns an (invisible) list composed of:
 #'   \item{\code{abund }}{abundance of each species (in decreasing order)}

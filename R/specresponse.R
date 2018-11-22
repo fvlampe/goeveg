@@ -1,6 +1,6 @@
 #' Species response curves
 #' @description This function fits species response curves to visualize species responses to environmental gradients or ordination axes.
-#' It is based on Logistic Regression using Generalised Linear Models (GLMs) or Generalized Additive Models (GAMs) with integrated smoothness estimation.
+#' It is based on Logistic Regression using Generalized Linear Models (GLMs) or Generalized Additive Models (GAMs) with integrated smoothness estimation.
 #' The function can draw response curves for single or multiple species.
 #' @param species Species data (either a community matrix object with samples in rows and species in columns - response curves are drawn for all (selected) columns; or a single vector containing species abundances per plot).
 #' @param var Vector containing environmental variable (per plot) \strong{OR} \code{vegan} ordination result object if \code{method = "ord"}.
@@ -9,8 +9,8 @@
 #' @param model Defining the assumed species response: Default \code{model = "auto"} selects the model automatically based on AIC. Other methods are \code{model = "linear"} (linear response), \code{model = "unimodal"} (unimodal response), \code{model = "bimodal"} (bimodal response) and \code{model = "gam"} (using GAM with regression smoother).
 #' @param method Method defining the type of variable. Default \code{method = "env"} fits a response curve to environmental variables. Alternatively \code{method = "ord"} fits a response along ordination axes.
 #' @param axis Ordination axis (only if \code{method = "ord"}).
-#' @param points If set on \code{TRUE} the species occurences are shown as points. To avoid overlapping they are shown with vertical offset.
-#' @param bw If set on \code{TRUE} the lines will be drawn in black/white with different line types instead of colours.
+#' @param points If set on \code{TRUE} the species occurrences are shown as points. To avoid overlapping they are shown with vertical offset.
+#' @param bw If set on \code{TRUE} the lines will be drawn in black/white with different line types instead of colors.
 #' @section Details:
 #' For response curves based on environmental gradients the argument \code{var} takes a single vector containing the variable corresponding to the species abundances.
 #'
@@ -19,11 +19,11 @@
 #'
 #' By default the response curves are drawn with automatic GLM model selection based on AIC out of GLMs with 1 - 3 polynomial degrees (thus excluding bimodal responses which must be manually defined). The GAM model is more flexible and choses automatically between an upper limit of 3 - 6 degrees of freedom for the regression smoother.
 #'
-#' Available information about species is reduced to presence-absence as species abundances can contain much noise (beeing affected by complex factors) and the results of Logistic Regression are easier to interpret showing the "probabilities of occurence".
+#' Available information about species is reduced to presence-absence as species abundances can contain much noise (being affected by complex factors) and the results of Logistic Regression are easier to interpret showing the "probabilities of occurrence".
 #' Be aware that response curves are only a simplification of reality (model) and their shape is strongly dependent on the available dataset.
 #' @examples
 #' ## Draw species response curve for one species on environmental variable
-#' ## with points of occurences
+#' ## with points of occurrences
 #' specresponse(schedenveg$ArrElat, schedenenv$soil_depth, points = TRUE)
 #'
 #' ## Draw species response curve on environmental variable with custom labels
@@ -49,7 +49,7 @@
 #' specresponse(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, bw = TRUE, model = "gam")
 #'
 #' ## Draw multiple species response curves on variable with
-#' ## custom x-axis label and points of occurences
+#' ## custom x-axis label and points of occurrences
 #' specresponse(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb,
 #'     xlab = "Height of herb layer (cm)", points = TRUE)
 #'
@@ -110,13 +110,13 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
     }
 
     plot(var, species[,1], main = main, type="n",
-         xlab = xlab, ylab="Probability of occurence", ylim = c(0,1))
+         xlab = xlab, ylab="Probability of occurrence", ylim = c(0,1))
 
     for(i in 1:ls) {
 
       if(length(species[species[,i]>0,i]) <= 5) {
         # tried warning instead of print
-        warning(paste("Only", length(species[species[,i]>0,i]), "occurences of", names(species)[i], "."))
+        warning(paste("Only", length(species[species[,i]>0,i]), "occurrences of", names(species)[i], "."))
       }
 
       if(model == "unimodal") {

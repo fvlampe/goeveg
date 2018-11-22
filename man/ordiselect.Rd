@@ -20,7 +20,7 @@ ordiselect(matrix, ord, ablim = 1, fitlim = 1, choices = c(1, 2),
 
 \item{method}{The species fit method: \code{"axes"} or \code{"vars"}. See details for methods.}
 
-\item{env}{Fitted environmental variabes (result object of \code{\link[vegan]{envfit}}). Only used if \code{method = "vars"}.}
+\item{env}{Fitted environmental variables (result object of \code{\link[vegan]{envfit}}). Only used if \code{method = "vars"}.}
 
 \item{p.max}{Significance limit for variables used in \code{method = "vars"}.}
 

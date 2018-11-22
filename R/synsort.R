@@ -45,7 +45,7 @@
 #' but will sort them considering differentiating character criterion (from second
 #' input table \code{syn2}). Species with high values in \code{syn1} AND differential character will then be listed
 #' on the top of a species block. Within differentiating species, prevalence of diagnostic character
-#' is considered by favouring positive and/or cluster-specific differential character. Available types are:
+#' is considered by favoring positive and/or cluster-specific differential character. Available types are:
 #' \describe{
 #'  \item{\code{method = "p_diff"}}{creates a synoptic table of diagnostic species with numerical values of input table
 #'  \code{syn1}}

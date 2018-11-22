@@ -22,13 +22,13 @@ specresponse(species, var, main, xlab, model = "auto", method = "env",
 
 \item{axis}{Ordination axis (only if \code{method = "ord"}).}
 
-\item{points}{If set on \code{TRUE} the species occurences are shown as points. To avoid overlapping they are shown with vertical offset.}
+\item{points}{If set on \code{TRUE} the species occurrences are shown as points. To avoid overlapping they are shown with vertical offset.}
 
-\item{bw}{If set on \code{TRUE} the lines will be drawn in black/white with different line types instead of colours.}
+\item{bw}{If set on \code{TRUE} the lines will be drawn in black/white with different line types instead of colors.}
 }
 \description{
 This function fits species response curves to visualize species responses to environmental gradients or ordination axes.
-It is based on Logistic Regression using Generalised Linear Models (GLMs) or Generalized Additive Models (GAMs) with integrated smoothness estimation.
+It is based on Logistic Regression using Generalized Linear Models (GLMs) or Generalized Additive Models (GAMs) with integrated smoothness estimation.
 The function can draw response curves for single or multiple species.
 }
 \section{Details}{
@@ -40,13 +40,13 @@ First axis is used as default.
 
 By default the response curves are drawn with automatic GLM model selection based on AIC out of GLMs with 1 - 3 polynomial degrees (thus excluding bimodal responses which must be manually defined). The GAM model is more flexible and choses automatically between an upper limit of 3 - 6 degrees of freedom for the regression smoother.
 
-Available information about species is reduced to presence-absence as species abundances can contain much noise (beeing affected by complex factors) and the results of Logistic Regression are easier to interpret showing the "probabilities of occurence".
+Available information about species is reduced to presence-absence as species abundances can contain much noise (being affected by complex factors) and the results of Logistic Regression are easier to interpret showing the "probabilities of occurrence".
 Be aware that response curves are only a simplification of reality (model) and their shape is strongly dependent on the available dataset.
 }
 
 \examples{
 ## Draw species response curve for one species on environmental variable
-## with points of occurences
+## with points of occurrences
 specresponse(schedenveg$ArrElat, schedenenv$soil_depth, points = TRUE)
 
 ## Draw species response curve on environmental variable with custom labels
@@ -72,7 +72,7 @@ specresponse(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, bw = TRUE)
 specresponse(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, bw = TRUE, model = "gam")
 
 ## Draw multiple species response curves on variable with
-## custom x-axis label and points of occurences
+## custom x-axis label and points of occurrences
 specresponse(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb,
     xlab = "Height of herb layer (cm)", points = TRUE)
 

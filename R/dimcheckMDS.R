@@ -11,9 +11,9 @@
 #' Goodness of Non-metric multidimensional scaling (NMDS) is measured by stress value.
 #' The lower the stress value, the better fit of original distances/dissimilarities and projected distances in ordination diagram is reached.
 #' Stress value depends on dimensionality; it is decreasing with increasing dimensionality. On the other hand, stress-reduction does not mean to maximise interpretation capability.
-#' Low-dimensional projections are often better to interprete. and are so preferable for interpretation issues.
+#' Low-dimensional projections are often better to interpret and are so preferable for interpretation issues.
 #' The stress plot (or sometimes also called scree plot) is a diagnostic plots to explore both, dimensionality and interpretative value.
-#' It provides dimension-dependant stress reduction and curve estimate gives indices for meaningful stress reduction with increasing dimensionality.
+#' It provides dimension-dependent stress reduction and curve estimate gives indices for meaningful stress reduction with increasing dimensionality.
 #' Furthermore, another diagnostic plot for detecting best dimension for projection of NMDS, the Shepard diagram (\code{\link[vegan:goodness.metaMDS]{stressplot}}) is recommended for detecting best dimensionality in NMDS.
 #'
 #' \cite{Clarke 1993} suggests the following guidelines for acceptable stress values:

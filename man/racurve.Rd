@@ -31,7 +31,7 @@ If you wish to draw multiple rank-abundance curves for selected samples use \cod
 \section{Details}{
 
 Rank abundance curves or Whittaker plots (see \cite{Whittaker 1965}) are used to display relative species abundance as biodiversity component.
-They are a means to visualise species richness and species evenness.
+They are a means to visualize species richness and species evenness.
 }
 
 \examples{

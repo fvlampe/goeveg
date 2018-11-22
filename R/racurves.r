@@ -3,10 +3,10 @@
 #' If you wish to draw a simple rank-abundance curve see \code{\link{racurve}}.
 #' @param matrix Community data, a matrix-like object with samples in rows and species in columns. Rank-abundance curves are drawn for all selected rows (samples).
 #' @param main The main title (optional).
-#' @param bw If set on \code{FALSE} the lines will be drawn in colours instead of black/white lines with different line types.
+#' @param bw If set on \code{FALSE} the lines will be drawn in colors instead of black/white lines with different line types.
 #' @section Details:
 #' Rank abundance curves or Whittaker plots (see \cite{Whittaker 1965}) are used to display relative species abundance as biodiversity component.
-#' They are a means to visualise species richness and species evenness.
+#' They are a means to visualize species richness and species evenness.
 #'
 #' The axes of the diagram will be scaled according automatically.
 #' As the line type is used to differenciate between samples, a maximum of 6 curves per diagram is feasible in black/white mode.
