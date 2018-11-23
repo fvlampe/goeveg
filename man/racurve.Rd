@@ -17,6 +17,8 @@ racurve(matrix, main = "Rank-abundance diagram", nlab = 0,
 \item{ylog}{If set on \code{TRUE} the y-axis is displayed on a log-scale.}
 
 \item{frequency}{If set on \code{TRUE} frequencies of species are calculated instead of relative abundances.}
+
+\item{xlim, ylim}{Define axis limits}
 }
 \value{
 Returns an (invisible) list composed of:
