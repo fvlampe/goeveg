@@ -35,7 +35,7 @@
 #' @import graphics
 #' @importFrom utils head
 
-racurve <-  function(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = FALSE, frequency = FALSE) {
+racurve <-  function(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = FALSE, frequency = FALSE, ylim = NULL, xlim = NULL) {
   if(!is.data.frame(matrix)) {
     matrix <- data.frame(matrix)
   }
@@ -52,7 +52,7 @@ racurve <-  function(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = F
 
     if(ylog == TRUE) {
       plot(rel.abund, xlab="Abundance Rank", ylab="Relative Abundance",
-           main=main, log="y")
+           main=main, log="y", ylim = ylim, xlim = xlim)
       lines(rel.abund)
       if(nlab != 0) {
         text(head(rel.abund, n = nlab), labels = labels, pos = 4, cex = 0.7)
@@ -60,31 +60,31 @@ racurve <-  function(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = F
 
     } else {
       plot(rel.abund, xlab="Abundance Rank", ylab="Relative Abundance",
-           main=main)
+           main=main, , ylim = ylim, xlim = xlim)
       lines(rel.abund)
       if(nlab != 0) {
         text(head(rel.abund, n = nlab), labels = labels, pos = 4, cex = 0.7)
       }
     }
-    } else if(frequency == TRUE) {
+  } else if(frequency == TRUE) {
 
-      if(ylog == TRUE) {
-        plot(freq, xlab="Frequency Rank", ylab="Frequency",
-             main=main, log="y")
-        lines(freq)
-        if(nlab != 0) {
-          text(head(freq, n = nlab), labels = labels, pos = 4, cex = 0.7)
-        }
+    if(ylog == TRUE) {
+      plot(freq, xlab="Frequency Rank", ylab="Frequency",
+           main=main, log="y", ylim = ylim, xlim = xlim)
+      lines(freq)
+      if(nlab != 0) {
+        text(head(freq, n = nlab), labels = labels, pos = 4, cex = 0.7)
+      }
 
-      } else {
-        plot(freq, xlab="Frequency Rank", ylab="Frequency",
-             main=main)
-        lines(freq)
-        if(nlab != 0) {
-          text(head(freq, n = nlab), labels = labels, pos = 4, cex = 0.7)
-        }
+    } else {
+      plot(freq, xlab="Frequency Rank", ylab="Frequency",
+           main=main, ylim = ylim, xlim = xlim)
+      lines(freq)
+      if(nlab != 0) {
+        text(head(freq, n = nlab), labels = labels, pos = 4, cex = 0.7)
       }
     }
+  }
 
   out <- list(abund = abund, rel.abund = rel.abund, freq = freq)
   invisible(out)

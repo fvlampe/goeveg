@@ -1,8 +1,8 @@
 Package: goeveg
 Type: Package
 Title: Functions for Community Data and Ordinations
-Version: 0.4.2
-Date: 2018-11-22
+Version: 0.4.3
+Date: 2018-11-23
 Author: Friedemann Goral [aut, cre],
   Jenny Schellenberg [aut]
 Maintainer: Friedemann Goral <fgoral@gwdg.de>

@@ -11,6 +11,7 @@
 #' @param env Fitted environmental variables (result object of \code{\link[vegan]{envfit}}). Only used if \code{method = "vars"}.
 #' @param p.max Significance limit for variables used in \code{method = "vars"}.
 #' @param freq Whether to use cover abundances (= default) or frequencies of \code{matrix}. If \code{TRUE}, frequencies of species are used.
+#' @param na.rm Set to \code{TRUE} if your ordination object has NAs (e.g. due to selection)
 #' @section Details:
 #' Two methods for species fit are implemented.
 #' \itemize{\item In \code{method = "axes"} species scores are used for selecting best fitting species. This is the default method. The basic assumption is that species that show high correlations to ordination axes have good fit to the gradient. High scores along ordination axes mean high correlation. In this method, all species with high correlations to ordination axes will be filtered.
@@ -60,16 +61,16 @@
 #' @importFrom fields rdist
 #' @importFrom vegan scores
 
-ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1,2), method = "axes", env, p.max = 0.05, freq = FALSE) {
+ordiselect <-  function(matrix, ord, ablim = 0.9, fitlim = 1, choices = c(1,2), method = "axes", env, p.max = 0.05, freq = FALSE, na.rm = FALSE) {
   if(!is.data.frame(matrix)) {
     matrix <- data.frame(matrix)
   }
 
   if(freq == F) {
     abund <- apply(matrix, 2, sum)
-    } else {
+  } else {
     abund <- apply(matrix>0, 2, sum)
-    }
+  }
 
   if(method == "axes") {
 
@@ -78,19 +79,19 @@ ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1,2), me
     scores2 <- scores[,2]
 
     rownames(scores[abund >= quantile(abund, 1 - ablim) &
-                    (scores1 >= quantile(scores1, 1-0.5*fitlim) |
-                       scores1 <= quantile(scores1,0.5*fitlim) |
-                       scores2 >= quantile(scores2, 1-0.5*fitlim) |
-                       scores2 <= quantile(scores2,0.5*fitlim))
-                  ,])
+                      (scores1 >= quantile(scores1, 1-0.5*fitlim, na.rm = na.rm) |
+                         scores1 <= quantile(scores1,0.5*fitlim, na.rm = na.rm) |
+                         scores2 >= quantile(scores2, 1-0.5*fitlim, na.rm = na.rm) |
+                         scores2 <= quantile(scores2,0.5*fitlim, na.rm = na.rm))
+                    ,])
 
-    }  else if(method=="vars") {
+  }  else if(method=="vars") {
 
-      if(class(env) != "envfit") {
-        print("FATAL: Fitted environmental variables are no result of envfit()")
-      } else {
+    if(class(env) != "envfit") {
+      print("FATAL: Fitted environmental variables are no result of envfit()")
+    } else {
 
-      scores_spec <- data.frame(scores(ord, display="species", choices=choices))
+      scores_spec <- data.frame(scores(ord, display = "species", choices = choices))
 
       sig <- env$vectors$pvals
       scores_env <- data.frame(scores(env, display="vectors"))
@@ -108,8 +109,8 @@ ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1,2), me
         names(euclid)<-rownames(scores_env)
         rownames(euclid)<-names(matrix)
         rownames(data.frame(euclid[abund > quantile(abund, 1 - ablim) &
-                           (euclid <= quantile(unlist(euclid), 0.5*fitlim) |
-                            euclid >= quantile(unlist(euclid), 1-0.5*fitlim)), ,drop=FALSE]))
+                                     (euclid <= quantile(unlist(euclid), 0.5*fitlim, na.rm = na.rm) |
+                                        euclid >= quantile(unlist(euclid), 1-0.5*fitlim, na.rm = na.rm)), ,drop=FALSE]))
 
       } else {
 
@@ -118,14 +119,14 @@ ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1,2), me
         rownames(euclid)<-names(matrix)
 
         best_fit<-euclid[abund > quantile(abund, 1 - ablim) &
-                           (euclid <= quantile(unlist(euclid), 0.5*fitlim) |
-                              euclid >= quantile(unlist(euclid), 1-0.5*fitlim)),]
+                           (euclid <= quantile(unlist(euclid), 0.5*fitlim, na.rm = na.rm) |
+                              euclid >= quantile(unlist(euclid), 1-0.5*fitlim, na.rm = na.rm)),]
         rownames(best_fit[complete.cases(best_fit),])
 
       }
-      }
-    }  else {
-      print("FATAL: Selected Method unknown")
+    }
+  }  else {
+    print("FATAL: Selected Method unknown")
   }
 }
 

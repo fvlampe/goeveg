@@ -4,8 +4,8 @@
 \alias{ordiselect}
 \title{Species selection for ordination plots}
 \usage{
-ordiselect(matrix, ord, ablim = 1, fitlim = 1, choices = c(1, 2),
-  method = "axes", env, p.max = 0.05, freq = FALSE)
+ordiselect(matrix, ord, ablim = 0.9, fitlim = 1, choices = c(1, 2),
+  method = "axes", env, p.max = 0.05, freq = FALSE, na.rm = FALSE)
 }
 \arguments{
 \item{matrix}{Community data, a matrix-like object with samples in rows and species in columns.}
@@ -25,6 +25,8 @@ ordiselect(matrix, ord, ablim = 1, fitlim = 1, choices = c(1, 2),
 \item{p.max}{Significance limit for variables used in \code{method = "vars"}.}
 
 \item{freq}{Whether to use cover abundances (= default) or frequencies of \code{matrix}. If \code{TRUE}, frequencies of species are used.}
+
+\item{na.rm}{Set to \code{TRUE} if your ordination object has NAs (e.g. due to selection)}
 }
 \description{
 This function simplifies the selection of relevant species in ordination diagrams. It works with result objects from \code{vegan} package. The selection can be based upon cover abundances, frequency values and/or species fit to multivariate analysis.
