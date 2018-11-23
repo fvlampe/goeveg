@@ -8,6 +8,7 @@
 #' @param nlab Number of labeled species (default = 0). Species are labeled in decreasing order beginning from the highest relative abundance.
 #' @param ylog If set on \code{TRUE} the y-axis is displayed on a log-scale.
 #' @param frequency If set on \code{TRUE} frequencies of species are calculated instead of relative abundances.
+#' @param xlim,ylim Define axis limits
 #' @section Details:
 #' Rank abundance curves or Whittaker plots (see \cite{Whittaker 1965}) are used to display relative species abundance as biodiversity component.
 #' They are a means to visualize species richness and species evenness.
