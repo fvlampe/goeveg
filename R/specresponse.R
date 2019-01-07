@@ -11,6 +11,7 @@
 #' @param axis Ordination axis (only if \code{method = "ord"}).
 #' @param points If set on \code{TRUE} the species occurrences are shown as points. To avoid overlapping they are shown with vertical offset.
 #' @param bw If set on \code{TRUE} the lines will be drawn in black/white with different line types instead of colors.
+#' @param lwd Optional: Graphical parameter defining the line width.
 #' @section Details:
 #' For response curves based on environmental gradients the argument \code{var} takes a single vector containing the variable corresponding to the species abundances.
 #'
@@ -65,7 +66,7 @@
 #' @importFrom mgcv gam
 #' @importFrom vegan scores decostand
 
-specresponse <- function(species, var, main, xlab, model = "auto", method = "env", axis = 1, points = FALSE, bw = FALSE) {
+specresponse <- function(species, var, main, xlab, model = "auto", method = "env", axis = 1, points = FALSE, bw = FALSE, lwd = NULL) {
 
   if(!is.data.frame(species)) {
 
@@ -188,7 +189,7 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
                  col = rgb(col[1], col[2], col[3], maxColorValue = 255, alpha = 50))
         }
 
-        lines(preds ~ xneu, lty=i)
+        lines(preds ~ xneu, lty=i, lwd = lwd)
       } else {
 
         if(points == TRUE) {
@@ -203,7 +204,7 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
                  pch = 16)
         }
 
-        lines(preds ~ xneu, col = i)
+        lines(preds ~ xneu, col = i, lwd = lwd)
       }
     }
 
