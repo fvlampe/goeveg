@@ -2,7 +2,7 @@ Package: goeveg
 Type: Package
 Title: Functions for Community Data and Ordinations
 Version: 0.4.5
-Date: 2020-01-14
+Date: 2021-01-14
 Author: Friedemann Goral [aut, cre],
   Jenny Schellenberg [aut]
 Maintainer: Friedemann Goral <fgoral@gwdg.de>
@@ -11,7 +11,10 @@ License: GPL (>= 2)
 LazyData: TRUE
 Depends: R (>= 2.10)
 Imports: vegan, fields, mgcv, Hmisc
-Suggests: vegdata, BiodiversityR, cluster
+Suggests: 
+    vegdata,
+    BiodiversityR,
+    cluster
 URL: http://github.com/fgoral/goeveg
 BugReports: http://github.com/fgoral/goeveg/issues
 RoxygenNote: 7.1.1
