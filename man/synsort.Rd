@@ -4,8 +4,15 @@
 \alias{synsort}
 \title{Sorting functions for synoptic tables}
 \usage{
-synsort(syn1, syn2 = syn1, cluster, method = "allspec", min1 = 0,
-  min2 = 0, relate2 = "entire")
+synsort(
+  syn1,
+  syn2 = syn1,
+  cluster,
+  method = "allspec",
+  min1 = 0,
+  min2 = 0,
+  relate2 = "entire"
+)
 }
 \arguments{
 \item{syn1}{Input synoptic table 1 (as dataframe) with priority entries for sorting.

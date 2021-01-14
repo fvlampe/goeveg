@@ -4,8 +4,18 @@
 \alias{ordiselect}
 \title{Species selection for ordination plots}
 \usage{
-ordiselect(matrix, ord, ablim = 0.9, fitlim = 1, choices = c(1, 2),
-  method = "axes", env, p.max = 0.05, freq = FALSE, na.rm = FALSE)
+ordiselect(
+  matrix,
+  ord,
+  ablim = 0.9,
+  fitlim = 1,
+  choices = c(1, 2),
+  method = "axes",
+  env,
+  p.max = 0.05,
+  freq = FALSE,
+  na.rm = FALSE
+)
 }
 \arguments{
 \item{matrix}{Community data, a matrix-like object with samples in rows and species in columns.}

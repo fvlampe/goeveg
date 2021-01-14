@@ -4,7 +4,9 @@
 \name{schedenveg}
 \alias{schedenveg}
 \title{Vegetation releves from Scheden}
-\format{A data frame with 28 rows (samples) and 155 variables (species)}
+\format{
+A data frame with 28 rows (samples) and 155 variables (species)
+}
 \usage{
 schedenveg
 }

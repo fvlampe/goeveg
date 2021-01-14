@@ -9,7 +9,7 @@
 #' @param model Defining the assumed species response: Default \code{model = "auto"} selects the model automatically based on AIC. Other methods are \code{model = "linear"} (linear response), \code{model = "unimodal"} (unimodal response), \code{model = "bimodal"} (bimodal response) and \code{model = "gam"} (using GAM with regression smoother).
 #' @param method Method defining the type of variable. Default \code{method = "env"} fits a response curve to environmental variables. Alternatively \code{method = "ord"} fits a response along ordination axes.
 #' @param axis Ordination axis (only if \code{method = "ord"}).
-#' @param points If set on \code{TRUE} the species occurrences are shown as points. To avoid overlapping they are shown with vertical offset.
+#' @param points If set on \code{TRUE} the species occurrences are shown as transparent points (the darker the point the more samples at this x-value). To avoid overlapping they are shown with vertical offset.
 #' @param bw If set on \code{TRUE} the lines will be drawn in black/white with different line types instead of colors.
 #' @param lwd Optional: Graphical parameter defining the line width.
 #' @section Details:

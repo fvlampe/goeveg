@@ -4,7 +4,8 @@
 \name{schedenenv}
 \alias{schedenenv}
 \title{Header data for Vegetation releves from Scheden}
-\format{A data frame with 28 rows (samples) and 10 variables
+\format{
+A data frame with 28 rows (samples) and 10 variables
  \itemize{
   \item{comm: }{Plant community as defined in 1997: \emph{Arrhenatheretum} or \emph{Gentiano-Koelerietum}}
   \item{altit: }{Altitude (m)}
@@ -16,7 +17,8 @@
   \item{cov_opensoil: }{Cover of open soil (\%)}
   \item{height_herb: }{Average height of herb layer (cm)}
   \item{soil_depth: }{Soil depth (cm)}
-}}
+}
+}
 \usage{
 schedenenv
 }

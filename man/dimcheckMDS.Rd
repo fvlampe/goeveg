@@ -4,8 +4,13 @@
 \alias{dimcheckMDS}
 \title{Stress plot/Scree plot for NMDS}
 \usage{
-dimcheckMDS(matrix, distance = "bray", k = 6, trymax = 20,
-  autotransform = TRUE)
+dimcheckMDS(
+  matrix,
+  distance = "bray",
+  k = 6,
+  trymax = 20,
+  autotransform = TRUE
+)
 }
 \arguments{
 \item{matrix}{Community data, a matrix-like object with samples in rows and species in columns.}

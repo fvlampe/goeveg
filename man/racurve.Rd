@@ -4,8 +4,15 @@
 \alias{racurve}
 \title{Rank-abundance curves}
 \usage{
-racurve(matrix, main = "Rank-abundance diagram", nlab = 0,
-  ylog = FALSE, frequency = FALSE, ylim = NULL, xlim = NULL)
+racurve(
+  matrix,
+  main = "Rank-abundance diagram",
+  nlab = 0,
+  ylog = FALSE,
+  frequency = FALSE,
+  ylim = NULL,
+  xlim = NULL
+)
 }
 \arguments{
 \item{matrix}{Community data, a matrix-like object with samples in rows.}

@@ -139,7 +139,8 @@ if (method == "allspec") {
       all <- syn1[apply(syn1,1,max) >= min1,]
       for (i in 1:max(cluster)) {
         frames[[i]] <- assign(paste0("frame",i), all[apply(all,1,max) == all[,i],])
-        frames[[i]] <- frames[[i]][order(frames[[i]][,i], decreasing=TRUE),] }
+        frames[[i]] <- frames[[i]][do.call(order, list(frames[[i]][,i], decreasing=TRUE)),]
+        }
       for ( i in 2:max(cluster)) {
       duprows <- rownames(frames[[i]]) %in% rownames(frames[[1]])
       frames[[1]] <- rbind(frames[[1]], frames[[i]][!duprows,]) }
@@ -157,7 +158,8 @@ if (method == "allspec") {
           frames <- list()
           for ( i in 1:max(cluster)) {
            frames[[i]] <- assign(paste0("frame",i), all[apply(all,1,max) == all[,i],])
-           frames[[i]] <- frames[[i]][order(frames[[i]][,i], decreasing=TRUE),] }
+           frames[[i]] <- frames[[i]][do.call(order, list(frames[[i]][,i], decreasing=TRUE)),]
+           }
           for ( i in 2:max(cluster)) {
           duprows <- rownames(frames[[i]]) %in% rownames(frames[[1]])
           frames[[1]] <- rbind(frames[[1]], frames[[i]][!duprows,]) }
@@ -175,7 +177,8 @@ if (method == "allspec") {
             all = syn1[apply(syn1,1,max) >= min1,]
             for ( i in 1:max(cluster)) {
               frames[[i]] <- assign(paste0("frame",i), all[apply(all,1,max) == all[,i],])
-              frames[[i]] <- frames[[i]][order(frames[[i]][,i], decreasing=TRUE),] }
+              frames[[i]] <- frames[[i]][do.call(order, list(frames[[i]][,i], decreasing=TRUE)),]
+              }
             for ( i in 2:max(cluster)) {
               duprows <- rownames(frames[[i]]) %in% rownames(frames[[1]])
               frames[[1]] <- rbind(frames[[1]], frames[[i]][!duprows,]) }
@@ -285,7 +288,8 @@ for ( m in 1:3)  {
       frames1[[i]] = frames1[[i]][,-1]
       frames1[[i]] = frames1[[i]][,1:length(unique(cluster))]
       names(frames1[[i]]) = c(sort(unique(cluster)))
-      frames1[[i]] = frames1[[i]][order(frames1[[i]][,i], decreasing=TRUE),]  }
+      frames1[[i]] = frames1[[i]][do.call(order, list(frames1[[i]][,i], decreasing=TRUE)),]
+      }
     pos_in1 <- do.call("rbind", frames1)
         (if (length(pos_in1[,1])==0) {diff_in1 <- pos_in1
          } else {
@@ -302,7 +306,8 @@ for ( m in 1:3)  {
     frames2[[i]] = frames2[[i]][,-1]
     frames2[[i]] = frames2[[i]][,1:length(unique(cluster))]
     names(frames2[[i]]) = c(sort(unique(cluster)))
-    frames2[[i]] = frames2[[i]][order(frames2[[i]][,i], decreasing=TRUE),]  }
+    frames2[[i]] = frames2[[i]][do.call(order, list(frames2[[i]][,i], decreasing=TRUE)),]
+    }
     pos_in2 <- unique(do.call("rbind", frames2))
     (if (length(pos_in2[,1])==0) {diff_in2 <- pos_in2 }
      else {diff_in2 <- pos_in2
@@ -318,7 +323,8 @@ for ( m in 1:3)  {
     frames3[[i]] = frames3[[i]][,-1]
     frames3[[i]] = frames3[[i]][,1:length(unique(cluster))]
     names(frames3[[i]]) = c(sort(unique(cluster)))
-    frames3[[i]] = frames3[[i]][order(frames3[[i]][,i], decreasing=TRUE),]  }
+    frames3[[i]] = frames3[[i]][do.call(order, list(frames3[[i]][,i], decreasing=TRUE)),]
+    }
     pos_in3 <- unique(do.call("rbind", frames3))
     (if (length(pos_in3[,1])==0) {diff_in3 <- pos_in3 }
      else { diff_in3 <- pos_in3
@@ -334,7 +340,8 @@ for ( m in 1:3)  {
     frames4[[i]] = frames4[[i]][,-1]
     frames4[[i]] = frames4[[i]][,1:length(unique(cluster))]
     names(frames4[[i]]) = c(sort(unique(cluster)))
-    frames4[[i]] = frames4[[i]][order(frames4[[i]][,i], decreasing=TRUE),]  }
+    frames4[[i]] = frames4[[i]][do.call(order, list(frames4[[i]][,i], decreasing=TRUE)),]
+    }
     pos_in4 <- unique(do.call("rbind", frames4))
     (if (length(pos_in4[,1])==0) {diff_in4 <- pos_in4 }
      else {diff_in4 <- pos_in4
@@ -350,7 +357,8 @@ for ( m in 1:3)  {
     frames5[[i]] = frames5[[i]][,-1]
     frames5[[i]] = frames5[[i]][,1:length(unique(cluster))]
     names(frames5[[i]]) = c(sort(unique(cluster)))
-    frames5[[i]] = frames5[[i]][order(frames5[[i]][,i], decreasing=TRUE),]  }
+    frames5[[i]] = frames5[[i]][do.call(order, list(frames5[[i]][,i], decreasing=TRUE)),]
+    }
     pos_in5 <- unique(do.call("rbind", frames5))
     (if (length(pos_in5[,1])==0) {diff_in5 <- pos_in5 }
     else {diff_in5 <- pos_in5
@@ -366,7 +374,8 @@ for ( m in 1:3)  {
     frames6[[i]] = frames6[[i]][,-1]
     frames6[[i]] = frames6[[i]][,1:length(unique(cluster))]
     names(frames6[[i]]) = c(sort(unique(cluster)))
-    frames6[[i]] = frames6[[i]][order(frames6[[i]][,i], decreasing=TRUE),]  }
+    frames6[[i]] = frames6[[i]][do.call(order, list(frames6[[i]][,i], decreasing=TRUE)),]
+    }
     pos_in6 <- unique(do.call("rbind", frames6))
     (if (length(pos_in6[,1])==0) {diff_in6 <- pos_in6 }
      else {diff_in6 <- pos_in6
@@ -382,7 +391,8 @@ for ( m in 1:3)  {
     frames7[[i]] = frames7[[i]][,-1]
     frames7[[i]] = frames7[[i]][,1:length(unique(cluster))]
     names(frames7[[i]]) = c(sort(unique(cluster)))
-    frames7[[i]] = frames7[[i]][order(frames7[[i]][,i], decreasing=TRUE),]  }
+    frames7[[i]] = frames7[[i]][do.call(order, list(frames7[[i]][,i], decreasing=TRUE)),]
+    }
     pos_in7 <- unique(do.call("rbind", frames7))
     (if (length(pos_in7[,1])==0) { diff_in7 <- pos_in7 }
      else {diff_in7 <- pos_in7
@@ -398,7 +408,8 @@ for ( m in 1:3)  {
       frames8[[i]] = frames8[[i]][,-1]
       frames8[[i]] = frames8[[i]][,1:length(unique(cluster))]
       names(frames8[[i]]) = c(sort(unique(cluster)))
-      frames8[[i]] = frames8[[i]][order(frames8[[i]][,i], decreasing=TRUE),]  }
+      frames8[[i]] = frames8[[i]][do.call(order, list(frames8[[i]][,i], decreasing=TRUE)),]
+      }
     pos_in8 <- unique(do.call("rbind", frames8))
     (if (length(pos_in8[,1])==0) { diff_in8 <- pos_in8 }
       else {diff_in8 <- pos_in8
@@ -500,7 +511,7 @@ if (method == "all_diff") {
     frames[[i]] <- assign(paste0("frame",i),
                           completetable[apply(
                             completetable[,(min(sort(unique(cluster)))+length(unique(cluster))):(max(sort(unique(cluster)))+length(unique(cluster)))],1,max) == completetable[,(i+length(unique(cluster)))],])
-    frames[[i]] <- frames[[i]][order(frames[[i]][,c(i+length(unique(cluster)),i)], decreasing=TRUE),]
+    frames[[i]] <- frames[[i]][do.call(order, list(frames[[i]][,c(i+length(unique(cluster)),i)], decreasing=TRUE)),]
     frames[[i]] <- frames[[i]] [complete.cases(frames[[i]]),]
     }
 

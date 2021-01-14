@@ -1,3 +1,9 @@
+# goeveg 0.4.5
+- Fixed use of order()
+
+# goeveg 0.4.4
+- Added lwd argument to ordiselect
+
 # goeveg 0.4.3
 - Added xlim & ylim arguments to racurve
 - Added na.rm argument to ordiselect
