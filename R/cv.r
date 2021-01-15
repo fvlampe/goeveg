@@ -20,7 +20,7 @@
 #' cv(schedenenv$soil_depth)
 #' @seealso \code{\link[stats]{sd}}
 #' @references Dormann, C. (2013). Parametrische Statistik. Verteilungen, maximum likelihood und GLM in R. \emph{Springer}.
-#' @references "What is the difference between ordinal, interval and ratio variables? Why should I care?" \emph{GraphPad Software Inc}. \url{http://www.graphpad.com/support/faqid/1089/}.
+#' @references "What is the difference between ordinal, interval and ratio variables? Why should I care?" \emph{GraphPad Software Inc}. \url{https://www.graphpad.com/support/faqid/1089/}.
 #' @export
 #' @import stats
 

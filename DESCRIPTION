@@ -11,10 +11,7 @@ License: GPL (>= 2)
 LazyData: TRUE
 Depends: R (>= 2.10)
 Imports: vegan, fields, mgcv, Hmisc
-Suggests: 
-    vegdata,
-    BiodiversityR,
-    cluster
-URL: http://github.com/fgoral/goeveg
-BugReports: http://github.com/fgoral/goeveg/issues
+Suggests: vegdata, BiodiversityR, cluster
+URL: https://github.com/fgoral/goeveg/
+BugReports: https://github.com/fgoral/goeveg/issues
 RoxygenNote: 7.1.1
