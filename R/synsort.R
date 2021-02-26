@@ -131,6 +131,9 @@
 #' @export
 #' @importFrom Hmisc %nin%
 
+
+
+
 synsort <- function(syn1, syn2 = syn1 , cluster, method = "allspec", min1 = 0, min2 = 0, relate2 = "entire") {
 
 if (method == "allspec") {
@@ -139,11 +142,10 @@ if (method == "allspec") {
       all <- syn1[apply(syn1,1,max) >= min1,]
       for (i in 1:max(cluster)) {
         frames[[i]] <- assign(paste0("frame",i), all[apply(all,1,max) == all[,i],])
-        frames[[i]] <- frames[[i]][do.call(order, list(frames[[i]][,i], decreasing=TRUE)),]
-        }
+        frames[[i]] <- frames[[i]][order(frames[[i]][,i], decreasing=TRUE),] }
       for ( i in 2:max(cluster)) {
-      duprows <- rownames(frames[[i]]) %in% rownames(frames[[1]])
-      frames[[1]] <- rbind(frames[[1]], frames[[i]][!duprows,]) }
+        duprows <- rownames(frames[[i]]) %in% rownames(frames[[1]])
+        frames[[1]] <- rbind(frames[[1]], frames[[i]][!duprows,]) }
       allspec <- frames[[1]]
       results <- list("output" = "synoptic table sorted by values of one input table",
                       "species" = paste0("species with minimum value =", min1, " in input table 1, others listet below"),
@@ -151,34 +153,38 @@ if (method == "allspec") {
                       "syntable" = allspec,
                       "others" = sort(rownames(syn1[apply(syn1,1,max)<=min1,])))
       return(results)
+
       } else {
-        if (relate2 == "entire") {
-          all <-  syn1[rowSums(syn2) >= min2,]
-          all <-  syn1[apply(syn1,1,max) >= min1,]
+          if (relate2 == "entire") {
+            if (is.numeric(unlist(syn2)) == TRUE)
+            { all <-  syn1[rowSums(syn2) >= min2,]
+              all <-  syn1[apply(syn1,1,max) >= min1,]
+            } else if (is.character(unlist(syn2)) == TRUE)
+              {  all <-  syn1[apply(syn1,1,max) >= min1,]
+              } else {stop("check data entry type for syn2: must be numeric or character")}
+
           frames <- list()
           for ( i in 1:max(cluster)) {
-           frames[[i]] <- assign(paste0("frame",i), all[apply(all,1,max) == all[,i],])
-           frames[[i]] <- frames[[i]][do.call(order, list(frames[[i]][,i], decreasing=TRUE)),]
-           }
+            frames[[i]] <- assign(paste0("frame",i), all[apply(all,1,max) == all[,i],])
+            frames[[i]] <- frames[[i]][order(frames[[i]][,i], decreasing=TRUE),] }
           for ( i in 2:max(cluster)) {
-          duprows <- rownames(frames[[i]]) %in% rownames(frames[[1]])
-          frames[[1]] <- rbind(frames[[1]], frames[[i]][!duprows,]) }
-        allspec <- frames[[1]]
-        results <- list("output" = "synoptic table sorted by values of one input table",
+            duprows <- rownames(frames[[i]]) %in% rownames(frames[[1]])
+            frames[[1]] <- rbind(frames[[1]], frames[[i]][!duprows,]) }
+          allspec <- frames[[1]]
+          results <- list("output" = "synoptic table sorted by values of one input table",
                         "species" = paste0("species with minimum value = ", min1,
                                            " in input table 1 AND with minimum value =", min2, " in input table 2,others listet below"),
                         "samplesize" = tapply(rep(1,length(cluster)),cluster,sum),
                         "syntable" = allspec,
                         "others" = sort(rownames(syn1[apply(syn1,1,max)<=min1,])))
-        return(results)
+          return(results)
 
           } else {
             all = syn1[apply(syn2,1,min) >= min2,]
             all = syn1[apply(syn1,1,max) >= min1,]
             for ( i in 1:max(cluster)) {
               frames[[i]] <- assign(paste0("frame",i), all[apply(all,1,max) == all[,i],])
-              frames[[i]] <- frames[[i]][do.call(order, list(frames[[i]][,i], decreasing=TRUE)),]
-              }
+              frames[[i]] <- frames[[i]][order(frames[[i]][,i], decreasing=TRUE),] }
             for ( i in 2:max(cluster)) {
               duprows <- rownames(frames[[i]]) %in% rownames(frames[[1]])
               frames[[1]] <- rbind(frames[[1]], frames[[i]][!duprows,]) }
@@ -191,346 +197,202 @@ if (method == "allspec") {
                             "others" = sort(rownames(syn1[apply(syn1,1,max)<=min1,])))
             return(results)
           }
+      }
+
+} else if (method =="p_diff" | method == "accspec" | method == "all_diff") {
+    # setup complete table
+    syntab <- syn2[apply(syn1,1,max) >= min1,]
+    syntab <- syntab[complete.cases(syntab),]
+    all <-    syn1[apply(syn1,1,max) >= min1,]
+    all <- all[complete.cases(all),]
+    completetable <- merge(syntab, all, all.x=TRUE, by= "row.names", sort=F)
+    rownames(completetable) <- completetable[,1]
+    completetable <- completetable[,-1]
+    name <- c("")
+    for(i in 1:length(unique(cluster))) {
+      name[i] = paste0("diff ", sort(unique(cluster))[i])
+      name[i+length(unique(cluster))] = paste0("cluster ", sort(unique(cluster))[i]) }
+    names(completetable) <- name
+
+
+  # posidiff: a vector with sums of clusters "p"-differentiating
+  # by the species, respectively
+    pos_synord <- data.frame(matrix(NA, ncol = max(cluster), nrow = length(syntab[,1])))
+    for ( i in 1:length(syntab[1,])) {
+        for ( k in 1:length(syntab[,1])) {
+          if (syntab[k,i] == "p") {pos_synord[k,i] <- 1}
+          else {pos_synord[k,i] <- 0}   }   }
+    rownames(pos_synord) <- rownames(syntab)
+    pos_synord <- data.frame(lapply(pos_synord, as.numeric))
+    rownames(pos_synord) <- rownames(all)
+    names(pos_synord) <- seq(1,length(unique(cluster)),1)
+    posidiff <- apply(pos_synord,1,sum)
+
+  # accdiff: a vector with sums of clusters "-" non-differentiating
+    acc_synord <- data.frame(matrix(NA, ncol = max(cluster), nrow = length(syntab[,1])))
+    for ( i in 1:length(syntab[1,])) {
+      for ( k in 1:length(syntab[,1])) {
+        if (syntab[k,i] == "-") {acc_synord[k,i] <- 1}
+        else {acc_synord[k,i] <- 0}   }   }
+
+    acc_synord <- data.frame(lapply(acc_synord, as.numeric))
+    rownames(acc_synord) <- rownames(syntab)
+    names(acc_synord) <- seq(1,length(unique(cluster)),1)
+    accdiff <- apply(acc_synord,1,sum) # vector with sums of
+    # clusters "-"-not differentiated by the species, respectively
+
+    # selections from all non-differentianting species from the whole dataset
+    diffacc <- syntab[accdiff == max(accdiff),]
+    synacc <- all[accdiff == max(accdiff),]
+
+    # for method = "accspec": show percentage frequency of
+    # all non-differentiating species with values (syn1) > min1
+    acctable <- merge(synacc, diffacc, by= "row.names", all.x = TRUE, sort=F)
+    rownames(acctable) <- acctable[,1]
+    acctable <- acctable[,-1]
+    frames <- list()
+    for (i in 1:length(unique(cluster))) {
+      frames[[i]] <- assign(paste0("frame",i),
+                     acctable[apply(acctable[, min(sort(unique(cluster))):
+                                               max(sort(unique(cluster)))],
+                                               1, max) == acctable[,(i)],])
+      frames[[i]] <- frames[[i]][order(frames[[i]][,i], decreasing=TRUE),]
+      frames[[i]] <- frames[[i]] [complete.cases(frames[[i]]),] }
+    acctable <- do.call("rbind", frames)
+    acctable <- acctable[substr(rownames(acctable), nchar(rownames(acctable)), nchar(rownames(acctable))) != 1 &
+                    substr(rownames(acctable), nchar(rownames(acctable)), nchar(rownames(acctable))) != 2 &
+                    substr(rownames(acctable), nchar(rownames(acctable)), nchar(rownames(acctable))) != 3 &
+                    substr(rownames(acctable), nchar(rownames(acctable)), nchar(rownames(acctable))) != 4 &
+                    substr(rownames(acctable), nchar(rownames(acctable)), nchar(rownames(acctable))) != 5 &
+                    substr(rownames(acctable), nchar(rownames(acctable)), nchar(rownames(acctable))) != 6 &
+                    substr(rownames(acctable), nchar(rownames(acctable)), nchar(rownames(acctable))) != 7 &
+                    substr(rownames(acctable), nchar(rownames(acctable)), nchar(rownames(acctable))) != 8 &
+                    substr(rownames(acctable), nchar(rownames(acctable)), nchar(rownames(acctable))) != 9,]
+    names(acctable) <- rep(c(seq(1,max(cluster), 1)),2)
+    for ( i in 1:max(cluster)) {
+          names(acctable)[max(cluster) + i] <- paste0("diff", names(acctable)[i])
         }
 
-  } else if (method =="p_diff" | method == "accspec" | method == "all_diff") {
-      frames <- list()
-      for (i in 1:length(unique(cluster))) {
-      all = syn1[apply(syn1,1,max) >= min1,]
-      frames[[i]] = assign(paste0("frame",i), all)}
+    if (method == "accspec") {
+        results <- list(
+          "output" = "synoptic table sorted by values of numeric input table and non-differential, accompanying species",
+          "species" = paste0("species with minimim value of", sep=" ", min1, " in input numeric table and that are ACCOMPANYING"),
+          "samplesize" = tapply(rep(1,length(cluster)),cluster,sum),
+          "syntable" = acctable,
+          "diagnostic species" = sort(rownames(syn1)[Hmisc::`%nin%` (rownames(syn1), rownames(synacc))]),
+          "others" = sort(rownames(syn1)[Hmisc::`%nin%` (rownames(syn1), rownames(acctable))]))
+        return(results)
 
-      synord <- syn2
-      for ( i in 1:length(syn2[1,])) {
-        for ( k in 1:length(syn2[,1])) {
-          if (synord[k,i] == "p" & syn1[k,i] >= min1) {synord[k,i] <- 1}
-          else {synord[k,i] <- 0}   }}
-      synord <- data.frame(lapply(synord, as.numeric))
-      rownames(synord) <- rownames(syn2)
-      names(synord) <- seq(1,length(unique(cluster)),1)
-      pos_synord <- synord
-      posidiff <- apply(pos_synord,1,sum)   # posidiff is a vector with sums of clusters that are "p"-differentiated by the species
-
-
-      di <- c("n", "pn", "-")
-      for ( l in 1:3) {
-       synord <- syn2
-       for ( i in 1:length(syn2[1,])) {
-         for ( k in 1:length(syn2[,1])) {
-           if (synord[k,i] == di[l]) {synord[k,i] <- 1}
-           else {synord[k,i] <- 0}   }}
-       synord <- data.frame(lapply(synord, as.numeric))
-       rownames(synord) <- rownames(syn2)
-       names(synord) <- seq(1,length(unique(cluster)),1)
-      if ( l == 1) {
-        neg_synord <- synord
-        negdiff <- apply(neg_synord,1,sum)
-      } else if ( l == 2 ) {
-        posneg_synord <- synord
-        posnegdiff <- apply(posneg_synord,1,sum)
-      } else {
-        acc_synord <- synord
-        accdiff <- apply(acc_synord,1,sum)
-      }     }
-
-      if (method == "accspec" | method == "all_diff") {
-          frames5 <- list()
-               pos_in5 <- synord[accdiff == max(accdiff),]
-               in5 <- pos_in5
-               if ( length(pos_in5[,1]) == 0 ) {
-                 } else { diff_in5 <- pos_in5
-                     for (i in 1:length(diff_in5[,1])) {
-                     diff_in5[i,] <- in5[rownames(in5) == rownames(diff_in5[i,]),]}
-               }      # evtl anpassen an groessere datensaetze
+    } else {                                          # for method  == "alldiff"
+        # sort for each column for blocked structure
+        frames1 <- list()
+        in1 <- completetable[posidiff == 1,]   # for species only differentiating for one
+        for (i in 1:length(unique(cluster))) {
+          frames1[[i]] = assign(paste0("frame1_",i), in1[in1[,i] == "p",])
+          frames1[[i]] = frames1[[i]][order(frames1[[i]][,i + length(unique(cluster))], decreasing=TRUE),]
+        if (length(rownames(frames1[[i]])) == 0) {
+          } else { rownames(frames1[[i]]) <- paste0(rownames(frames1[[i]]), "_")  }  }
+        pos_in1 <- do.call("rbind", frames1)
 
 
-          if (method == "all_diff") {
-              synacc <- pos_in5
-                  (if ( length(diff_in5[,1]) == 0 ) {diffspec <- diff_in5}
-                  else { diffspec <- diff_in5
-                  for ( i in 1:length(diffspec[1,])) {
-                  for ( k in 1:length(diffspec[,1])) {
-                       if (diffspec[k,i]=="1") {diffspec[k,i] <- "-"}
-                       else {diffspec[k,i] <- "NA"}   }} }  )
-              diffspecacc <- diffspec
-              accdiff <- diff_in5
-          } else {
-              syntab   <- pos_in5
-              diffspec <- diff_in5
-              for ( i in 1:length(diffspec[1,])) {
-              for ( k in 1:length(diffspec[,1])) {
-                  if (diffspec[k,i]=="1") {diffspec[k,i] <- "-"}
-                  else {diffspec[k,i] <- "NA"}   }}
-              results <- list("output" = "synoptic table sorted by values of numeric input table and non-differential, accompanying species",
-                    "species" = paste0("species with minimim value of", sep=" ", min1, " in input numeric table and that are ACCOMPANYING"),
-                    "samplesize" = tapply(rep(1,length(cluster)),cluster,sum),
-                    "syntable" = syntab,
-                    "differential" = diffspec,
-                    "others" = sort(rownames(syn1)['%nin%' (rownames(syn1), rownames(syntab))]))
-              return(results)
-          }
-      }
-} else {stop("Sorting of synoptic table failed: wrong method entry.")}
+        in2 <- completetable[posidiff == 2,]
+        maxi <- apply(in2[, (1 + length(unique(cluster))) : (2*length(unique(cluster)))], 1, max)
+        frames2 <- list()
+        for (i in 1:length(unique(cluster))) {
+           frames2[[i]] = assign(paste0("frame2_",i), in2[in2[, i + length(unique(cluster))] == maxi, ])
+           frames2[[i]] = frames2[[i]][order(frames2[[i]][, i + length(unique(cluster))], decreasing =T),]
+           if (length(rownames(frames2[[i]])) == 0) {
+             } else { rownames(frames2[[i]]) <- paste0(rownames(frames2[[i]]), "_")  }   }
+        pos_in2 <- unique(do.call("rbind", frames2))
 
+        in3 <- completetable[posidiff == 3,]
+        maxi <- apply(in3[, (1 + length(unique(cluster))) : (2*length(unique(cluster)))], 1, max)
+        frames3 <- list()
+        for (i in 1:length(unique(cluster))) {
+          frames3[[i]] = assign(paste0("frame3_",i), in3[in3[, i + length(unique(cluster))] == maxi, ])
+          frames3[[i]] = frames3[[i]][order(frames3[[i]][, i + length(unique(cluster))], decreasing=TRUE),]
+          if (length(rownames(frames3[[i]])) == 0) {
+            } else { rownames(frames3[[i]]) <- paste0(rownames(frames3[[i]]), "_")  }   }
+        pos_in3 <- unique(do.call("rbind", frames3))
 
-vektor <- list(posidiff, negdiff, posnegdiff)
-Rahmen <- list(pos_synord, neg_synord, posneg_synord)
+        in4 <- completetable[posidiff == 4,]
+        maxi <- apply(in4[, (1 + length(unique(cluster))) : (2*length(unique(cluster)))], 1, max)
+        frames4 <- list()
+        for (i in 1:length(unique(cluster))) {
+          frames4[[i]] = assign(paste0("frame4_",i), in4[in4[, i + length(unique(cluster))] == maxi, ])
+          frames4[[i]] = frames4[[i]][order(frames4[[i]][,i + length(unique(cluster))], decreasing=TRUE),]
+        if (length(rownames(frames4[[i]])) == 0) {
+        } else { rownames(frames4[[i]]) <- paste0(rownames(frames4[[i]]), "_")  }   }
+        pos_in4 <- unique(do.call("rbind", frames4))
 
-for ( m in 1:3)  {
-    posdiff <- vektor[[m]]       # list with sums of differentiated clusters
-    rahmen <- Rahmen[[m]]
+        in5 <- completetable[posidiff == 5,]
+        maxi <- apply(in5[, (1 + length(unique(cluster))) : (2*length(unique(cluster)))], 1, max)
+        frames5 <- list()
+        for (i in 1:length(unique(cluster))) {
+          frames5[[i]] = assign(paste0("frame5_",i), in5[in5[, i + length(unique(cluster))] == maxi, ])
+          frames5[[i]] = frames5[[i]][order(frames5[[i]][,i + length(unique(cluster))], decreasing=TRUE),]
+        if (length(rownames(frames5[[i]])) == 0) {
+          } else { rownames(frames5[[i]]) <- paste0(rownames(frames5[[i]]), "_")  }   }
+        pos_in5 <- unique(do.call("rbind", frames5))
 
-    frames1 <- list()
-    in1 <- rahmen[posdiff == 1,]   # for species only differentiating for one
-    for (i in 1:length(unique(cluster))) {
-      frames1[[i]] = assign(paste0("frame1_",i), in1[apply(in1,1,max) == in1[,i],])
-      frames1[[i]] = assign(paste0("frame1_",i), merge(frames[[i]], frames1[[i]], by = "row.names"))
-      rownames(frames1[[i]]) = frames1[[i]][,1]
-      frames1[[i]] = frames1[[i]][,-1]
-      frames1[[i]] = frames1[[i]][,1:length(unique(cluster))]
-      names(frames1[[i]]) = c(sort(unique(cluster)))
-      frames1[[i]] = frames1[[i]][do.call(order, list(frames1[[i]][,i], decreasing=TRUE)),]
-      }
-    pos_in1 <- do.call("rbind", frames1)
-        (if (length(pos_in1[,1])==0) {diff_in1 <- pos_in1
-         } else {
-           diff_in1 <- pos_in1
-           for (i in 1:length(diff_in1[,1])) {
-               diff_in1[i,] <- in1[rownames(in1) == rownames(diff_in1[i,]),]}   })
+        in6 <- completetable[posidiff == 6,]
+        maxi <- apply(in6[, (1 + length(unique(cluster))) : (2*length(unique(cluster)))], 1, max)
+        frames6 <- list()
+        for (i in 1:length(unique(cluster))) {
+          frames6[[i]] = assign(paste0("frame6_",i), in6[in6[, i + length(unique(cluster))] == maxi, ])
+          frames6[[i]] = frames6[[i]][order(frames6[[i]][,i + length(unique(cluster))], decreasing=TRUE),]
+        if (length(rownames(frames6[[i]])) == 0) {
+          } else { rownames(frames6[[i]]) <- paste0(rownames(frames6[[i]]), "_")  }   }
+        pos_in6 <- unique(do.call("rbind", frames6))
 
-    frames2 <- list()
-    in2 <- rahmen[posdiff == 2,]
-    for (i in 1:length(unique(cluster))) {
-    frames2[[i]] = assign(paste0("frame2_",i), in2[apply(in2,1,max) == in2[,i],])
-    frames2[[i]] = assign(paste0("frame2_",i), merge(frames[[i]], frames2[[i]], by = "row.names"))
-    rownames(frames2[[i]]) = frames2[[i]][,1]
-    frames2[[i]] = frames2[[i]][,-1]
-    frames2[[i]] = frames2[[i]][,1:length(unique(cluster))]
-    names(frames2[[i]]) = c(sort(unique(cluster)))
-    frames2[[i]] = frames2[[i]][do.call(order, list(frames2[[i]][,i], decreasing=TRUE)),]
-    }
-    pos_in2 <- unique(do.call("rbind", frames2))
-    (if (length(pos_in2[,1])==0) {diff_in2 <- pos_in2 }
-     else {diff_in2 <- pos_in2
-     for (i in 1:length(diff_in2[,1])) {
-      diff_in2[i,] <- in2[rownames(in2) == rownames(diff_in2[i,]),]}  })
+        in7 <- completetable[posidiff == 7,]
+        maxi <- apply(in7[, (1 + length(unique(cluster))) : (2*length(unique(cluster)))], 1, max)
+        frames7 <- list()
+        for (i in 1:length(unique(cluster))) {
+          frames7[[i]] = assign(paste0("frame7_",i), in7[in7[, i + length(unique(cluster))] == maxi, ])
+          frames7[[i]] = frames7[[i]][order(frames7[[i]][,i + length(unique(cluster))], decreasing=TRUE),]
+          if (length(rownames(frames7)) == 0) {
+          } else { rownames(frames7[[i]]) <- paste0(rownames(frames7[[i]]), "_")  }   }
+        pos_in7 <- unique(do.call("rbind", frames7))
 
-    frames3 <- list()
-    in3 <- rahmen[posdiff == 3,]
-    for (i in 1:length(unique(cluster))) {
-    frames3[[i]] = assign(paste0("frame3_",i), in3[apply(in3,1,max) == in3[,i],])
-    frames3[[i]] = assign(paste0("frame3_",i), merge(frames[[i]], frames3[[i]], by = "row.names"))
-    rownames(frames3[[i]]) = frames3[[i]][,1]
-    frames3[[i]] = frames3[[i]][,-1]
-    frames3[[i]] = frames3[[i]][,1:length(unique(cluster))]
-    names(frames3[[i]]) = c(sort(unique(cluster)))
-    frames3[[i]] = frames3[[i]][do.call(order, list(frames3[[i]][,i], decreasing=TRUE)),]
-    }
-    pos_in3 <- unique(do.call("rbind", frames3))
-    (if (length(pos_in3[,1])==0) {diff_in3 <- pos_in3 }
-     else { diff_in3 <- pos_in3
-     for (i in 1:length(diff_in3[,1])) {
-      diff_in3[i,] <- in3[rownames(in3) == rownames(diff_in3[i,]),]}   })
+        in8 <- completetable[posidiff >= 8,]
+        frames8 <- list()
+        maxi <- apply(in8[, (1 + length(unique(cluster))) : (2*length(unique(cluster)))], 1, max)
+        for (i in 1:length(unique(cluster))) {
+          frames8[[i]] = assign(paste0("frame8_",i), in8[in8[, i + length(unique(cluster))] == maxi, ])
+          frames8[[i]] = frames8[[i]][order(frames8[[i]][,i + length(unique(cluster))], decreasing=TRUE),]
+        if (length(rownames(frames8)) == 0) {
+          } else { rownames(frames8[[i]]) <- paste0(rownames(frames8[[i]]), "_")  }   }
+        pos_in8 <- unique(do.call("rbind", frames8))
 
-    frames4 <- list()
-    in4 <- rahmen[posdiff == 4,]
-    for (i in 1:length(unique(cluster))) {
-    frames4[[i]] = assign(paste0("frame4_",i), in4[apply(in4,1,max) == in4[,i],])
-    frames4[[i]] = assign(paste0("frame4_",i), merge(frames[[i]], frames4[[i]], by = "row.names"))
-    rownames(frames4[[i]]) = frames4[[i]][,1]
-    frames4[[i]] = frames4[[i]][,-1]
-    frames4[[i]] = frames4[[i]][,1:length(unique(cluster))]
-    names(frames4[[i]]) = c(sort(unique(cluster)))
-    frames4[[i]] = frames4[[i]][do.call(order, list(frames4[[i]][,i], decreasing=TRUE)),]
-    }
-    pos_in4 <- unique(do.call("rbind", frames4))
-    (if (length(pos_in4[,1])==0) {diff_in4 <- pos_in4 }
-     else {diff_in4 <- pos_in4
-    for (i in 1:length(diff_in4[,1])) {
-      diff_in4[i,] <- in4[rownames(in4) == rownames(diff_in4[i,]),]}   })
-
-    frames5 <- list()
-    in5 <- rahmen[posdiff == 5,]
-    for (i in 1:length(unique(cluster))) {
-    frames5[[i]] = assign(paste0("frame5_",i), in5[apply(in5,1,max) == in5[,i],])
-    frames5[[i]] = assign(paste0("frame5_",i), merge(frames[[i]], frames5[[i]], by = "row.names"))
-    rownames(frames5[[i]]) = frames5[[i]][,1]
-    frames5[[i]] = frames5[[i]][,-1]
-    frames5[[i]] = frames5[[i]][,1:length(unique(cluster))]
-    names(frames5[[i]]) = c(sort(unique(cluster)))
-    frames5[[i]] = frames5[[i]][do.call(order, list(frames5[[i]][,i], decreasing=TRUE)),]
-    }
-    pos_in5 <- unique(do.call("rbind", frames5))
-    (if (length(pos_in5[,1])==0) {diff_in5 <- pos_in5 }
-    else {diff_in5 <- pos_in5
-    for (i in 1:length(diff_in5[,1])) {
-      diff_in5[i,] <- in5[rownames(in5) == rownames(diff_in5[i,]),]} })
-
-    frames6 <- list()
-    in6 <- rahmen[posdiff == 6,]
-    for (i in 1:length(unique(cluster))) {
-    frames6[[i]] = assign(paste0("frame6_",i), in6[apply(in6,1,max) == in6[,i],])
-    frames6[[i]] = assign(paste0("frame6_",i), merge(frames[[i]], frames6[[i]], by = "row.names"))
-    rownames(frames6[[i]]) = frames6[[i]][,1]
-    frames6[[i]] = frames6[[i]][,-1]
-    frames6[[i]] = frames6[[i]][,1:length(unique(cluster))]
-    names(frames6[[i]]) = c(sort(unique(cluster)))
-    frames6[[i]] = frames6[[i]][do.call(order, list(frames6[[i]][,i], decreasing=TRUE)),]
-    }
-    pos_in6 <- unique(do.call("rbind", frames6))
-    (if (length(pos_in6[,1])==0) {diff_in6 <- pos_in6 }
-     else {diff_in6 <- pos_in6
-     for (i in 1:length(diff_in6[,1])) {
-      diff_in6[i,] <- in6[rownames(in6) == rownames(diff_in6[i,]),]}  })
-
-    frames7 <- list()
-    in7 <- rahmen[posdiff == 7,]
-    for (i in 1:length(unique(cluster))) {
-    frames7[[i]] = assign(paste0("frame7_",i), in7[apply(in7,1,max) == in7[,i],])
-    frames7[[i]] = assign(paste0("frame7_",i), merge(frames[[i]], frames7[[i]], by = "row.names"))
-    rownames(frames7[[i]]) = frames7[[i]][,1]
-    frames7[[i]] = frames7[[i]][,-1]
-    frames7[[i]] = frames7[[i]][,1:length(unique(cluster))]
-    names(frames7[[i]]) = c(sort(unique(cluster)))
-    frames7[[i]] = frames7[[i]][do.call(order, list(frames7[[i]][,i], decreasing=TRUE)),]
-    }
-    pos_in7 <- unique(do.call("rbind", frames7))
-    (if (length(pos_in7[,1])==0) { diff_in7 <- pos_in7 }
-     else {diff_in7 <- pos_in7
-    for (i in 1:length(diff_in7[,1])) {
-      diff_in7[i,] <- in7[rownames(in7) == rownames(diff_in7[i,]),]}  })
-
-    frames8 <- list()
-    in8 <- rahmen[posdiff >= 8,]
-    for (i in 1:length(unique(cluster))) {
-      frames8[[i]] = assign(paste0("frame8_",i), in8[apply(in8,1,max) == in8[,i],])
-      frames8[[i]] = assign(paste0("frame8_",i), merge(frames[[i]], frames8[[i]], by = "row.names"))
-      rownames(frames8[[i]]) = frames8[[i]][,1]
-      frames8[[i]] = frames8[[i]][,-1]
-      frames8[[i]] = frames8[[i]][,1:length(unique(cluster))]
-      names(frames8[[i]]) = c(sort(unique(cluster)))
-      frames8[[i]] = frames8[[i]][do.call(order, list(frames8[[i]][,i], decreasing=TRUE)),]
-      }
-    pos_in8 <- unique(do.call("rbind", frames8))
-    (if (length(pos_in8[,1])==0) { diff_in8 <- pos_in8 }
-      else {diff_in8 <- pos_in8
-      for (i in 1:length(diff_in8[,1])) {
-        diff_in8[i,] <- in8[rownames(in8) == rownames(diff_in8[i,]),]}  })
-
-
-    if (method == "p_diff") {
-     syntab   <- rbind(pos_in1, pos_in2, pos_in3, pos_in4, pos_in5, pos_in6, pos_in7, pos_in8)
-     diffspec <- rbind(diff_in1, diff_in2, diff_in3, diff_in4, diff_in5, diff_in6, diff_in7, diff_in8)
-     for ( i in 1:length(diffspec[1,])) {
-         for ( k in 1:length(diffspec[,1])) {
-           if (diffspec[k,i]=="1") {diffspec[k,i] <- "p"}
-           else {diffspec[k,i] <- "-"}   }}
-       results <- list("output" = "synoptic table sorted by values of numeric input table and differential species and synoptic table of POSITIVE differentiating species",
-                    "species" = paste0("species with minimim value of", sep=" ", min1," in input numeric table and that are POSITIVE differential species (algorithm of Tsiripidis et al.) in one ore max. 7 clusters"),
-                    "samplesize" = tapply(rep(1,length(cluster)),cluster,sum),
-                    "syntable" = syntab,
-                    "differential" = diffspec,
-                    "others" = sort(rownames(syn1)['%nin%' (rownames(syn1), rownames(syntab))]))
-       return(results)
-       break
-
-    } else if (method == "all_diff") {
-          if (identical(pos_synord, Rahmen[[m]])) {
-          synpos <- rbind(pos_in1, pos_in2, pos_in3, pos_in4, pos_in5, pos_in6, pos_in7, pos_in8)
-          diffspec <- rbind(diff_in1, diff_in2, diff_in3, diff_in4, diff_in5, diff_in6, diff_in7, diff_in8)
-          for ( i in 1:length(diffspec[1,])) {
-            for ( k in 1:length(diffspec[,1])) {
-              if (diffspec[k,i]=="1") {diffspec[k,i] <- "p"}
-              else {diffspec[k,i] <- "-"}   }}
-          diffspecpos <- diffspec
-
-          } else if ( identical(neg_synord, Rahmen[[m]])) {
-          synneg <- rbind(pos_in1, pos_in2, pos_in3, pos_in4, pos_in5, pos_in6, pos_in7, pos_in8)
-          diffspec <- rbind(diff_in1, diff_in2, diff_in3, diff_in4, diff_in5, diff_in6, diff_in7, diff_in8)
-               if (length(diffspec[,1]) == 0) { diffspecneg <- diffspec
-               } else {
-                  for ( i in 1:length(diffspec[1,])) {
-                    for ( k in 1:length(diffspec[,1])) {
-                        if (diffspec[k,i]=="1") {diffspec[k,i] <- "n"}
-                        else {diffspec[k,i] <- "-"}   }} }
-          diffspecneg <- diffspec
-
-          } else if ( identical(posneg_synord, Rahmen[[m]]))  {
-          synposneg <- rbind(pos_in1, pos_in2, pos_in3, pos_in4, pos_in5, pos_in6, pos_in7, pos_in8)
-          diffspec <- rbind(diff_in1, diff_in2, diff_in3, diff_in4, diff_in5, diff_in6, diff_in7, diff_in8)
-               if (length(diffspec[,1]) == 0) { diffspecposneg <- diffspec
-               } else {
-                 for ( i in 1:length(diffspec[1,])) {
-                  for ( k in 1:length(diffspec[,1])) {
-                    if (diffspec[k,i]=="1") {diffspec[k,i] <- "pn"}
-                    else {diffspec[k,i] <- "-"}   }}   }
-            diffspecposneg <- diffspec
-          } else {stop("Failure merging frames in sorting algorithm")}
-    } else {}
-}
-
-if (method == "all_diff") {
- m1 <- merge(diffspecpos, diffspecneg, by= "row.names", all.x = TRUE, sort=F)
- rownames(m1) <- m1[,1]
- m1 <- m1[,-1]
- m1[is.na(m1)] <- "NA"
- for ( i in 1:length(unique(cluster))) {
-    for ( l in 1:length(m1[,1])) {
-        if (m1[l,i] == "-" & m1[l,(i+length(unique(cluster)))] == "n") {m1[l,i] = "n"}
-        else if (m1[l,i] == "p") {m1[l,i] = "p"}
-        else {m1[l,i] = "NA"}
-      } }
- m1 <- m1[,1:length(unique(cluster))]
-
- m2 <- merge(m1, diffspecposneg, by= "row.names", all.x = TRUE, sort=F)
- rownames(m2) <- m2[,1]
- m2 <- m2[,-1]
- m2[is.na(m2)] <- "NA"
- for ( i in 1:length(unique(cluster))) {
-      for ( l in 1:length(m2[,1])) {
-        if (m2[l,i] == "NA" & m2[l,(i+length(unique(cluster)))] == "pn") {m2[l,i] = "pn"}
-        else if (m2[l,i] == "p") {m2[l,i] = "p"}
-        else if (m2[l,i] == "n") {m2[l,i] = "n"}
-        else {m2[l,i] = "-"}
-      } }
- m2 <- m2[,1:length(unique(cluster))]
- names(m2) <- seq(1:length(unique(cluster)))
- m3 <- rbind(m2, diffspecacc)
-
- completetable <- merge(m3, all, all.x=TRUE, by= "row.names", sort=F)
- rownames(completetable) <- completetable[,1]
- completetable <- completetable[,-1]
- name <- c("")
- for(i in 1:length(unique(cluster))) {
-    name[i] = paste0("diff ", sort(unique(cluster))[i])
-    name[i+length(unique(cluster))] = paste0("cluster ", sort(unique(cluster))[i])   }
-
-    names(completetable) <- name
-    frames <- list()
-
-    for (i in 1:length(unique(cluster))) {
-    frames[[i]] <- assign(paste0("frame",i),
-                          completetable[apply(
-                            completetable[,(min(sort(unique(cluster)))+length(unique(cluster))):(max(sort(unique(cluster)))+length(unique(cluster)))],1,max) == completetable[,(i+length(unique(cluster)))],])
-    frames[[i]] <- frames[[i]][do.call(order, list(frames[[i]][,c(i+length(unique(cluster)),i)], decreasing=TRUE)),]
-    frames[[i]] <- frames[[i]] [complete.cases(frames[[i]]),]
-    }
-
-
-    completetable <- do.call(rbind, frames[])
-
+    completetable <- rbind(pos_in1, pos_in2, pos_in3, pos_in4, pos_in5, pos_in6, pos_in7, pos_in8)
     completetable <- completetable[substr(rownames(completetable), nchar(rownames(completetable)), nchar(rownames(completetable))) != 1 &
-         substr(rownames(completetable), nchar(rownames(completetable)), nchar(rownames(completetable))) != 2 &
-         substr(rownames(completetable), nchar(rownames(completetable)), nchar(rownames(completetable))) != 3 &
-         substr(rownames(completetable), nchar(rownames(completetable)), nchar(rownames(completetable))) != 4 &
-         substr(rownames(completetable), nchar(rownames(completetable)), nchar(rownames(completetable))) != 5 &
-         substr(rownames(completetable), nchar(rownames(completetable)), nchar(rownames(completetable))) != 6,]
+                                   substr(rownames(completetable), nchar(rownames(completetable)), nchar(rownames(completetable))) != 2 &
+                                   substr(rownames(completetable), nchar(rownames(completetable)), nchar(rownames(completetable))) != 3 &
+                                   substr(rownames(completetable), nchar(rownames(completetable)), nchar(rownames(completetable))) != 4 &
+                                   substr(rownames(completetable), nchar(rownames(completetable)), nchar(rownames(completetable))) != 5 &
+                                   substr(rownames(completetable), nchar(rownames(completetable)), nchar(rownames(completetable))) != 6 &
+                                   substr(rownames(completetable), nchar(rownames(completetable)), nchar(rownames(completetable))) != 7 &
+                                   substr(rownames(completetable), nchar(rownames(completetable)), nchar(rownames(completetable))) != 8 &
+                                   substr(rownames(completetable), nchar(rownames(completetable)), nchar(rownames(completetable))) != 9,]
+    rownames(completetable) <- substr(rownames(completetable),
+                                      nchar(rownames(completetable))-nchar(rownames(completetable))+1,
+                                      nchar(rownames(completetable))-1)
+    # add the accompagnying species
+    acctable_c <- cbind(acctable[ , (max(cluster)+1) : (max(cluster)*2)],
+                    acctable[ , 1 : (max(cluster)) ] )
+    names(acctable_c) <- names(completetable)
+    completetable_end <- rbind(completetable, acctable_c)
+
 
     results <- list("output" = "complete synoptic table, sorted by values of numeric input table and differential species character",
                     "species" = paste0("species with minimim value of", sep=" ", min1, " and their differentiating character"),
                     "samplesize" = tapply(rep(1,length(cluster)),cluster,sum),
-                    "syntable" = completetable,
-                    "others" = sort(rownames(syn1)['%nin%' (rownames(syn1), rownames(completetable))]))
-      } else {stop("Failed to create sorted synoptic table; check input and parameters of formula.")}
+                    "syntable" = completetable_end,
+                    "others" = sort(rownames(syn1)[Hmisc::`%nin%` (rownames(syn1), rownames(completetable))]))
+    }
+
+  } else {stop("Sorting of synoptic table failed: wrong method entry. Check correct formula input")}
 
 }
 
