@@ -1,5 +1,5 @@
 # goeveg 0.5.0
-- Temporarily removal of function synsort() due to unsolved incompatibilities.
+- removal of functions synsort() and syntable() due to unsolved incompatibilities
 
 # goeveg 0.4.4
 - Added lwd argument to ordiselect
