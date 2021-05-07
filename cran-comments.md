@@ -1,6 +1,7 @@
 ## Test environments
-* local windows install, R 4.0.4
+* local windows install, R 4.0.5
 * win-builder (devel and release)
+* Ubuntu 16.04.6 LTS (on Travis-CI)
 
 ## R CMD check results
 
@@ -18,6 +19,6 @@ CRAN repository db overrides:
 
 ## Reverse dependencies
 
-There are currently 1 downstream dependencies for this package
+There are no downstream dependencies for this package
 
 
