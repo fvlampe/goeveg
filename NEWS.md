@@ -1,3 +1,6 @@
+# goeveg 0.5.1
+- fixes in references and value tags
+
 # goeveg 0.5.0
 - removal of functions synsort() and syntable() due to unsolved incompatibilities
 

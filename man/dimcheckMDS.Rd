@@ -17,11 +17,14 @@ dimcheckMDS(
 
 \item{distance}{Dissimilarity index used in vegdist.}
 
-\item{k}{Number of dimensions.}
+\item{k}{Number of dimensions (default \code{k = 6}).}
 
 \item{trymax}{Maximum number of random configuration for iterative search search of stable solution.}
 
 \item{autotransform}{Whether to use transformation (see \code{\link[vegan]{metaMDS}}) or not. Default is \code{autotransform = TRUE}.}
+}
+\value{
+A numeric vector of length \emph{k} containing stress values for \emph{k} dimensions.
 }
 \description{
 This function provides a simple plot of stress values for a given number of tested dimensions (default \code{k = 6}) in NMDS.
@@ -51,7 +54,7 @@ dimcheckMDS(schedenveg)
 dimcheckMDS(schedenveg, k = 10)
 }
 \references{
-Clarke, K. R. (1993). Non-parametric multivariate analysis of changes in community structure. \emph{Austral J Ecol} \strong{18:} 117-143.
+Clarke, K. R. (1993). Non-parametric multivariate analysis of changes in community structure. \emph{Austral J Ecol} \strong{18:} 117-143. \url{http://dx.doi.org/10.1111/j.1442-9993.1993.tb00438.x}
 }
 \seealso{
 \code{\link[vegan]{metaMDS}} \code{\link[vegan:goodness.metaMDS]{stressplot}}

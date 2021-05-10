@@ -14,8 +14,8 @@
 #' They are a means to visualize species richness and species evenness.
 #' @return
 #' Returns an (invisible) list composed of:
-#'   \item{\code{abund }}{abundance of each species (in decreasing order)}
-#'   \item{\code{rel.abund }}{relative abundance of each species (in decreasing order)}
+#'   \item{\code{abund }}{abundances of each species (in decreasing order)}
+#'   \item{\code{rel.abund }}{relative abundances of each species (in decreasing order)}
 #'   \item{\code{freq }}{frequency of each species (in decreasing order)}
 #' @examples
 #' ## Draw rank-abundance curve
@@ -30,7 +30,7 @@
 #' ## Draw rank-abundance curve with frequencies and no main title
 #' racurve(schedenveg, frequency = TRUE, nlab = 1, main = "")
 #' @seealso \code{\link{racurves}} for multiple curves and \code{\link[BiodiversityR]{rankabundance}} from package \code{BiodiversityR} for a more sophisticated function
-#' @references Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260.
+#' @references Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260. \url{https://doi.org/10.1126/science.147.3655.250}
 #' @author Friedemann Goral (\email{fgoral@gwdg.de})
 #' @export
 #' @import graphics

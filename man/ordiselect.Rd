@@ -38,6 +38,9 @@ ordiselect(
 
 \item{na.rm}{Set to \code{TRUE} if your ordination object has NAs (e.g. due to selection)}
 }
+\value{
+A vector of variable length containing the names of selected species from matrix.
+}
 \description{
 This function simplifies the selection of relevant species in ordination diagrams. It works with result objects from \code{vegan} package. The selection can be based upon cover abundances, frequency values and/or species fit to multivariate analysis.
 The result is a vector of names of the selected species and can be used for the \code{select} argument in ordination plots.

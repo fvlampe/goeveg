@@ -22,6 +22,10 @@
 #'
 #' Available information about species is reduced to presence-absence as species abundances can contain much noise (being affected by complex factors) and the results of Logistic Regression are easier to interpret showing the "probabilities of occurrence".
 #' Be aware that response curves are only a simplification of reality (model) and their shape is strongly dependent on the available dataset.
+#' @return
+#' Returns character string with information on model type and parameters per species.
+#'
+#' No return if model type predefined \emph{linear} or \emph{unimodal}.
 #' @examples
 #' ## Draw species response curve for one species on environmental variable
 #' ## with points of occurrences

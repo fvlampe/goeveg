@@ -11,6 +11,9 @@ sem(x, na.rm = FALSE)
 
 \item{na.rm}{logical. Should missing values be removed?}
 }
+\value{
+A numeric scalar -- the standard error of the mean.
+}
 \description{
 Compute the standard error of the mean (SEM). The SEM is the standard deviation of the sample-mean's estimate of a population mean.
 It therefore describes the accuracy of the calculation of a sample's mean.

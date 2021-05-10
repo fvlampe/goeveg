@@ -4,7 +4,7 @@
 #' It is based on function \code{\link[vegan]{metaMDS}} (\code{vegan} package) and uses the \code{monoMDS} engine.
 #' @param matrix Community data, a matrix-like object with samples in rows and species in columns.
 #' @param distance Dissimilarity index used in vegdist.
-#' @param k Number of dimensions.
+#' @param k Number of dimensions (default \code{k = 6}).
 #' @param trymax Maximum number of random configuration for iterative search search of stable solution.
 #' @param autotransform Whether to use transformation (see \code{\link[vegan]{metaMDS}}) or not. Default is \code{autotransform = TRUE}.
 #' @section Details:
@@ -19,6 +19,8 @@
 #' \cite{Clarke 1993} suggests the following guidelines for acceptable stress values:
 #' <0.05 = excellent, <0.10 = good, <0.20 = usable, >0.20 = not acceptable.
 #' The plot shows the border of the 0.20 stress value limit. Solutions with higher stress values should be interpreted with caution and those with stress above 0.30 are highly suspect.
+#' @return
+#' A numeric vector of length \emph{k} containing stress values for \emph{k} dimensions.
 #' @examples
 #' ## Use of function with default values
 #' dimcheckMDS(schedenveg)
@@ -26,7 +28,7 @@
 #' ## Use of function for testing 10 dimensions
 #' dimcheckMDS(schedenveg, k = 10)
 #' @seealso \code{\link[vegan]{metaMDS}} \code{\link[vegan:goodness.metaMDS]{stressplot}}
-#' @references Clarke, K. R. (1993). Non-parametric multivariate analysis of changes in community structure. \emph{Austral J Ecol} \strong{18:} 117-143.
+#' @references Clarke, K. R. (1993). Non-parametric multivariate analysis of changes in community structure. \emph{Austral J Ecol} \strong{18:} 117-143. \url{http://dx.doi.org/10.1111/j.1442-9993.1993.tb00438.x}
 #' @author Jenny Schellenberg (\email{jschell@gwdg.de}) and Friedemann Goral (\email{fgoral@gwdg.de})
 #' @export
 #' @import graphics

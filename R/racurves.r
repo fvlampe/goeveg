@@ -10,6 +10,8 @@
 #'
 #' The axes of the diagram will be scaled according automatically.
 #' As the line type is used to differenciate between samples, a maximum of 6 curves per diagram is feasible in black/white mode.
+#' @return
+#' No return value, only diagram.
 #' @examples
 #' ## Draw multiple rank-abundance curves for selected samples
 #' racurves(schedenveg[c(1,7,20,25), ])
@@ -17,7 +19,7 @@
 #' ## Draw multiple rank-abundance curves for selected samples with coloured lines
 #' racurves(schedenveg[c(1,7,20,25), ], bw = FALSE)
 #' @seealso \code{\link{racurve}} for a simple curve and \code{\link[BiodiversityR]{rankabundance}} from package \code{BiodiversityR} for a more sophisticated function
-#' @references Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260.
+#' @references Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260. \url{https://doi.org/10.1126/science.147.3655.250}
 #' @author Friedemann Goral (\email{fgoral@gwdg.de})
 #' @export
 #' @import graphics

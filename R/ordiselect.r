@@ -28,6 +28,8 @@
 #' The default for \code{matrix} input is a cover-abundance-matrix. This matrix should also be used for ordination.
 #'
 #' If no limit is defined for one of the arguments \code{ablim, fitlim}, all species are displayed.
+#' @return
+#' A vector of variable length containing the names of selected species from matrix.
 #' @examples
 #' ## Calculate DCA
 #' library(vegan)

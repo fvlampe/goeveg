@@ -1,7 +1,15 @@
+## Resubmission
+This is a resubmission. In this version I have:
+
+* Added \value to all .Rd files
+* Updated references in documentations with DOI links
+
+Issues leading earlier removal from CRAN were fixed by removal of the concerned function from package
+
 ## Test environments
 * local windows install, R 4.0.5
 * win-builder (devel and release)
-* Ubuntu 16.04.6 LTS (on Travis-CI)
+* ubuntu 16.04.6 LTS (on travis-ci), R 4.0.2
 
 ## R CMD check results
 
@@ -16,6 +24,7 @@ CRAN repository db overrides:
   
     xtfrm() on data frames.
       despite reminders.
+
 
 ## Reverse dependencies
 

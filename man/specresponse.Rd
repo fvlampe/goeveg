@@ -38,6 +38,11 @@ specresponse(
 
 \item{lwd}{Optional: Graphical parameter defining the line width.}
 }
+\value{
+Returns character string with information on model type and parameters per species.
+
+No return if model type predefined \emph{linear} or \emph{unimodal}.
+}
 \description{
 This function fits species response curves to visualize species responses to environmental gradients or ordination axes.
 It is based on Logistic Regression using Generalized Linear Models (GLMs) or Generalized Additive Models (GAMs) with integrated smoothness estimation.

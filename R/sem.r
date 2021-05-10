@@ -7,6 +7,8 @@
 #' @section Details:
 #' The SEM of a zero-length vector (after removal of \code{NA}s if \code{na.rm = TRUE}) is not defined and gives an error.
 #' The SEM of a length-one vector is \code{NA}.
+#' @return
+#' A numeric scalar -- the standard error of the mean.
 #' @examples
 #' ## Calculate mean and SEM for variable soil depth
 #' mean(schedenenv$soil_depth)
