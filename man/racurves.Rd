@@ -37,7 +37,7 @@ racurves(schedenveg[c(1,7,20,25), ])
 racurves(schedenveg[c(1,7,20,25), ], bw = FALSE)
 }
 \references{
-Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260. \url{https://doi.org/10.1126/science.147.3655.250}
+Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260. \doi{10.1126/science.147.3655.250}
 }
 \seealso{
 \code{\link{racurve}} for a simple curve and \code{\link[BiodiversityR]{rankabundance}} from package \code{BiodiversityR} for a more sophisticated function

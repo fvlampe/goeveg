@@ -37,7 +37,7 @@ If there is only a single value, \code{sd} is \code{NA} and \code{cv} returns \c
 cv(schedenenv$soil_depth)
 }
 \references{
-Dormann, C. (2017). Parametrische Statistik. Verteilungen, maximum likelihood und GLM in R. \emph{Springer}. \url{http://dx.doi.org/10.1007/978-3-662-54684-0}
+Dormann, C. (2017). Parametrische Statistik. Verteilungen, maximum likelihood und GLM in R. \emph{Springer}. \doi{10.1007/978-3-662-54684-0}
 
 "What is the difference between ordinal, interval and ratio variables? Why should I care?" \emph{GraphPad Software Inc}. \url{https://www.graphpad.com/support/faqid/1089/}.
 }
