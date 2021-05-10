@@ -4,7 +4,8 @@ This is a resubmission. In this version I have:
 * Added \value to all .Rd files
 * Updated references in documentations with DOI links
 
-Issues leading earlier removal from CRAN were fixed by removal of the concerned function from package
+Issues leading earlier removal from CRAN were fixed by removal of the concerned function from package.
+NMDS is the correct analysis name. 
 
 ## Test environments
 * local windows install, R 4.0.5
@@ -16,14 +17,17 @@ Issues leading earlier removal from CRAN were fixed by removal of the concerned 
 0 errors | 0 warnings | 1 notes
 
 New submission
-  
+
 Package was archived on CRAN
-  
+
+Possibly mis-spelled words in DESCRIPTION:
+  NMDS (9:161)
+
 CRAN repository db overrides:
-    X-CRAN-Comment: Archived on 2021-02-05 as issues were not corrected
-  
-    xtfrm() on data frames.
-      despite reminders.
+  X-CRAN-Comment: Archived on 2021-02-05 as issues were not corrected
+    despite reminders.
+
+  xtfrm() on data frames.
 
 
 ## Reverse dependencies

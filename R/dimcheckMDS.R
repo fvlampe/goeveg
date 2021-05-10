@@ -28,7 +28,7 @@
 #' ## Use of function for testing 10 dimensions
 #' dimcheckMDS(schedenveg, k = 10)
 #' @seealso \code{\link[vegan]{metaMDS}} \code{\link[vegan:goodness.metaMDS]{stressplot}}
-#' @references Clarke, K. R. (1993). Non-parametric multivariate analysis of changes in community structure. \emph{Austral J Ecol} \strong{18:} 117-143. \url{http://dx.doi.org/10.1111/j.1442-9993.1993.tb00438.x}
+#' @references Clarke, K. R. (1993). Non-parametric multivariate analysis of changes in community structure. \emph{Austral J Ecol} \strong{18:} 117-143. \doi{10.1111/j.1442-9993.1993.tb00438.x}
 #' @author Jenny Schellenberg (\email{jschell@gwdg.de}) and Friedemann Goral (\email{fgoral@gwdg.de})
 #' @export
 #' @import graphics

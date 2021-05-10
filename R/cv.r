@@ -21,7 +21,7 @@
 #' ## Calculate CV for variable soil depth
 #' cv(schedenenv$soil_depth)
 #' @seealso \code{\link[stats]{sd}}
-#' @references Dormann, C. (2017). Parametrische Statistik. Verteilungen, maximum likelihood und GLM in R. \emph{Springer}. \url{http://dx.doi.org/10.1007/978-3-662-54684-0}
+#' @references Dormann, C. (2017). Parametrische Statistik. Verteilungen, maximum likelihood und GLM in R. \emph{Springer}. \doi{10.1007/978-3-662-54684-0}
 #' @references "What is the difference between ordinal, interval and ratio variables? Why should I care?" \emph{GraphPad Software Inc}. \url{https://www.graphpad.com/support/faqid/1089/}.
 #' @export
 #' @import stats
