@@ -14,6 +14,8 @@
 New maintainer:
   Friedemann von Lampe <fvonlampe@uni-goettingen.de>
   Friedemann Goral <fgoral@gwdg.de>
+  
+The reason for this is a change of the authors name due to marriage.
 
 
 ## Reverse dependencies
