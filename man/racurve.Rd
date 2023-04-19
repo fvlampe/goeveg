@@ -63,5 +63,5 @@ Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Nume
 \code{\link{racurves}} for multiple curves and \code{\link[BiodiversityR]{rankabundance}} from package \code{BiodiversityR} for a more sophisticated function
 }
 \author{
-Friedemann Goral (\email{fgoral@gwdg.de})
+Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de})
 }

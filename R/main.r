@@ -11,8 +11,11 @@
 
 ### Welcome Message and Options -----
 
-.onAttach <- function(libname, pkgname) {
-  packageStartupMessage("Welcome to the GoeVeg Package")
+.onAttach <- function(lib, pkg)  {
+  packageStartupMessage("This is GoeVeg ",
+                        utils::packageDescription("goeveg", field="Version"), paste(' - build: '),
+                        utils::packageDate('goeveg'),
+                        appendLF = TRUE)
 }
 
 
@@ -21,8 +24,8 @@
   op.devtools <- list(
     devtools.path = "~/R-dev",
     devtools.install.args = "",
-    devtools.name = "Friedemann Goral, Jenny Schellenberg",
-    devtools.desc.author = '"Friedemann Goral <fgoral@gdwg.de> [aut, cre]"',
+    devtools.name = "Friedemann von Lampe, Jenny Schellenberg",
+    devtools.desc.author = '"Friedemann von Lampe <fvonlampe@uni-goettingen.de> [aut, cre]"',
     devtools.desc.license = "GPL (>= 2)",
     devtools.desc.suggests = NULL,
     devtools.desc = list()

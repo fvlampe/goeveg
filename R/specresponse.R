@@ -18,7 +18,7 @@
 #' For a response to ordination axis (\code{method = "ord"}) the argument \code{var} requires a \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}} or \code{\link[vegan]{metaMDS}}).
 #' First axis is used as default.
 #'
-#' By default the response curves are drawn with automatic GLM model selection based on AIC out of GLMs with 1 - 3 polynomial degrees (thus excluding bimodal responses which must be manually defined). The GAM model is more flexible and choses automatically between an upper limit of 3 - 6 degrees of freedom for the regression smoother.
+#' By default the response curves are drawn with automatic GLM model selection based on AIC out of GLMs with 1 - 3 polynomial degrees (thus excluding bimodal responses which must be manually defined). The GAM model is more flexible and chooses automatically between an upper limit of 3 - 6 degrees of freedom for the regression smoother.
 #'
 #' Available information about species is reduced to presence-absence as species abundances can contain much noise (being affected by complex factors) and the results of Logistic Regression are easier to interpret showing the "probabilities of occurrence".
 #' Be aware that response curves are only a simplification of reality (model) and their shape is strongly dependent on the available dataset.
@@ -62,7 +62,7 @@
 #' specresponse(schedenveg[ ,c(9,18,14,19)], scheden.dca, method = "ord")
 #' specresponse(schedenveg[ ,c(9,18,14,19)], scheden.dca, method = "ord", axis = 2)
 #'
-#' @author Friedemann Goral (\email{fgoral@gwdg.de})
+#' @author Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de})
 #' @export
 #' @import graphics
 #' @import stats

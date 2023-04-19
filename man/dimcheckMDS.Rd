@@ -60,5 +60,5 @@ Clarke, K. R. (1993). Non-parametric multivariate analysis of changes in communi
 \code{\link[vegan]{metaMDS}} \code{\link[vegan:goodness.metaMDS]{stressplot}}
 }
 \author{
-Jenny Schellenberg (\email{jschell@gwdg.de}) and Friedemann Goral (\email{fgoral@gwdg.de})
+Jenny Schellenberg (\email{jschell@gwdg.de}) and Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de})
 }

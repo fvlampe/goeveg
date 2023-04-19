@@ -8,6 +8,7 @@ Includes:
 * Species response curves (`specresponse()` - function)
 * Stress/scree plots for NMDS (`dimcheckMDS()` - function)
 * Rank-abundance curves (`racurve()` and `racurves()` - functions; the latter for (multiple) samples)
+* Calculation and sorting of synoptic tables with calculation of fidelity and differential species (`syntable()` and `synsort()` functions)
 
 
 Furthermore some basic functions are included, such as standard error of the mean `sem()` and coefficient of variance `cv()`. 

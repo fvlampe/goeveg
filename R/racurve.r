@@ -31,7 +31,7 @@
 #' racurve(schedenveg, frequency = TRUE, nlab = 1, main = "")
 #' @seealso \code{\link{racurves}} for multiple curves and \code{\link[BiodiversityR]{rankabundance}} from package \code{BiodiversityR} for a more sophisticated function
 #' @references Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260. \doi{10.1126/science.147.3655.250}
-#' @author Friedemann Goral (\email{fgoral@gwdg.de})
+#' @author Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de})
 #' @export
 #' @import graphics
 #' @importFrom utils head

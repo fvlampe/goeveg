@@ -99,5 +99,5 @@ specresponse(schedenveg[ ,c(9,18,14,19)], scheden.dca, method = "ord", axis = 2)
 
 }
 \author{
-Friedemann Goral (\email{fgoral@gwdg.de})
+Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de})
 }
