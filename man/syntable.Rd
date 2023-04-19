@@ -38,7 +38,7 @@ They help to determine characteristic patterning of species occurrences in plant
 by calculating cluster-wise percentage or absolute frequencies, mean/median cover values, fidelity
 (phi) or differential species character.
 \code{syntable} function calculates an unordered synoptic table for plant community analysis, using
-an input species-sample dataframe and a numeric vector of cluster identidy input.
+an input species-sample dataframe and a numeric vector of cluster identity input.
 The unordered output table can be sorted automatically with \code{\link[goeveg]{synsort}} function
 in this package.
 }
