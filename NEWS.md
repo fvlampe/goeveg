@@ -1,8 +1,11 @@
+# goeveg 0.6.1
+* Explained deviances and p-values are now printed in 'specresponse()'. Full model results are returned in an (invisible) object. 
+* Added functionality to select the least abundant (rarest) species in 'ordiselect()'
+
 # goeveg 0.6.0
 * (Re-)added functions for calculation and sorting of synoptic tables: 'syntable()' and 'synsort()'
 * Comprehensive update for 'ordiselect()'. Now returns exact proportion of selected species. Correction in selection to axis fit limits. Variable fit now only works with factor centroids. 
 * Updated help pages
-
 
 # goeveg 0.5.1
 * Fixes in references and value tags

@@ -8,14 +8,7 @@
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 notes
-
-❯ checking CRAN incoming feasibility ... [12s] NOTE
-New maintainer:
-  Friedemann von Lampe <fvonlampe@uni-goettingen.de>
-  Friedemann Goral <fgoral@gwdg.de>
-  
-The reason for this is a change of the authors name due to marriage.
+0 errors | 0 warnings | 0 notes
 
 
 ## Reverse dependencies

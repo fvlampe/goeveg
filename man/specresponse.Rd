@@ -32,16 +32,15 @@ specresponse(
 
 \item{axis}{Ordination axis (only if \code{method = "ord"}).}
 
-\item{points}{If set on \code{TRUE} the species occurrences are shown as transparent points (the darker the point the more samples at this x-value). To avoid overlapping they are shown with vertical offset.}
+\item{points}{If set on \code{TRUE} the species occurrences are shown as transparent points (the darker the point the more samples at this x-value). To avoid overlapping they are shown with vertical offset when multiple species are displayed.}
 
 \item{bw}{If set on \code{TRUE} the lines will be drawn in black/white with different line types instead of colors.}
 
 \item{lwd}{Optional: Graphical parameter defining the line width.}
 }
 \value{
-Returns character string with information on model type and parameters per species.
-
-No return if model type predefined \emph{linear} or \emph{unimodal}.
+Returns an (invisible) list with results for all calculated models. This list can be stored by assigning the result.
+For each model short information on type, parameters and significance are printed.
 }
 \description{
 This function fits species response curves to visualize species responses to environmental gradients or ordination axes.
@@ -82,8 +81,10 @@ specresponse(schedenveg$ArrElat, scheden.dca, method = "ord", axis = 2, model = 
 
 ## Community data: species (columns) need to be selected; call names() to get column numbers
 names(schedenveg)
-## Draw multiple species response curves on variable in black/white
-specresponse(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, bw = TRUE)
+## Draw multiple species response curves on variable in black/white and store the results
+res <- specresponse(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, bw = TRUE)
+# Call the results for Anthoxanthum odoratum
+summary(res$AntOdor)
 
 ## Draw the same curves based on GAM
 specresponse(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, bw = TRUE, model = "gam")

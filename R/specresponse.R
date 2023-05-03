@@ -9,7 +9,7 @@
 #' @param model Defining the assumed species response: Default \code{model = "auto"} selects the model automatically based on AIC. Other methods are \code{model = "linear"} (linear response), \code{model = "unimodal"} (unimodal response), \code{model = "bimodal"} (bimodal response) and \code{model = "gam"} (using GAM with regression smoother).
 #' @param method Method defining the type of variable. Default \code{method = "env"} fits a response curve to environmental variables. Alternatively \code{method = "ord"} fits a response along ordination axes.
 #' @param axis Ordination axis (only if \code{method = "ord"}).
-#' @param points If set on \code{TRUE} the species occurrences are shown as transparent points (the darker the point the more samples at this x-value). To avoid overlapping they are shown with vertical offset.
+#' @param points If set on \code{TRUE} the species occurrences are shown as transparent points (the darker the point the more samples at this x-value). To avoid overlapping they are shown with vertical offset when multiple species are displayed.
 #' @param bw If set on \code{TRUE} the lines will be drawn in black/white with different line types instead of colors.
 #' @param lwd Optional: Graphical parameter defining the line width.
 #' @section Details:
@@ -23,9 +23,8 @@
 #' Available information about species is reduced to presence-absence as species abundances can contain much noise (being affected by complex factors) and the results of Logistic Regression are easier to interpret showing the "probabilities of occurrence".
 #' Be aware that response curves are only a simplification of reality (model) and their shape is strongly dependent on the available dataset.
 #' @return
-#' Returns character string with information on model type and parameters per species.
-#'
-#' No return if model type predefined \emph{linear} or \emph{unimodal}.
+#' Returns an (invisible) list with results for all calculated models. This list can be stored by assigning the result.
+#' For each model short information on type, parameters and significance are printed.
 #' @examples
 #' ## Draw species response curve for one species on environmental variable
 #' ## with points of occurrences
@@ -47,8 +46,10 @@
 #'
 #' ## Community data: species (columns) need to be selected; call names() to get column numbers
 #' names(schedenveg)
-#' ## Draw multiple species response curves on variable in black/white
-#' specresponse(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, bw = TRUE)
+#' ## Draw multiple species response curves on variable in black/white and store the results
+#' res <- specresponse(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, bw = TRUE)
+#' # Call the results for Anthoxanthum odoratum
+#' summary(res$AntOdor)
 #'
 #' ## Draw the same curves based on GAM
 #' specresponse(schedenveg[ ,c(9,18,14,19)], schedenenv$height_herb, bw = TRUE, model = "gam")
@@ -91,6 +92,7 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
   }
 
   species <- decostand(species, method = "pa")
+  results <- list(0)
 
   if(length(species) >= 1) {
 
@@ -120,7 +122,7 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
     for(i in 1:ls) {
 
       if(length(species[species[,i]>0,i]) <= 5) {
-        # tried warning instead of print
+        # Warning if 5 or less occurences
         warning(paste("Only", length(species[species[,i]>0,i]), "occurrences of", names(species)[i], "."))
       }
 
@@ -129,15 +131,39 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
         specresponse <- suppressWarnings(glm(species[,i] ~ poly(var, 2),
                                              family="binomial"))
 
+        dev.expl <- round(100 * with(summary(specresponse), 1 - deviance/null.deviance), 1)
+        pval <- round(coef(summary(specresponse))[,4][2], 3)
+
+        print(paste0("GLM with 2 degrees fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value = ", pval))
+
+        results[[i]] <- specresponse
+        names(results)[i] <- specnames[i]
+
       } else if (model == "linear") {
 
         specresponse <- suppressWarnings(glm(species[,i] ~ var,
                                              family="binomial"))
 
+        dev.expl <- round(100 * with(summary(specresponse), 1 - deviance/null.deviance), 1)
+        pval <- round(coef(summary(specresponse))[,4][2], 3)
+
+        print(paste0("GLM with 1 degree fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value = ", pval))
+
+        results[[i]] <- specresponse
+        names(results)[i] <- specnames[i]
+
       } else if (model == "bimodal") {
 
         specresponse <- suppressWarnings(glm(species[,i] ~ poly(var, 4),
                                              family="binomial"))
+
+        dev.expl <- round(100 * with(summary(specresponse), 1 - deviance/null.deviance), 1)
+        pval <- round(coef(summary(specresponse))[,4][2], 3)
+
+        print(paste0("GLM with 4 degrees fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value = ", pval,"."))
+
+        results[[i]] <- specresponse
+        names(results)[i] <- specnames[i]
 
       }
       else if (model == "auto") {
@@ -153,7 +179,13 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
                {specresponse <- glm.2; deg<-2},
                {specresponse <- glm.3; deg<-3})
 
-        print(paste("GLM with", deg, "degrees fitted for", specnames[i]))
+        dev.expl <- round(100 * with(summary(specresponse), 1 - deviance/null.deviance), 1)
+        pval <- round(coef(summary(specresponse))[,4][2], 3)
+
+        print(paste0("GLM with ", deg, " degrees fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value = ", pval,"."))
+
+        results[[i]] <- specresponse
+        names(results)[i] <- specnames[i]
 
       } else if (model == "gam") {
 
@@ -171,7 +203,16 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
                {specresponse <- gam.list[[3]]; deg<-5},
                {specresponse <- gam.list[[4]]; deg<-6})
 
-        print(paste("GAM with", deg, "knots fitted for", specnames[i]))
+        dev.expl <- round(100 * with(specresponse, 1 - deviance/null.deviance), 1)
+        dev.expl
+        pval <- round(summary(specresponse)$s.table[,4], 3)
+        pval
+
+        print(paste0("GAM with ", deg, " knots fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value = ", pval,"."))
+
+        results[[i]] <- specresponse
+        names(results)[i] <- specnames[i]
+
 
       } else {
         stop("Model unknown.")
@@ -227,6 +268,8 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
                bty = "n", cex = 0.85)
       }
     }
+
+    return(invisible(results))
 
   }  else {
     stop("No species in matrix.")

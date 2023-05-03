@@ -4,7 +4,7 @@
 #' The result is a vector of names of the selected species and can be used for the \code{select} argument in ordination plots.
 #' @param matrix Community data, a matrix-like object with samples in rows and species in columns.
 #' @param ord \code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}} or \code{\link[vegan]{metaMDS}}).
-#' @param ablim Proportion of species with highest abundances to be displayed. Value between 0 and 1.
+#' @param ablim Proportion of species with highest abundances to be displayed. Value between 0 and 1. Use negative sign for selection of lowest abundances, i.e. rarest species.
 #' @param fitlim Proportion of species with best fit to be displayed. Value between 0 and 1.
 #' @param choices Axes shown.
 #' @param freq Whether to use cover abundances (= default) or frequencies of \code{matrix}. If \code{TRUE}, frequencies of species are used.
@@ -22,6 +22,7 @@
 #' If axes fit should be applied on distance-based ordination, species scores need to be calculated during the analysis, e.g. by selecting \code{wascores = TRUE} in \code{\link[vegan]{metaMDS}}. It is mostly recommendable to combine the species fit limit with an abundance limit so avoid overinterpretation of rare species.
 #'
 #' For the abundance limit note that the final proportion of the selected species may be higher than the indicated proportion if there are identical values in the abundances.
+#' For selection of least abundant (rarest) species you can use a negative sign, e.g. \code{ablim = -0.3} for the 30% least abundant species.
 #'
 #' If both limits are defined only species meeting both conditions are selected.
 #' If no limit is defined for one of the arguments \code{ablim, fitlim}, all species are displayed.
@@ -51,6 +52,10 @@
 #' ## AND belonging to the 30% most frequent species
 #' limited <- ordiselect(schedenveg, scheden.dca, ablim = 0.3,
 #'    fitlim = 0.7, freq = TRUE)
+#'
+#' ## Select the 30% least frequent species and call the result
+#' limited <- ordiselect(schedenveg, scheden.dca, ablim = -0.3, freq = TRUE)
+#' limited
 #'
 #' ## Select the 20% of species with the best fit to community assignment
 #' ## AND belonging to the 50% most abundant
@@ -96,9 +101,19 @@ ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1, 2), f
     scores_max <- apply(scores_abs, 1, max)
 
     # Select according to abundance and fit limits
-    selected <- rownames(scores[abund >= quantile(abund, 1 - ablim) &
+    if(ablim >= 0 & ablim <= 1) {
+      selected <- rownames(scores[abund >= quantile(abund, 1 - ablim) &
                       (scores_max >= quantile(scores_max, 1 - fitlim, na.rm = na.rm))
                     , ])
+    } else if (ablim < 0 & ablim >= -1) {
+      ablim <- abs(ablim)
+      selected <- rownames(scores[abund <= quantile(abund, ablim) &
+                                    (scores_max >= quantile(scores_max, 1 - fitlim, na.rm = na.rm))
+                                  , ])
+    } else {
+      stop("Abundance limit must be between 0 and 1 (for most abundant species) OR -1 and 0 (for least abundant species)")
+    }
+
     per <- round(length(selected) / length(abund) * 100, digits = 1)
 
     print(paste0(length(selected), " species selected (", per, "%)"))
@@ -137,9 +152,21 @@ ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1, 2), f
 
 
             # Select species with lowest distances based on given quantile
-            selected <- rownames(euclid[abund >= quantile(abund, 1 - ablim) &
+            # For positive and negative abundance limits
+            if(ablim >= 0 & ablim <= 1) {
+
+              selected <- rownames(euclid[abund >= quantile(abund, 1 - ablim) &
                                           (euclid_min <= quantile(euclid_min, fitlim, na.rm = na.rm))
                                         , ])
+            } else if (ablim < 0 & ablim >= -1) {
+
+              ablim <- abs(ablim)
+              selected <- rownames(euclid[abund <= quantile(abund, ablim) &
+                                            (euclid_min <= quantile(euclid_min, fitlim, na.rm = na.rm))
+                                          , ])
+            } else {
+              stop("Abundance limit must be between 0 and 1 (for most abundant species) OR -1 and 0 (for least abundant species)")
+            }
 
             per <- round(length(selected) / length(abund) * 100, digits = 1)
 

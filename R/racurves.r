@@ -9,7 +9,7 @@
 #' They are a means to visualize species richness and species evenness.
 #'
 #' The axes of the diagram will be scaled according automatically.
-#' As the line type is used to differenciate between samples, a maximum of 6 curves per diagram is feasible in black/white mode.
+#' As the line type is used to differentiate between samples, a maximum of 6 curves per diagram is feasible in black/white mode.
 #' @return
 #' No return value, only diagram.
 #' @examples

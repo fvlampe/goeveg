@@ -22,7 +22,7 @@ ordiselect(
 
 \item{ord}{\code{vegan} ordination result object (e.g. from \code{\link[vegan]{decorana}}, \code{\link[vegan]{cca}} or \code{\link[vegan]{metaMDS}}).}
 
-\item{ablim}{Proportion of species with highest abundances to be displayed. Value between 0 and 1.}
+\item{ablim}{Proportion of species with highest abundances to be displayed. Value between 0 and 1. Use negative sign for selection of lowest abundances, i.e. rarest species.}
 
 \item{fitlim}{Proportion of species with best fit to be displayed. Value between 0 and 1.}
 
@@ -56,6 +56,7 @@ The species fit methods work well both in eigenvalue-based and in distance-based
 If axes fit should be applied on distance-based ordination, species scores need to be calculated during the analysis, e.g. by selecting \code{wascores = TRUE} in \code{\link[vegan]{metaMDS}}. It is mostly recommendable to combine the species fit limit with an abundance limit so avoid overinterpretation of rare species.
 
 For the abundance limit note that the final proportion of the selected species may be higher than the indicated proportion if there are identical values in the abundances.
+For selection of least abundant (rarest) species you can use a negative sign, e.g. \code{ablim = -0.3} for the 30% least abundant species.
 
 If both limits are defined only species meeting both conditions are selected.
 If no limit is defined for one of the arguments \code{ablim, fitlim}, all species are displayed.
@@ -84,6 +85,10 @@ ordipointlabel(scheden.dca, display="species",
 ## AND belonging to the 30\% most frequent species
 limited <- ordiselect(schedenveg, scheden.dca, ablim = 0.3,
    fitlim = 0.7, freq = TRUE)
+
+## Select the 30\% least frequent species and call the result
+limited <- ordiselect(schedenveg, scheden.dca, ablim = -0.3, freq = TRUE)
+limited
 
 ## Select the 20\% of species with the best fit to community assignment
 ## AND belonging to the 50\% most abundant
