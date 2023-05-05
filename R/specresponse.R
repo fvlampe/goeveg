@@ -12,6 +12,7 @@
 #' @param points If set on \code{TRUE} the species occurrences are shown as transparent points (the darker the point the more samples at this x-value). To avoid overlapping they are shown with vertical offset when multiple species are displayed.
 #' @param bw If set on \code{TRUE} the lines will be drawn in black/white with different line types instead of colors.
 #' @param lwd Optional: Graphical parameter defining the line width.
+#' @param na.action Optional: a function which indicates what should happen when the data contain NAs. The default is 'na.omit' (removes incomplete cases).
 #' @section Details:
 #' For response curves based on environmental gradients the argument \code{var} takes a single vector containing the variable corresponding to the species abundances.
 #'
@@ -71,7 +72,7 @@
 #' @importFrom mgcv gam
 #' @importFrom vegan scores decostand
 
-specresponse <- function(species, var, main, xlab, model = "auto", method = "env", axis = 1, points = FALSE, bw = FALSE, lwd = NULL) {
+specresponse <- function(species, var, main, xlab, model = "auto", method = "env", axis = 1, points = FALSE, bw = FALSE, lwd = NULL, na.action = na.omit) {
 
   if(!is.data.frame(species)) {
 
@@ -129,7 +130,7 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
       if(model == "unimodal") {
 
         specresponse <- suppressWarnings(glm(species[,i] ~ poly(var, 2),
-                                             family="binomial"))
+                                             family="binomial", na.action = na.action))
 
         dev.expl <- round(100 * with(summary(specresponse), 1 - deviance/null.deviance), 1)
         pval <- round(coef(summary(specresponse))[,4][2], 3)
@@ -142,7 +143,7 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
       } else if (model == "linear") {
 
         specresponse <- suppressWarnings(glm(species[,i] ~ var,
-                                             family="binomial"))
+                                             family="binomial", na.action = na.action))
 
         dev.expl <- round(100 * with(summary(specresponse), 1 - deviance/null.deviance), 1)
         pval <- round(coef(summary(specresponse))[,4][2], 3)
@@ -155,7 +156,7 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
       } else if (model == "bimodal") {
 
         specresponse <- suppressWarnings(glm(species[,i] ~ poly(var, 4),
-                                             family="binomial"))
+                                             family="binomial", na.action = na.action))
 
         dev.expl <- round(100 * with(summary(specresponse), 1 - deviance/null.deviance), 1)
         pval <- round(coef(summary(specresponse))[,4][2], 3)
@@ -168,9 +169,9 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
       }
       else if (model == "auto") {
 
-        glm.1 <- suppressWarnings(glm(species[,i] ~ poly(var, 1), family="binomial"))
-        glm.2 <- suppressWarnings(glm(species[,i] ~ poly(var, 2), family="binomial"))
-        glm.3 <- suppressWarnings(glm(species[,i] ~ poly(var, 3), family="binomial"))
+        glm.1 <- suppressWarnings(glm(species[,i] ~ poly(var, 1), family="binomial", na.action = na.action))
+        glm.2 <- suppressWarnings(glm(species[,i] ~ poly(var, 2), family="binomial", na.action = na.action))
+        glm.3 <- suppressWarnings(glm(species[,i] ~ poly(var, 3), family="binomial", na.action = na.action))
         glm.AIC <- c(extractAIC (glm.1)[2], extractAIC (glm.2)[2],
                      extractAIC (glm.3)[2])
 
@@ -193,7 +194,7 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
         gam.AIC <- 0
 
         for(n in 1:4) {
-          gam.list[[paste("gam", n, sep=".")]] <- mgcv::gam(species[,i] ~ s(var, k = n+2), family='binomial')
+          gam.list[[paste("gam", n, sep=".")]] <- mgcv::gam(species[,i] ~ s(var, k = n+2), family='binomial', na.action = na.action)
           gam.AIC[n] <- extractAIC(gam.list[[n]])[2]
         }
 

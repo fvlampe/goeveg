@@ -1,3 +1,6 @@
+# goeveg 0.6.2
+* Added na.action argument to 'specresponse()'
+
 # goeveg 0.6.1
 * Explained deviances and p-values are now printed in 'specresponse()'. Full model results are returned in an (invisible) object. 
 * Added functionality to select the least abundant (rarest) species in 'ordiselect()'

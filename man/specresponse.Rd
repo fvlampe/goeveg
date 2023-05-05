@@ -14,7 +14,8 @@ specresponse(
   axis = 1,
   points = FALSE,
   bw = FALSE,
-  lwd = NULL
+  lwd = NULL,
+  na.action = na.omit
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ specresponse(
 \item{bw}{If set on \code{TRUE} the lines will be drawn in black/white with different line types instead of colors.}
 
 \item{lwd}{Optional: Graphical parameter defining the line width.}
+
+\item{na.action}{Optional: a function which indicates what should happen when the data contain NAs. The default is 'na.omit' (removes incomplete cases).}
 }
 \value{
 Returns an (invisible) list with results for all calculated models. This list can be stored by assigning the result.
