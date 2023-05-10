@@ -25,7 +25,7 @@
 #' Be aware that response curves are only a simplification of reality (model) and their shape is strongly dependent on the available dataset.
 #' @return
 #' Returns an (invisible) list with results for all calculated models. This list can be stored by assigning the result.
-#' For each model short information on type, parameters and significance are printed.
+#' For each model short information on type, parameters, explained deviance and corresponding significance (based on chi-squared test) are printed.
 #' @examples
 #' ## Draw species response curve for one species on environmental variable
 #' ## with points of occurrences
@@ -131,9 +131,10 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
 
         specresponse <- suppressWarnings(glm(species[,i] ~ poly(var, 2),
                                              family="binomial", na.action = na.action))
+        glm.0 <- glm(species[,i] ~ 1, family = "binomial")
 
         dev.expl <- round(100 * with(summary(specresponse), 1 - deviance/null.deviance), 1)
-        pval <- round(coef(summary(specresponse))[,4][2], 3)
+        pval <- round(anova(specresponse, glm.0, test="Chisq")[2,5], 3)
 
         print(paste0("GLM with 2 degrees fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value = ", pval))
 
@@ -145,8 +146,10 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
         specresponse <- suppressWarnings(glm(species[,i] ~ var,
                                              family="binomial", na.action = na.action))
 
+        glm.0 <- glm(species[,i] ~ 1, family = "binomial")
+
         dev.expl <- round(100 * with(summary(specresponse), 1 - deviance/null.deviance), 1)
-        pval <- round(coef(summary(specresponse))[,4][2], 3)
+        pval <- round(anova(specresponse, glm.0, test="Chisq")[2,5], 3)
 
         print(paste0("GLM with 1 degree fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value = ", pval))
 
@@ -158,8 +161,10 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
         specresponse <- suppressWarnings(glm(species[,i] ~ poly(var, 4),
                                              family="binomial", na.action = na.action))
 
+        glm.0 <- glm(species[,i] ~ 1, family = "binomial")
+
         dev.expl <- round(100 * with(summary(specresponse), 1 - deviance/null.deviance), 1)
-        pval <- round(coef(summary(specresponse))[,4][2], 3)
+        pval <- round(anova(specresponse, glm.0, test="Chisq")[2,5], 3)
 
         print(paste0("GLM with 4 degrees fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value = ", pval,"."))
 
@@ -180,8 +185,10 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
                {specresponse <- glm.2; deg<-2},
                {specresponse <- glm.3; deg<-3})
 
+        glm.0 <- glm(species[,i] ~ 1, family = "binomial")
+
         dev.expl <- round(100 * with(summary(specresponse), 1 - deviance/null.deviance), 1)
-        pval <- round(coef(summary(specresponse))[,4][2], 3)
+        pval <- round(anova(specresponse, glm.0, test="Chisq")[2,5], 3)
 
         print(paste0("GLM with ", deg, " degrees fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value = ", pval,"."))
 

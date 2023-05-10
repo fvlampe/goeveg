@@ -16,16 +16,17 @@
 #' Two methods for species fit are implemented.
 #' \itemize{\item In \code{method = "axes"} (default) species scores are used for selecting best fitting species. The basic assumption is that species that show high correlations to ordination axes provide a good fit to the assumed gradients, Hence high scores along ordination axes mean high correlation. All species with highest axis scores, defined by the threshold given in argument \code{fitlim}, will be filtered from the total ordination result.
 #' \item In \code{method = "factors"}, Euclidean distances between species and environmental variable centroids are calculated. Only factor variables are used from \code{\link[vegan]{envfit}} output. The species with smallest distances, defined by \code{fitlim} argument as a threshold, will be filtered from the ordination result.
-#' \item The \code{p.max} argument allows selection of only significant variables, default is \code{p.max = 0.05}.}
+#' The \code{p.max} argument allows selection of only significant variables, default is \code{p.max = 0.05}.}
 #'
 #' The species fit methods work well both in eigenvalue-based and in distance-based ordinations and provide good option of objective reduction of visible species in ordination plot for better interpretation issues.
 #' If axes fit should be applied on distance-based ordination, species scores need to be calculated during the analysis, e.g. by selecting \code{wascores = TRUE} in \code{\link[vegan]{metaMDS}}. It is mostly recommendable to combine the species fit limit with an abundance limit so avoid overinterpretation of rare species.
 #'
-#' For the abundance limit note that the final proportion of the selected species may be higher than the indicated proportion if there are identical values in the abundances.
-#' For selection of least abundant (rarest) species you can use a negative sign, e.g. \code{ablim = -0.3} for the 30% least abundant species.
+#' For the abundance limit, note that the final proportion of the selected species may be higher than the indicated proportion if there are identical values in the abundances.
+#' For selection of least abundant (rarest) species you can use a negative sign, e.g. \code{ablim = -0.3} for the 30 percent least abundant species.
 #'
 #' If both limits are defined only species meeting both conditions are selected.
 #' If no limit is defined for one of the arguments \code{ablim, fitlim}, all species are displayed.
+#'
 #' The default for \code{matrix} input is a cover-abundance-matrix. This matrix should also be used for ordination.
 #'
 #' @return
