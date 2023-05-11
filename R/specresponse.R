@@ -236,8 +236,8 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
       if(bw == T) {
         if(points == TRUE) {
           if(i > 1) {
-            species[,i] <- ifelse(species[,i] == 1, species[,i] - 0.02*(i-1), species[,i])
-            species[,i] <- ifelse(species[,i] == 0, species[,i] + 0.02*(i-1), species[,i])
+            species[,i] <- ifelse(species[,i] == 1, species[,i] - 0.015*(i-1), species[,i])
+            species[,i] <- ifelse(species[,i] == 0, species[,i] + 0.015*(i-1), species[,i])
           }
 
           col <- col2rgb("black")
@@ -250,8 +250,8 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
 
         if(points == TRUE) {
           if(i > 1) {
-            species[,i] <- ifelse(species[,i] == 1, species[,i] - 0.02*(i-1), species[,i])
-            species[,i] <- ifelse(species[,i] == 0, species[,i] + 0.02*(i-1), species[,i])
+            species[,i] <- ifelse(species[,i] == 1, species[,i] - 0.015*(i-1), species[,i])
+            species[,i] <- ifelse(species[,i] == 0, species[,i] + 0.015*(i-1), species[,i])
           }
 
           col <- col2rgb(i)
