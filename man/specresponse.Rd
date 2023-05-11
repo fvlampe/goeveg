@@ -43,11 +43,11 @@ specresponse(
 }
 \value{
 Returns an (invisible) list with results for all calculated models. This list can be stored by assigning the result.
-For each model short information on type, parameters and significance are printed.
+For each model short information on type, parameters, explained deviance and corresponding p-value (based on chi-squared test) are printed.
 }
 \description{
 This function fits species response curves to visualize species responses to environmental gradients or ordination axes.
-It is based on Logistic Regression using Generalized Linear Models (GLMs) or Generalized Additive Models (GAMs) with integrated smoothness estimation.
+It is based on Logistic Regression (binomial family) using Generalized Linear Models (GLMs) or Generalized Additive Models (GAMs) with integrated smoothness estimation.
 The function can draw response curves for single or multiple species.
 }
 \section{Details}{

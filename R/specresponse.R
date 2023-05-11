@@ -1,6 +1,6 @@
 #' Species response curves
 #' @description This function fits species response curves to visualize species responses to environmental gradients or ordination axes.
-#' It is based on Logistic Regression using Generalized Linear Models (GLMs) or Generalized Additive Models (GAMs) with integrated smoothness estimation.
+#' It is based on Logistic Regression (binomial family) using Generalized Linear Models (GLMs) or Generalized Additive Models (GAMs) with integrated smoothness estimation.
 #' The function can draw response curves for single or multiple species.
 #' @param species Species data (either a community matrix object with samples in rows and species in columns - response curves are drawn for all (selected) columns; or a single vector containing species abundances per plot).
 #' @param var Vector containing environmental variable (per plot) \strong{OR} \code{vegan} ordination result object if \code{method = "ord"}.
@@ -25,7 +25,7 @@
 #' Be aware that response curves are only a simplification of reality (model) and their shape is strongly dependent on the available dataset.
 #' @return
 #' Returns an (invisible) list with results for all calculated models. This list can be stored by assigning the result.
-#' For each model short information on type, parameters, explained deviance and corresponding significance (based on chi-squared test) are printed.
+#' For each model short information on type, parameters, explained deviance and corresponding p-value (based on chi-squared test) are printed.
 #' @examples
 #' ## Draw species response curve for one species on environmental variable
 #' ## with points of occurrences
