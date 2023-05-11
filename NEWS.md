@@ -1,5 +1,6 @@
 # goeveg 0.6.3
 * Fixed wrong p-value calculation for GLMs in 'specresponse()'
+* Fixed problem with NAs in 'specresponse()' when showing point values
 
 # goeveg 0.6.2
 * Added na.action argument to 'specresponse()'

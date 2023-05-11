@@ -136,7 +136,8 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
         dev.expl <- round(100 * with(summary(specresponse), 1 - deviance/null.deviance), 1)
         pval <- round(anova(specresponse, glm.0, test="Chisq")[2,5], 3)
 
-        print(paste0("GLM with 2 degrees fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value = ", pval))
+        print(paste0("GLM with 2 degrees fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value ",
+                     ifelse(pval == 0, "< ", "= "), ifelse(pval == 0, "0.001", pval),"."))
 
         results[[i]] <- specresponse
         names(results)[i] <- specnames[i]
@@ -151,7 +152,8 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
         dev.expl <- round(100 * with(summary(specresponse), 1 - deviance/null.deviance), 1)
         pval <- round(anova(specresponse, glm.0, test="Chisq")[2,5], 3)
 
-        print(paste0("GLM with 1 degree fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value = ", pval))
+        print(paste0("GLM with 1 degree fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value ",
+                     ifelse(pval == 0, "< ", "= "), ifelse(pval == 0, "0.001", pval),"."))
 
         results[[i]] <- specresponse
         names(results)[i] <- specnames[i]
@@ -166,7 +168,8 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
         dev.expl <- round(100 * with(summary(specresponse), 1 - deviance/null.deviance), 1)
         pval <- round(anova(specresponse, glm.0, test="Chisq")[2,5], 3)
 
-        print(paste0("GLM with 4 degrees fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value = ", pval,"."))
+        print(paste0("GLM with 4 degrees fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value ",
+                     ifelse(pval == 0, "< ", "= "), ifelse(pval == 0, "0.001", pval),"."))
 
         results[[i]] <- specresponse
         names(results)[i] <- specnames[i]
@@ -190,7 +193,8 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
         dev.expl <- round(100 * with(summary(specresponse), 1 - deviance/null.deviance), 1)
         pval <- round(anova(specresponse, glm.0, test="Chisq")[2,5], 3)
 
-        print(paste0("GLM with ", deg, " degrees fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value = ", pval,"."))
+        print(paste0("GLM with ", deg, " degrees fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value ",
+                     ifelse(pval == 0, "< ", "= "), ifelse(pval == 0, "0.001", pval),"."))
 
         results[[i]] <- specresponse
         names(results)[i] <- specnames[i]
@@ -212,11 +216,10 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
                {specresponse <- gam.list[[4]]; deg<-6})
 
         dev.expl <- round(100 * with(specresponse, 1 - deviance/null.deviance), 1)
-        dev.expl
         pval <- round(summary(specresponse)$s.table[,4], 3)
-        pval
 
-        print(paste0("GAM with ", deg, " knots fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value = ", pval,"."))
+        print(paste0("GAM with ", deg, " knots fitted for ", specnames[i], ". Deviance explained: ", dev.expl, "%, p-value ",
+                     ifelse(pval == 0, "< ", "= "), ifelse(pval == 0, "0.001", pval),"."))
 
         results[[i]] <- specresponse
         names(results)[i] <- specnames[i]
@@ -233,8 +236,8 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
       if(bw == T) {
         if(points == TRUE) {
           if(i > 1) {
-            species[,i][species[,i]==1] <- species[,i][species[,i]==1] - 0.02*(i-1)
-            species[,i][species[,i]==0] <- species[,i][species[,i]==0] + 0.02*(i-1)
+            species[,i] <- ifelse(species[,i] == 1, species[,i] - 0.02*(i-1), species[,i])
+            species[,i] <- ifelse(species[,i] == 0, species[,i] + 0.02*(i-1), species[,i])
           }
 
           col <- col2rgb("black")
@@ -247,8 +250,8 @@ specresponse <- function(species, var, main, xlab, model = "auto", method = "env
 
         if(points == TRUE) {
           if(i > 1) {
-            species[,i][species[,i]==1] <- species[,i][species[,i]==1] - 0.02*(i-1)
-            species[,i][species[,i]==0] <- species[,i][species[,i]==0] + 0.02*(i-1)
+            species[,i] <- ifelse(species[,i] == 1, species[,i] - 0.02*(i-1), species[,i])
+            species[,i] <- ifelse(species[,i] == 0, species[,i] + 0.02*(i-1), species[,i])
           }
 
           col <- col2rgb(i)
