@@ -22,7 +22,7 @@
 #' east <- sin(deg2rad(schedenenv$exp))
 #'
 #'
-#' @references BIPM (2019): The International System of Units (SI). Bureau international des poids et mesures, ninth edition. \url{http://www.bipm.org/en/si/si_brochure/}, ISBN 978-92-822-2272-0
+#' @references BIPM (2019): The International System of Units (SI). Bureau international des poids et mesures, ninth edition. \url{https://www.bipm.org/en/publications/si-brochure}, ISBN 978-92-822-2272-0
 #' @import stats
 #' @export
 #' @param x a numeric vector
