@@ -1,15 +1,15 @@
 Package: goeveg
 Type: Package
 Title: Functions for Community Data and Ordinations
-Version: 0.6.3
-Date: 2023-05-11
+Version: 0.6.4
+Date: 2023-05-12
 Author: Friedemann von Lampe [aut, cre],
   Jenny Schellenberg [aut]
 Maintainer: Friedemann von Lampe <fvonlampe@uni-goettingen.de>
 Description: A collection of functions useful in (vegetation) community analyses and ordinations. Includes automatic species selection for ordination diagrams, NMDS stress/scree plots, species response curves and rank-abundance curves as well as calculation and sorting of synoptic tables.
 License: GPL (>= 2)
 LazyData: TRUE
-Depends: R (>= 2.10)
+Depends: R (>= 3.5.0)
 Imports: vegan, fields, mgcv, Hmisc
 Suggests: vegdata, BiodiversityR, cluster
 URL: https://github.com/fvlampe/goeveg/

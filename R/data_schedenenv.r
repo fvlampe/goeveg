@@ -8,6 +8,7 @@
 #'  \itemize{
 #'   \item{comm: }{Plant community as defined in 1997: \emph{Arrhenatheretum} or \emph{Gentiano-Koelerietum}}
 #'   \item{altit: }{Altitude (m)}
+#'   \item{exp: }{Exposition of plot (degrees)}
 #'   \item{north: }{North value as cosine of aspect}
 #'   \item{slope: }{Slope (degrees)}
 #'   \item{cov_herb: }{Cover of herb layer (\%)}

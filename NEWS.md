@@ -1,3 +1,7 @@
+# goeveg 0.6.4
+* Added functions 'deg2rad()' and 'rad2deg()' for conversion between radians and degrees
+* Updated data table 'schedenenv'
+
 # goeveg 0.6.3
 * Fixed wrong p-value calculation for GLMs in 'specresponse()'
 * Fixed problem with NAs in 'specresponse()' when showing point values

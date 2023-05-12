@@ -1,5 +1,5 @@
 ## Test environments
-* local windows install, R 4.2.3
+* local windows install, R 4.3.0
 * win-builder (devel and release)
 * Ubuntu Linux 20.04.1 LTS, R-release, GCC (via R-hub)
 * Fedora Linux, R-devel, clang, gfortran (via R-hub)
