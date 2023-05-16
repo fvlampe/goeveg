@@ -1,9 +1,7 @@
 ## Test environments
 * local windows install, R 4.3.0
 * win-builder (devel and release)
-* Ubuntu Linux 20.04.1 LTS, R-release, GCC (via R-hub)
-* Fedora Linux, R-devel, clang, gfortran (via R-hub)
-* Windows Server 2022, R-devel, 64 bit (via R-hub)
+* R-hub builder
 
 
 ## R CMD check results
