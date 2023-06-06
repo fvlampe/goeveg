@@ -47,7 +47,8 @@ racurve <-  function(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = F
   sum(abund)
   rel.abund <- sort((abund / sum(abund)), decreasing = T)
 
-  labels <- names(head(rel.abund, n = nlab))
+  labels.abund <- names(head(rel.abund, n = nlab))
+  labels.freq  <- names(head(freq, n = nlab))
 
   if(frequency == FALSE) {
 
@@ -56,7 +57,7 @@ racurve <-  function(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = F
            main=main, log="y", ylim = ylim, xlim = xlim)
       lines(rel.abund)
       if(nlab != 0) {
-        text(head(rel.abund, n = nlab), labels = labels, pos = 4, cex = 0.7)
+        text(head(rel.abund, n = nlab), labels = labels.abund, pos = 4, cex = 0.7)
       }
 
     } else {
@@ -64,7 +65,7 @@ racurve <-  function(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = F
            main=main, , ylim = ylim, xlim = xlim)
       lines(rel.abund)
       if(nlab != 0) {
-        text(head(rel.abund, n = nlab), labels = labels, pos = 4, cex = 0.7)
+        text(head(rel.abund, n = nlab), labels = labels.abund, pos = 4, cex = 0.7)
       }
     }
   } else if(frequency == TRUE) {
@@ -74,7 +75,7 @@ racurve <-  function(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = F
            main=main, log="y", ylim = ylim, xlim = xlim)
       lines(freq)
       if(nlab != 0) {
-        text(head(freq, n = nlab), labels = labels, pos = 4, cex = 0.7)
+        text(head(freq, n = nlab), labels = labels.freq, pos = 4, cex = 0.7)
       }
 
     } else {
@@ -82,7 +83,7 @@ racurve <-  function(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = F
            main=main, ylim = ylim, xlim = xlim)
       lines(freq)
       if(nlab != 0) {
-        text(head(freq, n = nlab), labels = labels, pos = 4, cex = 0.7)
+        text(head(freq, n = nlab), labels = labels.freq, pos = 4, cex = 0.7)
       }
     }
   }
@@ -90,10 +91,6 @@ racurve <-  function(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = F
   out <- list(abund = abund, rel.abund = rel.abund, freq = freq)
   invisible(out)
 }
-
-
-
-
 
 
 

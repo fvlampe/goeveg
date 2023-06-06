@@ -1,3 +1,6 @@
+# goeveg 0.6.5
+* Fixed wrong species labeling in 'racurve()' when 'freq = TRUE'
+
 # goeveg 0.6.4
 * Added functions 'deg2rad()' and 'rad2deg()' for conversion between radians and degrees
 * Updated data table 'schedenenv'
