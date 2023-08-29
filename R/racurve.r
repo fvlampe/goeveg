@@ -33,8 +33,7 @@
 #' @references Whittaker, R. H. (1965). Dominance and Diversity in Land Plant Communities: Numerical relations of species express the importance of competition in community function and evolution. \emph{Science} \strong{147 :} 250-260. \doi{10.1126/science.147.3655.250}
 #' @author Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de})
 #' @export
-#' @import graphics
-#' @importFrom utils head
+#' @import graphics utils
 
 racurve <-  function(matrix, main = "Rank-abundance diagram", nlab = 0, ylog = FALSE, frequency = FALSE, ylim = NULL, xlim = NULL) {
   if(!is.data.frame(matrix)) {

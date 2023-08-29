@@ -1,3 +1,9 @@
+# goeveg 0.7.0.
+* New functions added:
+    * merge_taxa() for merging taxa with identical names
+    * cov2per() and per2cov() for conversion between cover-abundance codes and percentage coverages
+* dimcheckMDS() is renamed into screeplot_NMDS() with enhanced description
+
 # goeveg 0.6.5
 * Fixed wrong species labeling in 'racurve()' when 'freq = TRUE'
 

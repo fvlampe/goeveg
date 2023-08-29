@@ -6,7 +6,7 @@
 #'
 #' @format A data frame with 28 rows (samples) and 10 variables
 #'  \itemize{
-#'   \item{comm: }{Plant community as defined in 1997: \emph{Arrhenatheretum} or \emph{Gentiano-Koelerietum}}
+#'   \item{comm: }{Plant community as defined in 1997: \emph{Arrhenatheretum} (A) or \emph{Gentiano-Koelerietum} (GK)}
 #'   \item{altit: }{Altitude (m)}
 #'   \item{exp: }{Exposition of plot (degrees)}
 #'   \item{north: }{North value as cosine of aspect}
@@ -19,4 +19,8 @@
 #'   \item{soil_depth: }{Soil depth (cm)}
 #' }
 #' @references Eichholz, A. (1997): Wiesen und Magerrasen am Suedhang des Hohen Hagen. Diplomarbeit Biologie, University of Goettingen.
+#' @docType data
+#' @keywords datasets
+#' @name schedenenv
+#' @usage data(schedenenv)
 "schedenenv"

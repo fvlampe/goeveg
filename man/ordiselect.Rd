@@ -53,7 +53,7 @@ Two methods for species fit are implemented.
 The \code{p.max} argument allows selection of only significant variables, default is \code{p.max = 0.05}.}
 
 The species fit methods work well both in eigenvalue-based and in distance-based ordinations and provide good option of objective reduction of visible species in ordination plot for better interpretation issues.
-If axes fit should be applied on distance-based ordination, species scores need to be calculated during the analysis, e.g. by selecting \code{wascores = TRUE} in \code{\link[vegan]{metaMDS}}. It is mostly recommendable to combine the species fit limit with an abundance limit so avoid overinterpretation of rare species.
+If axes fit should be applied on distance-based ordination, species scores need to be calculated during the analysis, e.g. by selecting \code{wascores = TRUE} in \code{\link[vegan]{metaMDS}}. It is mostly recommendable to combine the species fit limit with an abundance limit to avoid overinterpretation of rare species.
 
 For the abundance limit, note that the final proportion of the selected species may be higher than the indicated proportion if there are identical values in the abundances.
 For selection of least abundant (rarest) species you can use a negative sign, e.g. \code{ablim = -0.3} for the 30 percent least abundant species.
