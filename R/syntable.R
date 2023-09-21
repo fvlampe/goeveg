@@ -17,7 +17,8 @@
 #' @param cluster Integer vector with classification cluster identity. Ensure matching order of
 #' cluster identity and samples in dataframe for correct allocation of cluster numbers to samples.
 #' @param abund Data input type. Define whether input species matrix or dataframe is presence/absence
-#' data (\code{abund = "freq"}) or percentage cover (\code{abund = "perc"}, default).
+#' data (\code{abund = "freq"}) or percentage cover (\code{abund = "perc"}, default). You may use function \code{\link{cov2per}} to transform
+#' cover-abundance values into percentage values.
 #' @param type Type of synoptic table output \code{type = c("percfreq", "totalfreq", "mean",
 #' "median", "diffspec", "phi")}. See Details.
 #'

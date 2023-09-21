@@ -53,6 +53,7 @@ Furthermore high stress values can be attributed to all points or only to few or
 The scree plot is not an exclusive method to determine the optimal number of dimensions.
 The effect of individual points on the stress value can be explored with the \code{\link[vegan:goodness.metaMDS]{goodness}}-function.
 Large values indicate poor fit and can be easily visualized in an ordination diagram.
+
 Another diagnostic plot is the the Shepard diagram (\code{\link[vegan:goodness.metaMDS]{stressplot}}), which is a scatterplot of the (Euclidean) distances in ordination space against the original dissimilarities.
 However, as the number of pairwise elements increases rapidly with the number of samples, the Shepard diagram will mostly lead to a high ‘correlation-like' fit and lacks therefore a reliable and precise interpretability.
 }

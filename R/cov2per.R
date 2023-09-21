@@ -83,7 +83,7 @@ cov2per <- function(matrix, scale = "braun.blanquet") {
                 testmatrix[!testmatrix %in% scale_tab$code][1]))
   }
 
-  # Convert into percentage values (line by line to avoid double replacement)
+  # Convert into percentage values
   for (i in 1:length(scale_tab$cov_mean) - 1) {
     coverage_new[coverage == scale_tab$code[i]] <- scale_tab$cov_mean[i]
   }
