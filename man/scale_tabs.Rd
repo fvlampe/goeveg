@@ -5,13 +5,14 @@
 \alias{scale_tabs}
 \title{Conversion tables for cover-abundance scales}
 \format{
-A list of 5 dataframes, each containing one conversion table
+A list of 6 dataframes, each containing one conversion table
     \itemize{
     \item{\code{"braun.blanquet" }}{- Braun-Blanquet scale (Braun-Blanquet 1929, 1964). Conversion based on default values of the Turboveg program (Hennekens & Schaminee 2001).}
     \item{\code{"braun.blanquet2" }}{- Extended Braun-Blanquet scale (Reichelt & Wilmanns 1973). Conversion based on default values of the Turboveg program (Hennekens & Schaminee 2001).}
     \item{\code{"kohler" }}{- Kohler scale (Kohler 1978). Own conversion adapted from Lüderitz et al. (2009) and Janauer & Heindl (1998).}
     \item{\code{"kohler.zeltner" }}{- Simplified 3-level Kohler scale (Kohler & Zeltner 1974). Own conversion.}
     \item{\code{"londo" }}{- Londo scale (Londo 1976).}
+    \item{\code{"pa" }}{- Presence/absence data (1/0).}
     }
 
 Each dataframe has three columns:

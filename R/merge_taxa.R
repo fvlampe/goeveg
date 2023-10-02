@@ -1,18 +1,20 @@
 #' Merge taxa with identical names
 #' @description
 #' The function offers a simple way to merge taxa with identical names in a vegetation table, e.g. due to necessary harmonization of the taxon level, to combine taxa of different layers or to remove duplicates.
+#' The original cover-abundance scales are maintained.
 #'
-#' @param vegtable Vegetation table with samples in columns and species in rows. Taxon names must be in the first column.
-#' @param scale Cover-abundance scale of data. Default is percentage coverages (values between 0 and 100) (\code{"percentages"}). Alternatively it can be one of the included scales in \code{\link{scale_tabs}} (e.g. \code{"braun.blanquet"}) or a custom scale defined as dataframe following the same format.
+#' @param vegtable Data frame with samples in columns and species in rows. Taxon names must be in the first column.
+#' @param scale Cover-abundance scale(s) of data. Default is percentage coverages (values between 0 and 100) (\code{"percentage"}). Alternatively it can be one of the included scales in \code{\link{scale_tabs}} (e.g. \code{"braun.blanquet"}) or a custom scale defined as data frame following the same format.
+#' You can also provide a vector of the same length as the number of samples, to define individual scales (from \code{\link{scale_tabs}}) for each sample.
 #' @param layers A logical evaluation to \code{TRUE} or \code{FALSE} indicating whether vegetation layers are to be included with layer information stored in the second column.
 #' @param method Choice of method to combine coverages. \code{"independent"} (= default) or \code{"exclusive"}. See details for methods.
 #'
 #' @section Details:
-#' The format required for this function is a vegetation table with samples in columns and species in rows, which corresponds to the export format of Turboveg (Hennekens & Schaminee 2001).
+#' The format required for this function is a data frame with samples in columns and species in rows, which corresponds to the export format of vegetation tables from Turboveg (Hennekens & Schaminee 2001).
 #' Taxon names must be in the first column of the table (not row names as these do not allow duplicates).
 #' If vegetation layers are to be included, layer information must be stored in the second column of the table. Taxa will then be merged only within the defined layers.
 #'
-#' If a cover-abundance scale from \code{\link{scale_tabs}} is chosen, all cover-abundance values will be transformed into percentage coverages for the merging process, and then back-transformed into the original cover-abundance scale.
+#' If a cover-abundance scale from \code{\link{scale_tabs}} is defined, all cover-abundance values will be transformed into percentage coverages for the merging process, and then back-transformed into the original cover-abundance scale.
 #'
 #' When combining cover values there are two possibilities following Fischer (2014) and Tichý & Holt (2011).
 #' \itemize{
@@ -25,7 +27,7 @@
 #' Percentage cover values will eventually be truncated to 100%.
 #'
 #' @return
-#' A dataframe based on \code{vegtable} with merged taxa.
+#' A data frame based on \code{vegtable} with merged taxa.
 #'
 #' @examples
 #' ## Merge taxa with identical names without any layer information
@@ -49,189 +51,228 @@
 
 merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method = "independent") {
 
-# Conversion to long table  ----
+  # Transform cover values to percentage values ----
+  vegcover <- data.frame(0)
 
-# Convert zero to NA to keep only existing species in long table
-if(0 %in% as.matrix(vegtable)) {
-  vegtable[vegtable == 0] <- NA
-
-  zeroval <- TRUE
-  } else zeroval <- FALSE
-
-
-if(layers == TRUE) {
-  tab_long <- na.omit(cbind(vegtable[1:2], stack(vegtable[3:ncol(vegtable)]), row.names = NULL))
-  names(tab_long) <- c("species", "layer", "coverage", "site")
-} else {
-  tab_long <- na.omit(cbind(vegtable[1], stack(vegtable[2:ncol(vegtable)]), row.names = NULL))
-  names(tab_long) <- c("species", "coverage", "site")
-}
-
-
-# Transform cover values to percentage values ----
-percentage = FALSE
-
-if(!is.data.frame(scale)) {
-  if (scale == "percentage"){
-  # Check percentage values
-  percentage = TRUE
-
-  # Check if all values are numeric and between 0 and 100
-  if(any(is.na(as.numeric(tab_long$coverage)))) {
-    stop("Non-numeric percentage cover values.")
-  }
-
-  if(any(tab_long$coverage < 0) | any(tab_long$coverage > 100)) {
-    stop("Percentage cover values need to be between 0 and 100.")
-  }
+  if(layers == TRUE) {
+    vegcover <- vegtable[-c(1, 2)]
   } else {
-    # Convert non-percentage values based on scale table
-    tab_long$coverage <- cov2per(tab_long$coverage, scale = scale)
+    vegcover <- vegtable[-1]
   }
-} else if (is.data.frame(scale)) {
-  # Convert non-percentage values based on dataframe (same function)
-  tab_long$coverage <- cov2per(tab_long$coverage, scale = scale)
-}  else {
-  stop("Unknown cover-abundance scale")
-}
 
+  percentage = FALSE
 
-# Split long table to list with releves
-tab_long_list <- split(tab_long, tab_long$site)
+  if(!is.data.frame(scale)) {
 
+    if (length(scale) == 1) {
+      if (scale == "percentage") {
+        # Check percentage values
+        percentage = TRUE
 
-# Var A: Merge identical species (without layers) ----
-if(layers == FALSE) {
-
-  tax_dups = character(0)
-
-  # Run through each releve in list
-  for(l in 1:length(tab_long_list)) {
-
-    # Check each releve for duplicated species
-    tax_dups <- tab_long_list[[l]][duplicated(tab_long_list[[l]]$species), ]$species
-
-    # Run loop for every duplicated species
-    if(length(tax_dups) != 0) {
-
-      for(n in 1:length(tax_dups)) {
-
-        # Select duplicated taxa
-        tax_list <- tab_long_list[[l]][tab_long_list[[l]]$species == tax_dups[n], ]
-
-        # Calculate combined cover values based on selected method
-        if(method == "independent") {
-          values <- tax_list$coverage/100
-          cov_comb <- (1 - prod(1 - values))*100
-          cov_comb
-        } else if(method == "exclusive") {
-          cov_comb <- sum(tax_list$coverage)
-        } else {
-          stop("Unknown method")
+        # Check if all values are numeric and between 0 and 100
+        if(any(is.na(as.numeric(unlist(vegcover))))) {
+          stop("Non-numeric percentage cover values.")
         }
-
-        # Remove duplicated taxa from list item
-        tab.a <- tab_long_list[[l]][tab_long_list[[l]]$species != tax_dups[n], ]
-        tab.a
-
-        # Add merged taxa to list item
-        tab.b <- data.frame(
-          species = tax_dups[n],
-          coverage = cov_comb,
-          site = tab_long_list[[l]]$site[1])
-        tab.b
-        tab_long_list[[l]] <- rbind(tab.a, tab.b)
+        if(any(unlist(vegcover) < 0) |
+           any(unlist(vegcover) > 100)) {
+          stop("Percentage cover values need to be between 0 and 100.")
         }
-      print(paste0(length(tax_dups), " taxa combined in sample ", names(tab_long_list[l]), ": ", toString(tax_dups)))
-    }
-  }
-}
-
-
-# Var B: Merge identical species (within layers) ----
-if(layers == TRUE) {
-
-  tax_dups = character(0)
-
-  # Run through each releve in list
-  for(l in 1:length(tab_long_list)) {
-
-    tab_long_list[[l]]$specieslayer <- paste(tab_long_list[[l]]$species, tab_long_list[[l]]$layer)
-
-    # Check each releve for duplicated species-layers combinations
-    tax_dups <- tab_long_list[[l]][duplicated(tab_long_list[[l]]$specieslayer), ]$specieslayer
-
-    # Run loop for every duplicated species
-    if(length(tax_dups) != 0) {
-
-      for(n in 1:length(tax_dups)) {
-
-        # Select duplicated taxa
-        tax_list <- tab_long_list[[l]][tab_long_list[[l]]$specieslayer == tax_dups[n], ]
-
-        # Calculate combined cover values based on selected method
-        if(method == "independent") {
-          values <- tax_list$coverage/100
-          cov_comb <- (1 - prod(1 - values))*100
-          cov_comb
-        } else if(method == "exclusive") {
-          cov_comb <- sum(tax_list$coverage)
-        } else {
-          stop("Unknown method")
-        }
-
-        # Remove duplicated taxa from list item
-        tab.a <- tab_long_list[[l]][tab_long_list[[l]]$specieslayer != tax_dups[n], ]
-
-        # Add merged taxa to list item
-        tab.b <- data.frame(
-          species = tax_list$species[1],
-          layer = tax_list$layer[1],
-          coverage = cov_comb,
-          site = tax_list$site[1],
-          specieslayer = tax_list$specieslayer[1])
-
-        tab_long_list[[l]] <- rbind(tab.a, tab.b)
+      } else {
+        # Convert non-percentage values based on scale table
+        vegcover <- cov2per(vegcover, scale = scale)
       }
-      print(paste0(length(tax_dups), " taxa combined in sample ", names(tab_long_list[l]), ": ", toString(tax_dups)))
+
+    } else if(length(scale) > 1) {
+      for(i in 1:ncol(vegcover)) {
+        vegcover[, i] <- cov2per(vegcover[, i], scale = scale[i])
+      }
     }
 
-    # Remove combined species-layer colum
-    tab_long_list[[l]] <- tab_long_list[[l]][, -5]
+  } else if(is.data.frame(scale)) {
+    # Convert non-percentage values based on dataframe (same function)
+    vegcover <- cov2per(vegcover, scale = scale)
+  }  else {
+    stop("Unknown cover-abundance scale")
   }
-}
 
-
-# Backtransform into original cover abundance scale ----
-
-# Unlist releves
-tab_long_new <- do.call(rbind, tab_long_list)
-
-# Truncate cover values > 100
-tab_long_new$coverage[tab_long_new$coverage > 100] <- 100
-
-# Back-transform values
-if(percentage == FALSE) {
-  coverage.new <- per2cov(tab_long_new$coverage, scale = scale)
+  if(layers == TRUE) {
+    vegtable <- cbind(vegtable[,c(1:2)], vegcover)
   } else {
-    coverage.new <- tab_long_new$coverage
+    vegtable <- cbind(vegtable[,1], vegcover)
   }
 
-# Replace cover values in new long table
-tab_long_new$coverage <- coverage.new
+  # Convert zero to NA to keep only existing species in long table
+  if(0 %in% as.matrix(vegtable)) {
+    vegtable[vegtable == 0] <- NA
+  }
 
-# Conversion into wide table ----
+  # Conversion to long table  ----
+  if(layers == TRUE) {
+    tab_long <- na.omit(cbind(vegtable[1:2], stack(vegtable[3:ncol(vegtable)]), row.names = NULL))
+    names(tab_long) <- c("species", "layer", "coverage", "site")
+  } else {
+    tab_long <- na.omit(cbind(vegtable[1], stack(vegtable[2:ncol(vegtable)]), row.names = NULL))
+    names(tab_long) <- c("species", "coverage", "site")
+  }
 
-tab_new <- reshape(tab_long_new, timevar = 'site',idvar = 'species', direction = 'wide',
-               v.names = 'coverage')
-names(tab_new) <- gsub("coverage.", "", names(tab_new))
-row.names(tab_new) <- 1:nrow(tab_new)
+  # Split long table to list with releves
+  tab_long_list <- split(tab_long, tab_long$site)
 
-# Convert NA to zero if present before
-if(zeroval == TRUE) {
+
+  # Var A: Merge identical species (without layers) ----
+  if(layers == FALSE) {
+
+    tax_dups = character(0)
+
+    # Run through each releve in list
+    for(l in 1:length(tab_long_list)) {
+
+      # Check each releve for duplicated species
+      tax_dups <- tab_long_list[[l]][duplicated(tab_long_list[[l]]$species), ]$species
+
+      # Run loop for every duplicated species
+      if(length(tax_dups) != 0) {
+
+        for(n in 1:length(tax_dups)) {
+
+          # Select duplicated taxa
+          tax_list <- tab_long_list[[l]][tab_long_list[[l]]$species == tax_dups[n], ]
+
+          # Calculate combined cover values based on selected method
+          if(method == "independent") {
+            values <- tax_list$coverage/100
+            cov_comb <- (1 - prod(1 - values))*100
+            cov_comb
+          } else if(method == "exclusive") {
+            cov_comb <- sum(tax_list$coverage)
+          } else {
+            stop("Unknown method")
+          }
+
+          # Remove duplicated taxa from list item
+          tab.a <- tab_long_list[[l]][tab_long_list[[l]]$species != tax_dups[n], ]
+          tab.a
+
+          # Add merged taxa to list item
+          tab.b <- data.frame(
+            species = tax_dups[n],
+            coverage = cov_comb,
+            site = tab_long_list[[l]]$site[1])
+          tab.b
+          tab_long_list[[l]] <- rbind(tab.a, tab.b)
+        }
+        print(paste0(length(tax_dups), " taxa combined in sample ", names(tab_long_list[l]), ": ", toString(tax_dups)))
+      }
+    }
+  }
+
+
+  # Var B: Merge identical species (within layers) ----
+  if(layers == TRUE) {
+
+    tax_dups = character(0)
+
+    # Run through each releve in list
+    for(l in 1:length(tab_long_list)) {
+
+      tab_long_list[[l]]$specieslayer <- paste(tab_long_list[[l]]$species, tab_long_list[[l]]$layer)
+
+      # Check each releve for duplicated species-layers combinations
+      tax_dups <- tab_long_list[[l]][duplicated(tab_long_list[[l]]$specieslayer), ]$specieslayer
+
+      # Run loop for every duplicated species
+      if(length(tax_dups) != 0) {
+
+        for(n in 1:length(tax_dups)) {
+
+          # Select duplicated taxa
+          tax_list <- tab_long_list[[l]][tab_long_list[[l]]$specieslayer == tax_dups[n], ]
+
+          # Calculate combined cover values based on selected method
+          if(method == "independent") {
+            values <- tax_list$coverage/100
+            cov_comb <- (1 - prod(1 - values))*100
+            cov_comb
+          } else if(method == "exclusive") {
+            cov_comb <- sum(tax_list$coverage)
+          } else {
+            stop("Unknown method")
+          }
+
+          # Remove duplicated taxa from list item
+          tab.a <- tab_long_list[[l]][tab_long_list[[l]]$specieslayer != tax_dups[n], ]
+
+          # Add merged taxa to list item
+          tab.b <- data.frame(
+            species = tax_list$species[1],
+            layer = tax_list$layer[1],
+            coverage = cov_comb,
+            site = tax_list$site[1],
+            specieslayer = tax_list$specieslayer[1])
+
+          tab_long_list[[l]] <- rbind(tab.a, tab.b)
+        }
+        print(paste0(length(tax_dups), " taxa combined in sample ", names(tab_long_list[l]), ": ", toString(tax_dups)))
+      }
+
+      # Remove combined species-layer colum
+      tab_long_list[[l]] <- tab_long_list[[l]][, -5]
+    }
+  }
+
+
+  # Backtransform into original cover abundance scale ----
+
+  # Unlist releves
+  tab_long_new <- do.call(rbind, tab_long_list)
+
+  # Truncate cover values > 100
+  tab_long_new$coverage[tab_long_new$coverage > 100] <- 100
+
+  # Conversion to wide table ----
+  if(layers == TRUE) {
+    tab_new <- reshape(tab_long_new, timevar = 'site',idvar = c('species', 'layer'), direction = 'wide',
+                       v.names = 'coverage')
+  } else {
+    tab_new <- reshape(tab_long_new, timevar = 'site',idvar = 'species', direction = 'wide',
+                       v.names = 'coverage')
+  }
+
+  names(tab_new) <- gsub("coverage.", "", names(tab_new))
+  row.names(tab_new) <- 1:nrow(tab_new)
+
+  # Convert NA to zero
   tab_new[is.na(tab_new)] <- 0
+
+  # Back-transform values
+  if(percentage == FALSE) {
+    if(layers == TRUE) {
+      vegcover <- tab_new[-c(1, 2)]
+    } else {
+      vegcover <- tab_new[-1]
+    }
+
+    if(!is.data.frame(scale)) {
+
+      if (length(scale) == 1) {
+        vegcover <- per2cov(vegcover, scale = scale)
+      } else if(length(scale) > 1) {
+        for(i in 1:ncol(vegcover)) {
+          vegcover[, i] <- per2cov(vegcover[, i], scale = scale[i])
+        }
+      }
+
+    } else if(is.data.frame(scale)) {
+      vegcover <- per2cov(vegcover, scale = scale)
+    }
+
+    if(layers == TRUE) {
+      tab_new <- cbind(tab_new[,c(1:2)], vegcover)
+    } else {
+      tab_new <- cbind(tab_new[,1], vegcover)
+    }
   }
 
-return(tab_new)
+  return(tab_new)
 }
 

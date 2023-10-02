@@ -15,7 +15,7 @@ synsort(
 )
 }
 \arguments{
-\item{syn1}{Input synoptic table 1, a dataframe with numerical data format, usually from
+\item{syn1}{Input synoptic table 1, a data frame with numerical data format, usually from
 \code{\link{syntable}} function output. See Details for input table format.
 The values of this table will be displayed in the final output table.}
 
@@ -23,11 +23,11 @@ The values of this table will be displayed in the final output table.}
 sorting criteria.}
 
 \item{original}{Species-sample matrix, already used for \code{syntable()} function input (there:
-\code{spec})}
+\code{matrix})}
 
 \item{cluster}{Vector with classification cluster identity, named with the unique plot IDs,
 both in integer format. Ensure matching order of cluster identity in the cluster vector
-and samples in used dataframe ( = original) for correct allocation of cluster numbers to samples.}
+and samples in used data frame ( = original) for correct allocation of cluster numbers to samples.}
 
 \item{method}{Sorting algorithm and synoptic table output options (\code{method = c("allspec", "alldiff")}).
 See Details.}
@@ -62,7 +62,7 @@ by calculating cluster-wise percentage or absolute frequencies, mean/median cove
 
 This function sorts synoptic tables from \code{\link{syntable}} function output. Sorting criteria
 can be either numerical values in synoptic tables, such as cluster-wise frequencies or fidelity
-measures, as well as combined criteria with considering differential character, too (according to
+measures, as well as combined criteria that also take into account differential character (according to
 the criteria defined by Tsiripidis et al., 2009).
 
 The algorithm aims to sort species to blocked structure considering the defined criteria and input

@@ -79,12 +79,12 @@ cov2per <- function(matrix, scale = "braun.blanquet") {
   notdef <- length(testmatrix[!testmatrix %in% scale_tab$code])
 
   if(notdef > 0) {
-    stop(paste0(notdef, " values in matrix not defined in cover-abundance scale. E.g.: ",
+    stop(paste0(notdef, " value(s) in matrix not defined in cover-abundance scale. E.g.: ",
                 testmatrix[!testmatrix %in% scale_tab$code][1]))
   }
 
   # Convert into percentage values
-  for (i in 1:length(scale_tab$cov_mean) - 1) {
+  for (i in 1:length(scale_tab$cov_mean)) {
     coverage_new[coverage == scale_tab$code[i]] <- scale_tab$cov_mean[i]
   }
 

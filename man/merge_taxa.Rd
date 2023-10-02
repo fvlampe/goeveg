@@ -12,27 +12,29 @@ merge_taxa(
 )
 }
 \arguments{
-\item{vegtable}{Vegetation table with samples in columns and species in rows. Taxon names must be in the first column.}
+\item{vegtable}{Data frame with samples in columns and species in rows. Taxon names must be in the first column.}
 
-\item{scale}{Cover-abundance scale of data. Default is percentage coverages (values between 0 and 100) (\code{"percentages"}). Alternatively it can be one of the included scales in \code{\link{scale_tabs}} (e.g. \code{"braun.blanquet"}) or a custom scale defined as dataframe following the same format.}
+\item{scale}{Cover-abundance scale(s) of data. Default is percentage coverages (values between 0 and 100) (\code{"percentage"}). Alternatively it can be one of the included scales in \code{\link{scale_tabs}} (e.g. \code{"braun.blanquet"}) or a custom scale defined as data frame following the same format.
+You can also provide a vector of the same length as the number of samples, to define individual scales (from \code{\link{scale_tabs}}) for each sample.}
 
 \item{layers}{A logical evaluation to \code{TRUE} or \code{FALSE} indicating whether vegetation layers are to be included with layer information stored in the second column.}
 
 \item{method}{Choice of method to combine coverages. \code{"independent"} (= default) or \code{"exclusive"}. See details for methods.}
 }
 \value{
-A dataframe based on \code{vegtable} with merged taxa.
+A data frame based on \code{vegtable} with merged taxa.
 }
 \description{
 The function offers a simple way to merge taxa with identical names in a vegetation table, e.g. due to necessary harmonization of the taxon level, to combine taxa of different layers or to remove duplicates.
+The original cover-abundance scales are maintained.
 }
 \section{Details}{
 
-The format required for this function is a vegetation table with samples in columns and species in rows, which corresponds to the export format of Turboveg (Hennekens & Schaminee 2001).
+The format required for this function is a data frame with samples in columns and species in rows, which corresponds to the export format of vegetation tables from Turboveg (Hennekens & Schaminee 2001).
 Taxon names must be in the first column of the table (not row names as these do not allow duplicates).
 If vegetation layers are to be included, layer information must be stored in the second column of the table. Taxa will then be merged only within the defined layers.
 
-If a cover-abundance scale from \code{\link{scale_tabs}} is chosen, all cover-abundance values will be transformed into percentage coverages for the merging process, and then back-transformed into the original cover-abundance scale.
+If a cover-abundance scale from \code{\link{scale_tabs}} is defined, all cover-abundance values will be transformed into percentage coverages for the merging process, and then back-transformed into the original cover-abundance scale.
 
 When combining cover values there are two possibilities following Fischer (2014) and Tichý & Holt (2011).
 \itemize{

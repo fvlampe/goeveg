@@ -22,8 +22,7 @@ If \code{na.rm} is \code{TRUE} then missing values are removed before computatio
 }
 \section{Details}{
 
-The coefficient of variation (CV) should be computed only for data measured on a ratio scale, as these are the measurements that can only take non-negative values.
-The CV may not have any meaning for data on an interval scale.
+The coefficient of variation (CV) should be computed only for data measured on a ratio scale (i.e. data with an absolute zero). The CV may not have any meaning for data on an interval scale.
 
 According to \cite{Dormann 2017} CV-values below 0.05 (5\%) indicate very high precision of the data, values above 0.2 (20\%) low precision.
 However, this is considered as a rule of thumb. In studies of highly variable systems (e.g. some ecological studies) CV values above 1 may occur.
@@ -39,7 +38,7 @@ cv(schedenenv$soil_depth)
 \references{
 Dormann, C. (2017). Parametrische Statistik. Verteilungen, maximum likelihood und GLM in R. \emph{Springer}. \doi{10.1007/978-3-662-54684-0}
 
-"What is the difference between ordinal, interval and ratio variables? Why should I care?" \emph{GraphPad Software Inc}. \url{https://www.graphpad.com/support/faqid/1089/}.
+Frost, J. (2023). Coefficient of variation in statistics. Statistics by Jim. \url{https://statisticsbyjim.com/basics/coefficient-variation/}.
 }
 \seealso{
 \code{\link[stats]{sd}}
