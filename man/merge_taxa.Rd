@@ -37,11 +37,11 @@ If vegetation layers are to be included, layer information must be stored in the
 If a cover-abundance scale from \code{\link{scale_tabs}} is defined, all cover-abundance values will be transformed into percentage cover for the merging process, and then back-transformed into the original cover-abundance scale.
 
 When combining cover values there are two possibilities following Fischer (2014) and Tichý & Holt (2011).
-\description{
-     \item[\code{method = "independent" }]{assumes that covers can overlap and that they do so independently of each other (e.g. individuals of the lower layer are growing beneath individuals of the upper layer).
+\itemize{
+     \item{\code{method = "independent" }}{assumes that covers can overlap and that they do so independently of each other (e.g. individuals of the lower layer are growing beneath individuals of the upper layer).
      In case of two layers the sum of the cover of layer 1 and layer 2 is the sum of the covers minus the overlap. ($p1 + p2- p1 * p2)
      Usually the choice when merging the same taxon from different (sub-)layers.}
-     \item[\code{method = "exclusive" }]{assumes the covers are mutually exclusive, cover values will be simply summed up (e.g. individuals grow side by side).
+     \item{\code{method = "exclusive" }}{assumes the covers are mutually exclusive, cover values will be simply summed up (e.g. individuals grow side by side).
      Usually the chouce when merging within layers, e.g. aggregating distinct taxa.}
      }
 Percentage cover values will eventually be truncated to 100%.
