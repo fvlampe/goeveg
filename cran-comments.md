@@ -1,5 +1,5 @@
 ## Test environments
-* local windows install, R 4.3.1
+* local windows install, R 4.3.2
 * win-builder (devel and release)
 * R-hub builder
 
@@ -10,6 +10,5 @@
 
 
 ## Reverse dependencies
-  
-There are no downstream dependencies for this package
 
+There are no downstream dependencies for this package
