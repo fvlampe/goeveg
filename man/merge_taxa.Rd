@@ -12,14 +12,14 @@ merge_taxa(
 )
 }
 \arguments{
-\item{vegtable}{Data frame with samples in columns and species in rows. Taxon names must be in the first column.}
+\item{vegtable}{Data frame with samples in columns and taxa in rows. Taxon names must be in the first column.}
 
-\item{scale}{Cover-abundance scale(s) of data. Default is percentage coverages (values between 0 and 100) (\code{"percentage"}). Alternatively it can be one of the included scales in \code{\link{scale_tabs}} (e.g. \code{"braun.blanquet"}) or a custom scale defined as data frame following the same format.
+\item{scale}{Cover-abundance scale(s) of data. Default is percentage cover (values between 0 and 100) (\code{"percentage"}). Alternatively it can be one of the included scales in \code{\link{scale_tabs}} (e.g. \code{"braun.blanquet"}) or a custom scale defined as data frame following the same format.
 You can also provide a vector of the same length as the number of samples, to define individual scales (from \code{\link{scale_tabs}}) for each sample.}
 
 \item{layers}{A logical evaluation to \code{TRUE} or \code{FALSE} indicating whether vegetation layers are to be included with layer information stored in the second column.}
 
-\item{method}{Choice of method to combine coverages. \code{"independent"} (= default) or \code{"exclusive"}. See details for methods.}
+\item{method}{Choice of method to combine cover. \code{"independent"} (= default) or \code{"exclusive"}. See details for methods.}
 }
 \value{
 A data frame based on \code{vegtable} with merged taxa.
@@ -30,18 +30,18 @@ The original cover-abundance scales are maintained.
 }
 \section{Details}{
 
-The format required for this function is a data frame with samples in columns and species in rows, which corresponds to the export format of vegetation tables from Turboveg (Hennekens & Schaminee 2001).
+The format required for this function is a data frame with samples in columns and taxa in rows, which corresponds to the export format of vegetation tables from Turboveg (Hennekens & Schaminee 2001).
 Taxon names must be in the first column of the table (not row names as these do not allow duplicates).
 If vegetation layers are to be included, layer information must be stored in the second column of the table. Taxa will then be merged only within the defined layers.
 
-If a cover-abundance scale from \code{\link{scale_tabs}} is defined, all cover-abundance values will be transformed into percentage coverages for the merging process, and then back-transformed into the original cover-abundance scale.
+If a cover-abundance scale from \code{\link{scale_tabs}} is defined, all cover-abundance values will be transformed into percentage cover for the merging process, and then back-transformed into the original cover-abundance scale.
 
 When combining cover values there are two possibilities following Fischer (2014) and Tichý & Holt (2011).
 \itemize{
-     \item{\code{method = "independent" }}{assumes that coverages can overlap and that they do so independently of each other (e.g. individuals of the lower layer are growing beneath individuals of the upper layer).
+     \item{\code{method = "independent" }}{assumes that covers can overlap and that they do so independently of each other (e.g. individuals of the lower layer are growing beneath individuals of the upper layer).
      In case of two layers the sum of the cover of layer 1 and layer 2 is the sum of the covers minus the overlap. ($p1 + p2- p1 * p2)
      Usually the choice when merging the same taxon from different (sub-)layers.}
-     \item{\code{method = "exclusive" }}{assumes the coverages are mutually exclusive, cover values will be simply summed up (e.g. individuals grow side by side).
+     \item{\code{method = "exclusive" }}{assumes the covers are mutually exclusive, cover values will be simply summed up (e.g. individuals grow side by side).
      Usually the chouce when merging within layers, e.g. aggregating distinct taxa.}
      }
 Percentage cover values will eventually be truncated to 100%.
@@ -53,6 +53,7 @@ Percentage cover values will eventually be truncated to 100%.
 schedenveg.t <- data.frame(species = names(schedenveg), t(schedenveg))
 # Add two duplicated taxa
 schedenveg.t <- rbind(schedenveg.t, schedenveg.t[c(55, 61), ])
+
 # Merge duplicated taxa using default 'independent' method
 merge_taxa(schedenveg.t, scale = "percentage")
 

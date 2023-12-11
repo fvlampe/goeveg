@@ -3,7 +3,7 @@
 \name{cov2per}
 \alias{cov2per}
 \alias{per2cov}
-\title{Conversion between cover-abundance codes and percentage coverages}
+\title{Conversion between cover-abundance codes and percentage cover}
 \usage{
 cov2per(matrix, scale = "braun.blanquet")
 
@@ -18,7 +18,7 @@ per2cov(matrix, scale = "braun.blanquet")
 A dataframe or vector containing the transformed data
 }
 \description{
-These functions perform a conversion between cover-abundance codes from different survey scales and percentage coverages. They can be applied on a matrix-like object or a single vector.
+These functions perform a conversion between cover-abundance codes from different survey scales and percentage cover. They can be applied on a matrix-like object or a single vector.
 
 \code{cov2per} performs conversion from cover-abundance to percentage values
 
@@ -29,22 +29,22 @@ You may chose between a set of scales with pre-defined conversion values, in \co
 \section{Details}{
 
 If scales are not only cover-based but also abundance-based (e.g. Braun-Blanquet, Kohler) there are often no unique definitions about their conversion
-into percentage coverages. Therefore it is necessary to define and give reference to the applied conversion table.
+into percentage cover. Therefore it is necessary to define and give reference to the applied conversion table.
 
 Cover-abundance codes are transformed into the mean percentage cover of their class.
-For the conversion of percentage coverages to cover-abundance codes, all values between the lower and upper border of the class are transformed into the corresponding code.
+For the conversion of percentage cover to cover-abundance codes, all values between the lower and upper border of the class are transformed into the corresponding code.
 
 The included cover-abundance scales and the associated conversion tables are explained in \code{\link{scale_tabs}}. On this site you also find definitions for defining a custom table.
 }
 
 \examples{
-## Conversion of species matrix with percentage coverages to Braun-Blanquet values
+## Conversion of species matrix with percentage cover to Braun-Blanquet values
 schedenveg.bb <- per2cov(schedenveg)
 
 ## Conversion of only 10 samples to Londo values
 schedenveg.londo <- per2cov(schedenveg[, 1:10], scale = "londo")
 
-## Conversion of species matrix with Braun-Blanquet values to percentage coverages
+## Conversion of species matrix with Braun-Blanquet values to percentage cover
 schedenveg.per <- cov2per(schedenveg.bb)
 
 }

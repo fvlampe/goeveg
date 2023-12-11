@@ -7,7 +7,7 @@
 synsort(
   syn1,
   syn2 = syn1,
-  original,
+  matrix,
   cluster,
   method = "allspec",
   min1 = 0,
@@ -22,25 +22,23 @@ The values of this table will be displayed in the final output table.}
 \item{syn2}{Optional second input table with additional numeric or differential character
 sorting criteria.}
 
-\item{original}{Species-sample matrix, already used for \code{syntable()} function input (there:
-\code{matrix})}
+\item{matrix}{Species-sample matrix, already used for \code{\link{syntable}} function input}
 
-\item{cluster}{Vector with classification cluster identity, named with the unique plot IDs,
-both in integer format. Ensure matching order of cluster identity in the cluster vector
-and samples in used data frame ( = original) for correct allocation of cluster numbers to samples.}
+\item{cluster}{Integer or character vector/factor with classification cluster identity. Ensure matching order of
+cluster identity and samples in matrix for correct allocation of cluster numbers to samples.}
 
 \item{method}{Sorting algorithm and synoptic table output options (\code{method = c("allspec", "alldiff")}).
 See Details.}
 
 \item{min1}{Cluster-wise threshold minimum value for species shown in the final sorted synoptic table.
-Species below that minimum will be listed in the  output (\code{$others} section).}
+Species below that minimum will be listed in the output (\code{$others} section).}
 
 \item{min2}{Threshold minimum value for considering species values of a numerical second input table \code{syn2}.
 Species below that minimum will not be displayed in final synoptic table, but will be listed in the
 output (\code{$others} section).}
 }
 \value{
-Returns a list composed of:
+Returns an (invisible) list composed of:
   \item{\code{$output}}{Sorting method description}
   \item{\code{$species}}{Information to species included in the output table}
   \item{\code{$samplesize}}{Sample sizes in clusters}
@@ -54,12 +52,6 @@ Returns a list composed of:
   names) and the cluster identity (Cluster_No as first row of output samples table)}
 }
 \description{
-Synoptic tables are a tool for the visualization and interpretation of previously
-defined plant species groups (clusters), e.g. from cluster analysis or classification methods.
-They help to determine characteristic patterning of species occurrences in plant communities
-by calculating cluster-wise percentage or absolute frequencies, mean/median cover values, fidelity
-(phi) or differential species character.
-
 This function sorts synoptic tables from \code{\link{syntable}} function output. Sorting criteria
 can be either numerical values in synoptic tables, such as cluster-wise frequencies or fidelity
 measures, as well as combined criteria that also take into account differential character (according to
@@ -74,7 +66,7 @@ descending importance for plant community description.
 Two types of sorted synoptic tables can be created with this function:
 
  \itemize{
- \item{\code{method = "allspec"} (default)}{ creates a sorted synoptic table basing on one or
+ \item{\code{method = "allspec"} (\emph{default})}{ creates a sorted synoptic table basing on one or
  two numeric input tables, e.g. percentage or absolute frequencies, or phi fidelity values.
  Sorting criteria can be either given by only one input table by using only \code{syn1}
  argument, as well as by two input tables with specifying \code{syn2}, too.
@@ -101,21 +93,21 @@ pam1 <- pam(schedenveg, 4)
 
 ### One input table for sorting:
 ## Synoptic table with percentage frequency of species in clusters, all species
-unordered <- syntable(schedenveg, pam1$clustering, abund = "perc",
+unordered <- syntable(schedenveg, pam1$clustering, abund = "percentage",
                       type = "percfreq")   # Unordered synoptic percentage frequency table
-sorted <- synsort(syn1 = unordered$syntable, original = schedenveg,
+sorted <- synsort(syn1 = unordered$syntable, matrix = schedenveg,
                   cluster = pam1$clustering, method = "allspec", min1 = 0)
 sorted             # view results
 \dontrun{
-# export sorted synoptic table
+# Export sorted synoptic table
 write.csv(sorted$syntab, "syntab.csv")
-# export sorted species-sample matrix with original releve data for postprocessing
+# Export sorted species-sample matrix with original releve data for postprocessing
 write.csv(sorted$samples, "output_species_sample.csv")}
 
 ## Synoptic table with only phi values
-phi <- syntable(schedenveg, pam1$clustering, abund = "perc",
+phi <- syntable(schedenveg, pam1$clustering, abund = "percentage",
                      type = "phi")         # calculates cluster-wise phi for each species
-phi_table <- synsort(syn1 = phi$syntable, original = schedenveg, cluster = pam1$clustering,
+phi_table <- synsort(syn1 = phi$syntable, matrix = schedenveg, cluster = pam1$clustering,
                      method = "allspec", min1 = 0.3)
 phi_table     # view results
 
@@ -124,24 +116,24 @@ phi_table     # view results
 ## Synoptic table showing percentage frequencies, but only for species with minimum phi-value
 ## of 0.3 AND exclude species with less than 25\% percentage frequency
 
-unordered <- syntable(schedenveg, pam1$clustering, abund = "perc",
+unordered <- syntable(schedenveg, pam1$clustering, abund = "percentage",
                       type = "percfreq")   # Unordered synoptic percentage frequency table
-phitable <- syntable(schedenveg, pam1$clustering, abund = "perc",
+phitable <- syntable(schedenveg, pam1$clustering, abund = "percentage",
                      type = "phi")         # calculates cluster-wise phi for each species
 # now sorting and arranging
 phi_complete <- synsort(syn1 = unordered$syntable, syn2 = phitable$syntable,
-                       original = schedenveg, cluster = pam1$clustering, method = "allspec",
+                       matrix = schedenveg, cluster = pam1$clustering, method = "allspec",
                        min1 = 25, min2 = 0.3)
 phi_complete      # view results
 
 ### Differential species analysis
-differential <- syntable(schedenveg, pam1$clustering, abund = "perc",
+differential <- syntable(schedenveg, pam1$clustering, abund = "percentage",
                          type = "diffspec")
 
 ## Synoptic table with percentage frequency (only species >25\%) and
 ## differential character.
 complete <- synsort(syn1 = unordered$syntable, syn2 = differential$syntable,
-                    original = schedenveg, cluster = pam1$clustering,
+                    matrix = schedenveg, cluster = pam1$clustering,
                     method = "alldiff", min1 = 25)
 complete            # view result table
 differential$differentials  # list differential species for clusters

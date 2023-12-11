@@ -1,6 +1,6 @@
-#' Conversion between cover-abundance codes and percentage coverages
+#' Conversion between cover-abundance codes and percentage cover
 #' @description
-#' These functions perform a conversion between cover-abundance codes from different survey scales and percentage coverages. They can be applied on a matrix-like object or a single vector.
+#' These functions perform a conversion between cover-abundance codes from different survey scales and percentage cover. They can be applied on a matrix-like object or a single vector.
 #'
 #' \code{cov2per} performs conversion from cover-abundance to percentage values
 #'
@@ -13,21 +13,21 @@
 #'
 #' @section Details:
 #' If scales are not only cover-based but also abundance-based (e.g. Braun-Blanquet, Kohler) there are often no unique definitions about their conversion
-#' into percentage coverages. Therefore it is necessary to define and give reference to the applied conversion table.
+#' into percentage cover. Therefore it is necessary to define and give reference to the applied conversion table.
 #'
 #' Cover-abundance codes are transformed into the mean percentage cover of their class.
-#' For the conversion of percentage coverages to cover-abundance codes, all values between the lower and upper border of the class are transformed into the corresponding code.
+#' For the conversion of percentage cover to cover-abundance codes, all values between the lower and upper border of the class are transformed into the corresponding code.
 #'
 #' The included cover-abundance scales and the associated conversion tables are explained in \code{\link{scale_tabs}}. On this site you also find definitions for defining a custom table.
 #'
 #' @examples
-#' ## Conversion of species matrix with percentage coverages to Braun-Blanquet values
+#' ## Conversion of species matrix with percentage cover to Braun-Blanquet values
 #' schedenveg.bb <- per2cov(schedenveg)
 #'
 #' ## Conversion of only 10 samples to Londo values
 #' schedenveg.londo <- per2cov(schedenveg[, 1:10], scale = "londo")
 #'
-#' ## Conversion of species matrix with Braun-Blanquet values to percentage coverages
+#' ## Conversion of species matrix with Braun-Blanquet values to percentage cover
 #' schedenveg.per <- cov2per(schedenveg.bb)
 #'
 #' @seealso \code{\link{scale_tabs}} for explanation and references of included conversion tables
@@ -48,9 +48,9 @@ cov2per <- function(matrix, scale = "braun.blanquet") {
     warning("NA values in matrix transformed into 0.")
   }
 
-  # Create coverage objects
-  coverage <- matrix
-  coverage_new <- coverage
+  # Create cover objects
+  cover <- matrix
+  cover_new <- cover
 
   # Load cover-abundance scale
   if (is.data.frame(scale)) {
@@ -71,7 +71,7 @@ cov2per <- function(matrix, scale = "braun.blanquet") {
     # Selection of pre-defined conversion tables
     scale_tab <- goeveg::scale_tabs[[scale]]
   } else {
-    stop("Unknown cover-abundance scale")
+    stop("Unknown cover-abundance scale.")
   }
 
   # Check if all values of matrix are defined
@@ -85,16 +85,16 @@ cov2per <- function(matrix, scale = "braun.blanquet") {
 
   # Convert into percentage values
   for (i in 1:length(scale_tab$cov_mean)) {
-    coverage_new[coverage == scale_tab$code[i]] <- scale_tab$cov_mean[i]
+    cover_new[cover == scale_tab$code[i]] <- scale_tab$cov_mean[i]
   }
 
   # Convert into numeric values
   if(is.null(dim(matrix))) {
-    matrix <- as.numeric(coverage_new)
+    matrix <- as.numeric(cover_new)
   } else {
-    matrix <- apply(coverage_new, 2,  function(x) as.numeric(as.character(x)))
-    matrix <- data.frame(matrix, row.names = row.names(coverage))
-    names(matrix) <- names(coverage)
+    matrix <- apply(cover_new, 2,  function(x) as.numeric(as.character(x)))
+    matrix <- data.frame(matrix, row.names = row.names(cover))
+    names(matrix) <- names(cover)
   }
 
     # Check if still NA values (should not be possible)
@@ -119,9 +119,9 @@ per2cov <- function(matrix, scale = "braun.blanquet") {
     warning("NA values in matrix transformed into 0.")
   }
 
-  # Create coverage objects
-  coverage <- matrix
-  coverage_new <- coverage
+  # Create cover objects
+  cover <- matrix
+  cover_new <- cover
 
   # Check if all values are numeric and between 0 and 100
   # creates NA for non-numeric values
@@ -168,11 +168,11 @@ per2cov <- function(matrix, scale = "braun.blanquet") {
   # Calculate back-transformed cover values
   # according to the class limits of the corresponding scale table
   for(i in 1:length(scale_tab_clean$cov_max)-1) {
-    coverage_new[(coverage > scale_tab_clean$cov_max[i]) &
-                   (coverage <= scale_tab_clean$cov_max[i+1])] <- scale_tab_clean$code[i+1]
+    cover_new[(cover > scale_tab_clean$cov_max[i]) &
+                   (cover <= scale_tab_clean$cov_max[i+1])] <- scale_tab_clean$code[i+1]
   }
 
-  matrix <- coverage_new
+  matrix <- cover_new
 
   # Check if still NA values (should not be possible)
   if (any(is.na(matrix))) {
