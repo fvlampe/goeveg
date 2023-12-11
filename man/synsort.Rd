@@ -39,10 +39,11 @@ output (\code{$others} section).}
 }
 \value{
 Returns an (invisible) list composed of:
+\itemize{
   \item{\code{$output}}{Sorting method description}
   \item{\code{$species}}{Information to species included in the output table}
   \item{\code{$samplesize}}{Sample sizes in clusters}
-  \item{\code{$syntable}}{Sorted synoptic table, with the numeric values of code{syn1} in the left-side columns
+  \item{\code{$syntable}}{Sorted synoptic table, with the numeric values of \code{syn1} in the left-side columns
   and differential character of species on the right-side of the output table. See Tsiripidis et al. (2009) for
   details and criteria for the assignment of a differential species as p = positive, n = negative,
   pn = positive/negative.}
@@ -50,6 +51,7 @@ Returns an (invisible) list composed of:
   reaching the given threshold values \code{min1} and \code{min2}. Sorted alphabetically.}
   \item{\code{$samples}}{Sorted original species-sample matrix, with original Plot-IDs (as column
   names) and the cluster identity (Cluster_No as first row of output samples table)}
+  }
 }
 \description{
 This function sorts synoptic tables from \code{\link{syntable}} function output. Sorting criteria
