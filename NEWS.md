@@ -1,13 +1,12 @@
 # goeveg 0.7.1
-* 'syntable()' can now handle factorial variables for defining clusters, e.g. to summarise relevés according to pre-defined categories and is more flexible regarding the format of community matrix 
+* 'syntable()' can now handle factorial variables for defining clusters, e.g. to summarise relevés according to pre-defined categories and is more flexible regarding the format of the community matrix 
 * Terminology was harmonised between different functions
 
 # goeveg 0.7.0
 * New functions added:
-    * 'merge_taxa()' for merging taxa with identical names
+    * 'merge_taxa()' for merging taxa/species with identical names
     * 'cov2per()' and 'per2cov()' for conversion between cover-abundance codes and percentage cover
 * 'dimcheckMDS()' is renamed into 'screeplot_NMDS()' with enhanced description and progress bar
-
 
 # goeveg 0.6.5
 * Fixed wrong species labeling in 'racurve()' when 'freq = TRUE'
