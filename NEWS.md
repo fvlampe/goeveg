@@ -1,5 +1,5 @@
 # goeveg 0.7.1
-* 'syntable()' can now handle factorial variables for defining clusters, e.g. to summarise relevés according to pre-defined categories and is more flexible regarding the format of the community matrix 
+* 'syntable()' can now handle factorial variables for defining clusters, e.g. to summarize relevés according to pre-defined categories and is more flexible regarding the format of the community matrix 
 * Terminology was harmonized between different functions
 
 # goeveg 0.7.0
