@@ -7,17 +7,17 @@
 \format{
 A data frame with 28 rows (samples) and 10 variables
  \itemize{
-  \item{comm: }{Plant community as defined in 1997: \emph{Arrhenatheretum} (A) or \emph{Gentiano-Koelerietum} (GK)}
-  \item{altit: }{Altitude (m)}
-  \item{exp: }{Exposition of plot (degrees)}
-  \item{north: }{North value as cosine of aspect}
-  \item{slope: }{Slope (degrees)}
-  \item{cov_herb: }{Cover of herb layer (\%)}
-  \item{cov_litt: }{Cover of litter (\%)}
-  \item{cov_moss: }{Cover of mosses (\%)}
-  \item{cov_opensoil: }{Cover of open soil (\%)}
-  \item{height_herb: }{Average height of herb layer (cm)}
-  \item{soil_depth: }{Soil depth (cm)}
+  \item \strong{comm:} Plant community as defined in 1997: \emph{Arrhenatheretum} (A) or \emph{Gentiano-Koelerietum} (GK)
+  \item \strong{altit:} Altitude (m)
+  \item \strong{exp:} Exposition of plot (degrees)
+  \item \strong{north:} North value as cosine of aspect
+  \item \strong{slope:} Slope (degrees)
+  \item \strong{cov_herb:} Cover of herb layer (\%)
+  \item \strong{cov_litt:} Cover of litter (\%)
+  \item \strong{cov_moss:} Cover of mosses (\%)
+  \item \strong{cov_opensoil:} Cover of open soil (\%)
+  \item \strong{height_herb:} Average height of herb layer (cm)
+  \item \strong{soil_depth:} Soil depth (cm)
 }
 }
 \usage{

@@ -40,17 +40,17 @@ output (\code{$others} section).}
 \value{
 Returns an (invisible) list composed of:
 \itemize{
-  \item{\code{$output}}{Sorting method description}
-  \item{\code{$species}}{Information to species included in the output table}
-  \item{\code{$samplesize}}{Sample sizes in clusters}
-  \item{\code{$syntable}}{Sorted synoptic table, with the numeric values of \code{syn1} in the left-side columns
+  \item \code{$output} Sorting method description
+  \item \code{$species} Information to species included in the output table
+  \item \code{$samplesize} Sample sizes in clusters
+  \item \code{$syntable} Sorted synoptic table, with the numeric values of \code{syn1} in the left-side columns
   and differential character of species on the right-side of the output table. See Tsiripidis et al. (2009) for
   details and criteria for the assignment of a differential species as p = positive, n = negative,
-  pn = positive/negative.}
-  \item{\code{$others}}{Species that are omitted in Synoptic table due to their failing
-  reaching the given threshold values \code{min1} and \code{min2}. Sorted alphabetically.}
-  \item{\code{$samples}}{Sorted original species-sample matrix, with original Plot-IDs (as column
-  names) and the cluster identity (Cluster_No as first row of output samples table)}
+  pn = positive/negative.
+  \item \code{$others} Species that are omitted in Synoptic table due to their failing
+  reaching the given threshold values \code{min1} and \code{min2}. Sorted alphabetically.
+  \item \code{$samples} Sorted original species-sample matrix, with original Plot-IDs (as column
+  names) and the cluster identity (Cluster_No as first row of output samples table)
   }
 }
 \description{
@@ -68,12 +68,12 @@ descending importance for plant community description.
 Two types of sorted synoptic tables can be created with this function:
 
  \itemize{
- \item{\code{method = "allspec"} (\emph{default})}{ creates a sorted synoptic table basing on one or
+ \item \code{method = "allspec"} (\emph{default}) creates a sorted synoptic table basing on one or
  two numeric input tables, e.g. percentage or absolute frequencies, or phi fidelity values.
  Sorting criteria can be either given by only one input table by using only \code{syn1}
  argument, as well as by two input tables with specifying \code{syn2}, too.
- Thereby, only values of \code{syn1} will be shown in the final sorted table.}
- \item{\code{method = "alldiff"}:}{ With including differential species
+ Thereby, only values of \code{syn1} will be shown in the final sorted table.
+ \item \code{method = "alldiff"}: With including differential species
  character as sorting criteria, \code{syn1} must be numeric (e.g. percentage frequency) and
  \code{syn2} must contain information on differential character (output from \code{\link{syntable}}
  function with defined \code{type = "diffspec"}). The result table shows ALL diagnostic and
@@ -83,7 +83,8 @@ Two types of sorted synoptic tables can be created with this function:
  from \code{syn2} as well. Species with high values in \code{syn1} AND
  positive differential character will then be listed on the top of a species block.
  Within such a block, the differentiating and high-abundant species are sorted in a way favoring
- species that are positive in only one or at least few clusters.} }
+ species that are positive in only one or at least few clusters.
+ }
 }
 
 \examples{

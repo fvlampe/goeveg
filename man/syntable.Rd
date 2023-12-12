@@ -50,20 +50,22 @@ in this package.
 \section{Details}{
 
 For synoptic table calculation, six types are available.
-  \itemize{\item{\code{type = "percfreq" }}{Creates a percentage frequency table \emph{(default)}}
-  \item{\code{type = "totalfreq" }}{Creates an absolute frequency table}
-  \item{\code{type = "mean" }}{Calculates mean of species values given in \code{matrix} per cluster}
-  \item{\code{type = "median" }}{Calculates median of species values given in \code{matrix} per
-   cluster}
-  \item{\code{type = "diffspec" }}{Calculates differential character of species according to
+  \itemize{
+  \item \code{type = "percfreq" } Creates a percentage frequency table \emph{(default)}
+  \item \code{type = "totalfreq" } Creates an absolute frequency table
+  \item \code{type = "mean" }  Calculates mean of species values given in \code{matrix} per cluster
+  \item \code{type = "median" }  Calculates median of species values given in \code{matrix} per
+   cluster
+  \item \code{type = "diffspec" } Calculates differential character of species according to
    Tsiripidis et al. 2009, with resulting character p = positive, n = negative, pn = positive-
    negative or no differential character (-). Consider that differential character is always
    restricted to some and not necessarily all of the other units, thus considering percentage
    frequency is essential for correct interpretation of the diagnostic species character.
-   This calculation needs at least three groups.}
-  \item{\code{type = "phi" }}{Calculates fidelity measure phi (algorithm basing on Sokal & Rohlf
+   This calculation needs at least three groups.
+  \item \code{type = "phi" } Calculates fidelity measure phi (algorithm basing on Sokal & Rohlf
    1995, Bruelheide 2000). Values are ranging between -1 and 1 with high values near 1 indicating
-   high fidelity.}}
+   high fidelity.
+   }
 
 For sorting the output synoptic table, use \code{\link{synsort}} function, providing several
 options.

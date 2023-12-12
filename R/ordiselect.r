@@ -92,6 +92,9 @@ ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1, 2), f
   } else {
     abund <- apply(matrix>0, 2, sum)
   }
+  
+  abneg = FALSE
+  if(ablim < 0) abneg = TRUE
 
   scores <- data.frame(scores(ord, display = "species", choices = choices))
 
@@ -116,9 +119,30 @@ ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1, 2), f
     }
 
     per <- round(length(selected) / length(abund) * 100, digits = 1)
-
-    print(paste0(length(selected), " species selected (", per, "%)"))
-
+    
+    # Messages
+    print(paste0(length(selected), " species selected (", per, "% of total number of species)."))
+    
+    if(fitlim < 1 & ablim < 1) {
+      print(paste0("All species selected which belong to the ", ablim*100, "% ", ifelse(abneg == TRUE, "least ", "most "), 
+                   ifelse(freq == FALSE, "abundant ", "frequent "),
+                   "species and to the ", fitlim*100, "% of species with the highest absolute axis scores."))
+    }
+    
+    if(fitlim == 1 & ablim < 1) {
+      print(paste0("All species selected which belong to the ", ablim*100, "% ", ifelse(abneg == TRUE, "least ", "most "), 
+                   ifelse(freq == FALSE, "abundant ", "frequent "),
+                   "species."))
+    }
+    
+    if(fitlim < 1 & ablim == 1) {
+      print(paste0("All species selected which belong to the ", fitlim*100, "% of species with the highest absolute axis scores."))
+    }
+    
+    if(fitlim == 1 & ablim == 1) {
+      print(paste0("All species selected."))
+    }
+    
     selected
 
 
@@ -171,8 +195,27 @@ ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1, 2), f
 
             per <- round(length(selected) / length(abund) * 100, digits = 1)
 
-            print(paste0(length(selected), " species selected (", per, "%)"))
-
+            # Messages
+            print(paste0(length(selected), " species selected (", per, "% of total number of species)."))
+            
+            if(fitlim < 1 & ablim < 1) {
+              print(paste0("All species selected which belong to the ", ablim*100, "% ", ifelse(abneg == TRUE, "least ", "most "), ifelse(freq == FALSE, "abundant ", "frequent "),
+                           "species and to the ", fitlim*100, "% of species with the smallest distance to variable centroids."))
+            }
+            
+            if(fitlim == 1 & ablim < 1) {
+              print(paste0("All species selected which belong to the ", ablim*100, "% ", ifelse(abneg == TRUE, "least ", "most "), ifelse(freq == FALSE, "abundant ", "frequent "),
+                           "species."))
+            }
+            
+            if(fitlim < 1 & ablim == 1) {
+              print(paste0("All species selected which belong to the ", fitlim*100, "% of species with the smallest distance to variable centroids."))
+            }
+            
+            if(fitlim == 1 & ablim == 1) {
+              print(paste0("All species selected."))
+            }
+            
             selected
           }
         else {
