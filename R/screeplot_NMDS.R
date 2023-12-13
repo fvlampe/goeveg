@@ -73,12 +73,15 @@ screeplot_NMDS <- function(matrix, distance = "bray", k = 6,  trymax = 20, autot
   pb <- txtProgressBar(min = 1, max = k, style = 3)
 
   for (i in 1:k) {
-  capture.output(nmds_i <- invisible(metaMDS(matrix, distance = distance, k = i, trymax = trymax, engine = "monoMDS", autotransform = autotransform)), file='NUL')
+  capture.output(nmds_i <- invisible(metaMDS(matrix, distance = distance, k = i, trymax = trymax, 
+                                             engine = "monoMDS", autotransform = autotransform)),
+                 file = NULL)
+
   stress[i] <- nmds_i$stress
 
   setTxtProgressBar(pb, i)
   }
-
+  
   # Close bar
   close(pb)
 

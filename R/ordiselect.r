@@ -95,6 +95,8 @@ ordiselect <-  function(matrix, ord, ablim = 1, fitlim = 1, choices = c(1, 2), f
   
   abneg = FALSE
   if(ablim < 0) abneg = TRUE
+  
+  # ablim = 40/ncol(matrix)  # possibility to calculate automatic abundance limit for a maximum of 40 species
 
   scores <- data.frame(scores(ord, display = "species", choices = choices))
 

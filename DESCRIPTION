@@ -9,7 +9,7 @@ Maintainer: Friedemann von Lampe <fvonlampe@uni-goettingen.de>
 Description: A collection of functions useful in (vegetation) community analyses and ordinations. Includes automatic species selection for ordination diagrams, NMDS stress/scree plots, species response curves, merging of taxa as well as calculation and sorting of synoptic tables.
 License: GPL (>= 2)
 LazyData: TRUE
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.6.0)
 Imports: vegan, fields, mgcv, Hmisc
 Suggests: vegdata, BiodiversityR, cluster
 URL: https://github.com/fvlampe/goeveg/
