@@ -18,7 +18,7 @@
 #' Cover-abundance codes are transformed into the mean percentage cover of their class.
 #' For the conversion of percentage cover to cover-abundance codes, all values between the lower and upper border of the class are transformed into the corresponding code.
 #'
-#' The included cover-abundance scales and the associated conversion tables are explained in \code{\link{scale_tabs}}. On this site you also find definitions for defining a custom table.
+#' The included cover-abundance scales and the associated conversion tables with references are explained in \code{\link{scale_tabs}}. On this site you also find definitions for defining a custom table.
 #'
 #' @examples
 #' ## Conversion of species matrix with percentage cover to Braun-Blanquet values

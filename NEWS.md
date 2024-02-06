@@ -1,3 +1,12 @@
+# goeveg 0.7.2
+* Added cover abundance scale: NIWAP (NLWKN 2023)
+* Added 'x'-value to presence/absence scale
+* 'merge_taxa()':
+    * returns names of merged taxa only once (not for each relevé)
+    * added option 'drop_zero' to decide whether species without occurrences or empty samples should be removed or kept
+    * fixed an error when providing individual scales for each sample
+* 'syntable()' and 'merge_taxa()' automatically repair imported tables with empty character values ("")
+
 # goeveg 0.7.1
 * 'syntable()' can now handle factorial variables for defining clusters, e.g. to summarize relevés according to pre-defined categories and is more flexible regarding the format of the community matrix 
 * Terminology was harmonized between different functions
@@ -76,4 +85,4 @@
 
 # goeveg 0.1.6
 
-* First CRAN release
+* Fi

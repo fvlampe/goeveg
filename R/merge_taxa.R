@@ -1,14 +1,15 @@
 #' Merge taxa with identical names
 #' @description
 #' The function offers a simple way to merge taxa with identical names in a vegetation table, e.g. due to necessary harmonization of the taxon level, to combine taxa of different layers or to remove duplicates.
-#' The original cover-abundance scales are maintained.
+#' The original cover-abundance scales are maintained. 
 #'
 #' @param vegtable Data frame with samples in columns and taxa in rows. Taxon names must be in the first column.
 #' @param scale Cover-abundance scale(s) of data. Default is percentage cover (values between 0 and 100) (\code{"percentage"}). Alternatively it can be one of the included scales in \code{\link{scale_tabs}} (e.g. \code{"braun.blanquet"}) or a custom scale defined as data frame following the same format.
 #' You can also provide a vector of the same length as the number of samples, to define individual scales (from \code{\link{scale_tabs}}) for each sample.
-#' @param layers A logical evaluation to \code{TRUE} or \code{FALSE} indicating whether vegetation layers are to be included with layer information stored in the second column.
-#' @param method Choice of method to combine cover. \code{"independent"} (= default) or \code{"exclusive"}. See details for methods.
-#'
+#' @param layers A logical evaluation to \code{TRUE} or \code{FALSE} \emph{(default)} indicating whether vegetation layers are to be included with layer information stored in the second column.
+#' @param method Choice of method to combine cover. \code{"independent"} \emph{(default)} or \code{"exclusive"}. See details for methods.
+#' @param drop_zero A logical evaluation to \code{TRUE} \emph{(default)} or \code{FALSE} indicating whether taxa that do not occur (i.e. sum of abundances is zero) or samples that are empty (i.e. do not have any taxa present) are to be removed.
+#' 
 #' @section Details:
 #' The format required for this function is a data frame with samples in columns and taxa in rows, which corresponds to the export format of vegetation tables from Turboveg (Hennekens & Schaminee 2001).
 #' Taxon names must be in the first column of the table (not row names as these do not allow duplicates).
@@ -18,13 +19,14 @@
 #'
 #' When combining cover values there are two possibilities following Fischer (2014) and Tichý & Holt (2011).
 #' \itemize{
-#'      \item \code{method = "independent" } assumes that covers can overlap and that they do so independently of each other (e.g. individuals of the lower layer are growing beneath individuals of the upper layer).
+#'      \item \code{method = "independent" } \emph{(default)} assumes that covers can overlap and that they do so independently of each other (e.g. individuals of the lower layer are growing beneath individuals of the upper layer).
 #'      In case of two layers the sum of the cover of layer 1 and layer 2 is the sum of the covers minus the overlap. ($p1 + p2- p1 * p2)
 #'      Usually the choice when merging the same taxon from different (sub-)layers.
 #'      \item \code{method = "exclusive" } assumes the covers are mutually exclusive, cover values will be simply summed up (e.g. individuals grow side by side).
 #'      Usually the chouce when merging within layers, e.g. aggregating distinct taxa.
 #'      }
 #' Percentage cover values will eventually be truncated to 100%.
+#' 
 #'
 #' @return
 #' A data frame based on \code{vegtable} with merged taxa.
@@ -51,11 +53,26 @@
 
 
 
-merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method = "independent") {
+merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method = "independent", drop_zero = TRUE) {
 
+  # create progress bar
+  pb <- txtProgressBar(min = 0, max = 7, style = 3)
+  
+  # Check for "" values and replace by NA
+  if (length(vegtable[vegtable == ""]) != 0) {
+    vegtable[vegtable == ""] <- NA
+    warning("Empty character values replaced by 0.")
+  }
+  
+  # Check for NA values
+  if (any(is.na(vegtable))) {
+    vegtable[is.na(vegtable)] <- 0
+    warning("NA values in table transformed into 0.")
+  }
+  
   # Transform cover values to percentage values ----
   vegcover <- data.frame(0)
-
+  
   if(layers == TRUE) {
     vegcover <- vegtable[-c(1, 2)]
   } else {
@@ -63,6 +80,8 @@ merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method 
   }
 
   percentage = FALSE
+  
+  setTxtProgressBar(pb, 1)
 
   if(!is.data.frame(scale)) {
 
@@ -85,9 +104,9 @@ merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method 
       }
 
     } else if(length(scale) == ncol(vegcover)) {
-      # When vector of length
+      # When vector of length of columns
       for(i in 1:ncol(vegcover)) {
-        vegcover[, i] <- cov2per(vegcover[, i], scale = scale[i])
+        vegcover[, i] <- cov2per(vegcover[, i], scale = as.character(scale[i]))
       }
     } else {
       stop("Vector length for cover-abundance scale does not match number of samples.")
@@ -99,6 +118,8 @@ merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method 
   }  else {
     stop("Unknown cover-abundance scale.")
   }
+  
+  setTxtProgressBar(pb, 2)
 
   if(layers == TRUE) {
     vegtable <- cbind(vegtable[,c(1:2)], vegcover)
@@ -106,12 +127,15 @@ merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method 
     vegtable <- cbind(vegtable[,1], vegcover)
   }
 
-  # Convert zero to NA to keep only existing taxa in long table
-  if(0 %in% as.matrix(vegtable)) {
+  # drop_zero: Convert zero to NA to keep only existing taxa in (long) table
+  if(drop_zero == TRUE) {
     vegtable[vegtable == 0] <- NA
   }
+  
+  setTxtProgressBar(pb, 3)
 
   # Conversion to long table  ----
+
   if(layers == TRUE) {
     tab_long <- na.omit(cbind(vegtable[1:2], stack(vegtable[3:ncol(vegtable)]), row.names = NULL))
     names(tab_long) <- c("taxon", "layer", "cover", "site")
@@ -122,27 +146,33 @@ merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method 
 
   # Split long table to list with releves
   tab_long_list <- split(tab_long, tab_long$site)
+  
+  setTxtProgressBar(pb, 4)
 
 
   # Var A: Merge identical taxa (without layers) ----
   if(layers == FALSE) {
-
+    
     tax_dups = character(0)
-
+    tax_dups_all = character(0)
+    count = 0
+    
     # Run through each releve in list
     for(l in 1:length(tab_long_list)) {
-
+      
       # Check each releve for duplicated taxa
       tax_dups <- tab_long_list[[l]][duplicated(tab_long_list[[l]]$taxon), ]$taxon
-
+      
       # Run loop for every duplicated taxon
       if(length(tax_dups) != 0) {
-
+        
+        sum_cov = 0
+        
         for(n in 1:length(tax_dups)) {
-
+          
           # Select duplicated taxa
           tax_list <- tab_long_list[[l]][tab_long_list[[l]]$taxon == tax_dups[n], ]
-
+          
           # Calculate combined cover values based on selected method
           if(method == "independent") {
             values <- tax_list$cover/100
@@ -153,11 +183,17 @@ merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method 
           } else {
             stop("Unknown method")
           }
-
+          
+          # Store duplicated taxa
+          if(cov_comb > 0) {
+            tax_dups_all <- c(tax_dups_all, tax_dups[n])
+            sum_cov <- sum_cov + cov_comb
+          }
+          
           # Remove duplicated taxa from list item
           tab.a <- tab_long_list[[l]][tab_long_list[[l]]$taxon != tax_dups[n], ]
           tab.a
-
+          
           # Add merged taxa to list item
           tab.b <- data.frame(
             taxon = tax_dups[n],
@@ -166,16 +202,19 @@ merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method 
           tab.b
           tab_long_list[[l]] <- rbind(tab.a, tab.b)
         }
-        print(paste0(length(tax_dups), " taxa combined in sample ", names(tab_long_list[l]), ": ", toString(tax_dups)))
+        # Prints merged taxa within each sample - Removed
+        # print(paste0(length(tax_dups), " taxa combined in sample ", names(tab_long_list[l]), ": ", toString(tax_dups)))
+        if(sum_cov > 0) count <- count + 1
       }
     }
   }
-
 
   # Var B: Merge identical taxa (within layers) ----
   if(layers == TRUE) {
 
     tax_dups = character(0)
+    tax_dups_all = character(0)
+    count = 0
 
     # Run through each releve in list
     for(l in 1:length(tab_long_list)) {
@@ -187,7 +226,9 @@ merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method 
 
       # Run loop for every duplicated taxon
       if(length(tax_dups) != 0) {
-
+        
+        sum_cov = 0
+        
         for(n in 1:length(tax_dups)) {
 
           # Select duplicated taxa
@@ -203,6 +244,12 @@ merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method 
           } else {
             stop("Unknown method")
           }
+          
+          # Store duplicated taxa
+          if(cov_comb > 0) {
+            tax_dups_all <- c(tax_dups_all, tax_dups[n])
+            sum_cov <- sum_cov + cov_comb
+          }
 
           # Remove duplicated taxa from list item
           tab.a <- tab_long_list[[l]][tab_long_list[[l]]$specieslayer != tax_dups[n], ]
@@ -217,16 +264,20 @@ merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method 
 
           tab_long_list[[l]] <- rbind(tab.a, tab.b)
         }
-        print(paste0(length(tax_dups), " taxa combined in sample ", names(tab_long_list[l]), ": ", toString(tax_dups)))
       }
 
       # Remove combined taxon-layer colum
       tab_long_list[[l]] <- tab_long_list[[l]][, -5]
     }
+    # Prints merged taxa within each sample - Removed
+    # print(paste0(length(tax_dups), " taxa combined in sample ", names(tab_long_list[l]), ": ", toString(tax_dups)))
+    if(sum_cov > 0) count <- count + 1
   }
-
-
+  
+  setTxtProgressBar(pb, 5)
+  
   # Backtransform into original cover abundance scale ----
+  # print("Back-transformation of cover-abundance values...")
 
   # Unlist releves
   tab_long_new <- do.call(rbind, tab_long_list)
@@ -248,6 +299,8 @@ merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method 
 
   # Convert NA to zero
   tab_new[is.na(tab_new)] <- 0
+  
+  setTxtProgressBar(pb, 6)
 
   # Back-transform values
   if(percentage == FALSE) {
@@ -263,13 +316,15 @@ merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method 
         vegcover <- per2cov(vegcover, scale = scale)
       } else if(length(scale) > 1) {
         for(i in 1:ncol(vegcover)) {
-          vegcover[, i] <- per2cov(vegcover[, i], scale = scale[i])
+          vegcover[, i] <- per2cov(vegcover[, i], scale = as.character(scale[i]))
         }
       }
 
     } else if(is.data.frame(scale)) {
       vegcover <- per2cov(vegcover, scale = scale)
     }
+    
+    setTxtProgressBar(pb, 7)
 
     if(layers == TRUE) {
       tab_new <- cbind(tab_new[,c(1:2)], vegcover)
@@ -277,6 +332,31 @@ merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method 
     } else {
       tab_new <- cbind(tab_new[,1], vegcover)
       names(tab_new)[1] <- "Taxon name"
+    }
+  }
+  
+  # Close progress bar
+  close(pb)
+  
+  # Print merged taxa
+  # nrow(vegtable) - nrow(tab_new) + length(tax_dups) for difference between combined and duplicated taxa
+  
+  tax_dups <- tax_dups_all[!duplicated(tax_dups_all)]
+  
+  if(length(tax_dups) > 0) {
+    print(paste0("Samples: ", length(tax_dups), " taxa combined within ", count, " samples: ", toString(tax_dups), 
+                  " (taxon names may occur more than twice)."))
+        if(drop_zero == TRUE) {
+      print(paste0("Table: In total ", ncol(vegtable) - ncol(tab_new), " empty samples dropped and ", 
+                   nrow(vegtable) - nrow(tab_new), " duplicate or non-occurring taxa removed."))
+        } else {
+          print(paste0("Table: In total ", nrow(vegtable) - nrow(tab_new), " duplicate taxon names removed."))
+    }
+  } else {
+    print("Samples: No duplicated taxa within samples to combine.")
+    if(drop_zero == TRUE) {
+      print(paste0("Table: In total ", ncol(vegtable) - ncol(tab_new), " empty samples dropped and ", 
+                   nrow(vegtable) - nrow(tab_new), " duplicate or non-occurring taxa removed."))
     }
   }
 

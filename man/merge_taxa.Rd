@@ -8,7 +8,8 @@ merge_taxa(
   vegtable,
   scale = "percentage",
   layers = "FALSE",
-  method = "independent"
+  method = "independent",
+  drop_zero = TRUE
 )
 }
 \arguments{
@@ -17,9 +18,11 @@ merge_taxa(
 \item{scale}{Cover-abundance scale(s) of data. Default is percentage cover (values between 0 and 100) (\code{"percentage"}). Alternatively it can be one of the included scales in \code{\link{scale_tabs}} (e.g. \code{"braun.blanquet"}) or a custom scale defined as data frame following the same format.
 You can also provide a vector of the same length as the number of samples, to define individual scales (from \code{\link{scale_tabs}}) for each sample.}
 
-\item{layers}{A logical evaluation to \code{TRUE} or \code{FALSE} indicating whether vegetation layers are to be included with layer information stored in the second column.}
+\item{layers}{A logical evaluation to \code{TRUE} or \code{FALSE} \emph{(default)} indicating whether vegetation layers are to be included with layer information stored in the second column.}
 
-\item{method}{Choice of method to combine cover. \code{"independent"} (= default) or \code{"exclusive"}. See details for methods.}
+\item{method}{Choice of method to combine cover. \code{"independent"} \emph{(default)} or \code{"exclusive"}. See details for methods.}
+
+\item{drop_zero}{A logical evaluation to \code{TRUE} \emph{(default)} or \code{FALSE} indicating whether taxa that do not occur (i.e. sum of abundances is zero) or samples that are empty (i.e. do not have any taxa present) are to be removed.}
 }
 \value{
 A data frame based on \code{vegtable} with merged taxa.
@@ -38,7 +41,7 @@ If a cover-abundance scale from \code{\link{scale_tabs}} is defined, all cover-a
 
 When combining cover values there are two possibilities following Fischer (2014) and Tichý & Holt (2011).
 \itemize{
-     \item \code{method = "independent" } assumes that covers can overlap and that they do so independently of each other (e.g. individuals of the lower layer are growing beneath individuals of the upper layer).
+     \item \code{method = "independent" } \emph{(default)} assumes that covers can overlap and that they do so independently of each other (e.g. individuals of the lower layer are growing beneath individuals of the upper layer).
      In case of two layers the sum of the cover of layer 1 and layer 2 is the sum of the covers minus the overlap. ($p1 + p2- p1 * p2)
      Usually the choice when merging the same taxon from different (sub-)layers.
      \item \code{method = "exclusive" } assumes the covers are mutually exclusive, cover values will be simply summed up (e.g. individuals grow side by side).

@@ -109,6 +109,12 @@
 
 syntable <- function(matrix, cluster, abund = "percentage", type = "percfreq") {
 
+  # Check for "" values and replace by NA
+  if (length(matrix[matrix == ""]) != 0) {
+    matrix[matrix == ""] <- NA
+    warning("Empty character values replaced by 0.")
+  }
+  
   # Check for NA values
   if (any(is.na(matrix))) {
     matrix[is.na(matrix)] <- 0
@@ -360,7 +366,7 @@ syntable <- function(matrix, cluster, abund = "percentage", type = "percfreq") {
         diffspeclist[[name]] <- tmp }
       setTxtProgressBar(pb, 23)
 
-      # Close bar
+      # Close progress bar
       close(pb)
 
       results <- list("syntable" = Results,

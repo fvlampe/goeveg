@@ -10,6 +10,7 @@
 #'     \item \code{"kohler" }- Kohler scale (Kohler 1978). Own conversion adapted from Lüderitz et al. (2009) and Janauer & Heindl (1998).
 #'     \item \code{"kohler.zeltner" }- Simplified 3-level Kohler scale (Kohler & Zeltner 1974). Own conversion.
 #'     \item \code{"londo" }- Londo scale (Londo 1976).
+#'     \item \code{"niwap" }- Scale used by NIWAP (NLWKN 2023). Own conversion as approximation based on A/B-values. 
 #'     \item \code{"pa" }- Presence/absence data (1/0).
 #'     }
 #'
@@ -46,6 +47,9 @@
 #'
 #' Tichý, L., Hennekens, S. M., Novák, P., Rodwell, J. S., Schaminée, J. H. J. & Chytrý, M. (2020):
 #' Optimal transformation of species cover for vegetation classification. \emph{Applied Vegetation Science}, \strong{23}: 710–717. \doi{https://doi.org/10.1111/avsc.12510}
+#'
+#' NLWKN (2023): NIWAP – Das Niedersächsische Webbasierte Artenerfassungs-Portal. Niedersächsischer Landesbetrieb für Wasserwirtschaft, Küsten- und Naturschutz.
+#' \url{https://www.nlwkn.niedersachsen.de/niwap/niwap-187602.html}. (accessed 05 February 2024)
 #'
 #' @name scale_tabs
 #' @docType data
