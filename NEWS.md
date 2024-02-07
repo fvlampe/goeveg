@@ -1,5 +1,5 @@
 # goeveg 0.7.2
-* Added cover abundance scale: NIWAP (NLWKN 2023)
+* Added cover abundance scale "niwap" from Lower Saxony species survey programmes (Schacherer 2001)
 * Added 'x'-value to presence/absence scale
 * 'merge_taxa()':
     * returns names of merged taxa only once (not for each relevé)
