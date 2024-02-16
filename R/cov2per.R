@@ -94,7 +94,7 @@ cov2per <- function(matrix, scale = "braun.blanquet") {
   } else {
     matrix <- apply(cover_new, 2,  function(x) as.numeric(as.character(x)))
     # Following names are only assigned when still 2-dimensional
-    if(is.null(dim(matrix))) {
+    if(!is.null(dim(matrix))) {
       matrix <- data.frame(matrix, row.names = row.names(cover))
       names(matrix) <- names(cover)
     }
