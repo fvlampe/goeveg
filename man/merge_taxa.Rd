@@ -9,7 +9,7 @@ merge_taxa(
   scale = "percentage",
   layers = "FALSE",
   method = "independent",
-  drop_zero = TRUE,
+  clean_matrix = FALSE,
   backtransform = TRUE
 )
 }
@@ -23,7 +23,7 @@ You can also provide a vector of the same length as the number of samples, to de
 
 \item{method}{Choice of method to combine cover. \code{"independent"} \emph{(default)} or \code{"exclusive"}. See details for methods.}
 
-\item{drop_zero}{A logical evaluation to \code{TRUE} \emph{(default)} or \code{FALSE} indicating whether taxa that do not occur (i.e. sum of abundances is zero) or samples that are empty (i.e. do not have any taxa present) are to be removed.}
+\item{clean_matrix}{A logical evaluation to \code{TRUE} or \code{FALSE} \emph{(default)} indicating whether taxa that do not occur (i.e. sum of abundances is zero) or samples that are empty (i.e. do not have any taxa present) are to be removed.}
 
 \item{backtransform}{A logical evaluation to \code{TRUE} \emph{(default)} or \code{FALSE} indicating whether cover-abundance values should be back-transformed into their original cover-abundance scale or left as percentage cover.}
 }

@@ -62,8 +62,8 @@ clean_matrix <- function(matrix, env = NULL, traits = NULL) {
     traits.clean <- env[freq > 0, ]
   }
   
-  print(paste0("Removed ", freq.0, " species without occurence (frequency = 0) and ", 
-               rich.0, " samples without any species (species number = 0)"))
+  print(paste0("Removed ", freq.0, " species without occurence and ", 
+               rich.0, " samples without any species"))
   
   if(is.null(traits) && is.null(env)) {
     return(matrix.clean)
