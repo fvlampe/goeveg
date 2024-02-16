@@ -9,7 +9,8 @@ merge_taxa(
   scale = "percentage",
   layers = "FALSE",
   method = "independent",
-  drop_zero = TRUE
+  drop_zero = TRUE,
+  backtransform = TRUE
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ You can also provide a vector of the same length as the number of samples, to de
 \item{method}{Choice of method to combine cover. \code{"independent"} \emph{(default)} or \code{"exclusive"}. See details for methods.}
 
 \item{drop_zero}{A logical evaluation to \code{TRUE} \emph{(default)} or \code{FALSE} indicating whether taxa that do not occur (i.e. sum of abundances is zero) or samples that are empty (i.e. do not have any taxa present) are to be removed.}
+
+\item{backtransform}{A logical evaluation to \code{TRUE} \emph{(default)} or \code{FALSE} indicating whether cover-abundance values should be back-transformed into their original cover-abundance scale or left as percentage cover.}
 }
 \value{
 A data frame based on \code{vegtable} with merged taxa.
@@ -58,7 +61,7 @@ schedenveg.t <- data.frame(species = names(schedenveg), t(schedenveg))
 schedenveg.t <- rbind(schedenveg.t, schedenveg.t[c(55, 61), ])
 
 # Merge duplicated taxa using default 'independent' method
-merge_taxa(schedenveg.t, scale = "percentage")
+schedenveg.merged <- merge_taxa(schedenveg.t, scale = "percentage")
 
 }
 \references{

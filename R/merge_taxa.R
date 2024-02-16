@@ -9,6 +9,7 @@
 #' @param layers A logical evaluation to \code{TRUE} or \code{FALSE} \emph{(default)} indicating whether vegetation layers are to be included with layer information stored in the second column.
 #' @param method Choice of method to combine cover. \code{"independent"} \emph{(default)} or \code{"exclusive"}. See details for methods.
 #' @param drop_zero A logical evaluation to \code{TRUE} \emph{(default)} or \code{FALSE} indicating whether taxa that do not occur (i.e. sum of abundances is zero) or samples that are empty (i.e. do not have any taxa present) are to be removed.
+#' @param backtransform A logical evaluation to \code{TRUE} \emph{(default)} or \code{FALSE} indicating whether cover-abundance values should be back-transformed into their original cover-abundance scale or left as percentage cover.
 #' 
 #' @section Details:
 #' The format required for this function is a data frame with samples in columns and taxa in rows, which corresponds to the export format of vegetation tables from Turboveg (Hennekens & Schaminee 2001).
@@ -39,7 +40,7 @@
 #' schedenveg.t <- rbind(schedenveg.t, schedenveg.t[c(55, 61), ])
 #'
 #' # Merge duplicated taxa using default 'independent' method
-#' merge_taxa(schedenveg.t, scale = "percentage")
+#' schedenveg.merged <- merge_taxa(schedenveg.t, scale = "percentage")
 #'
 #' @references
 #' Fischer, H. S. (2015): On the combination of species cover values from different vegetation layers.
@@ -53,7 +54,7 @@
 
 
 
-merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method = "independent", drop_zero = TRUE) {
+merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method = "independent", drop_zero = TRUE, backtransform = TRUE) {
 
   # create progress bar
   pb <- txtProgressBar(min = 0, max = 7, style = 3)
@@ -303,7 +304,7 @@ merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method 
   setTxtProgressBar(pb, 6)
 
   # Back-transform values
-  if(percentage == FALSE) {
+  if(percentage == FALSE && backtransform == TRUE) {
     if(layers == TRUE) {
       vegcover <- tab_new[-c(1, 2)]
     } else {
@@ -324,15 +325,20 @@ merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method 
       vegcover <- per2cov(vegcover, scale = scale)
     }
     
-    setTxtProgressBar(pb, 7)
-
     if(layers == TRUE) {
       tab_new <- cbind(tab_new[,c(1:2)], vegcover)
-      names(tab_new)[1:2] <- c("Taxon name", "Layer")
     } else {
       tab_new <- cbind(tab_new[,1], vegcover)
-      names(tab_new)[1] <- "Taxon name"
     }
+  }
+  
+  setTxtProgressBar(pb, 7)
+  
+  # Write column names
+  if(layers == TRUE) {
+    names(tab_new)[1:2] <- c("Taxon name", "Layer")
+  } else {
+    names(tab_new)[1] <- "Taxon name"
   }
   
   # Close progress bar

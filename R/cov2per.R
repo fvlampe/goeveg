@@ -93,8 +93,11 @@ cov2per <- function(matrix, scale = "braun.blanquet") {
     matrix <- as.numeric(cover_new)
   } else {
     matrix <- apply(cover_new, 2,  function(x) as.numeric(as.character(x)))
-    matrix <- data.frame(matrix, row.names = row.names(cover))
-    names(matrix) <- names(cover)
+    # Following names are only assigned when still 2-dimensional
+    if(is.null(dim(matrix))) {
+      matrix <- data.frame(matrix, row.names = row.names(cover))
+      names(matrix) <- names(cover)
+    }
   }
 
     # Check if still NA values (should not be possible)
@@ -107,6 +110,11 @@ cov2per <- function(matrix, scale = "braun.blanquet") {
 
 #' @export
 #' @rdname cov2per
+
+
+
+
+
 
 per2cov <- function(matrix, scale = "braun.blanquet") {
 
