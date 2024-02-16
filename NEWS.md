@@ -1,6 +1,8 @@
 # goeveg 0.7.3
 * Added function 'clean_matrix()' to remove species without occurrences (frequency = 0) and samples without species from a species matrix in one simple step
-* Added option 'backtransform' to 'merge_taxa()' to decide whether cover-abundance values should be kept as percentage cover or back-transformed into original cover-abundance values
+* Simplified function 'merge_taxa()' to make it work much faster.
+    * Added option 'backtransform' to decide whether cover-abundance values should be kept as percentage cover or back-transformed into original cover-abundance values
+    * Option 'drop_zero' renamed to 'clean_matrix' and set on FALSE by default
 * Fixed an error in 'cov2per' when providing a data frame with only one column as community data
 
 # goeveg 0.7.2
