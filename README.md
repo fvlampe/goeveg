@@ -10,6 +10,7 @@ Includes:
 * Rank-abundance curve plotting for single or multiple samples (`racurve` and `racurves`-functions).
 * Calculation and sorting of synoptic tables with fidelity and differential species assessment (`syntable` and `synsort` functions)
 * Taxa merging for taxa with identical names (`merge_taxa` - function)
+* One-step cleaning and transposing of vegetation matrices: (`clean_matrix` and `trans_matrix` - functions)
 * Conversion between cover-abundance codes and percentage cover (`cov2per` and `per2cov` - functions)
 
 Furthermore some basic functions are included, such as standard error of the mean `sem`, coefficient of variance `cv` or conversion between degrees and radians `deg2rad`/`rad2deg`.
