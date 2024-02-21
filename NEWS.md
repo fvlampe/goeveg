@@ -1,9 +1,11 @@
 # goeveg 0.7.3
 * Added function 'clean_matrix()' to remove species without occurrences (frequency = 0) and samples without species from a species matrix in one simple step
+* Added function 'trans_matrix()' to transposes a species matrix, while preserving correct species and sample names. 
 * Simplified function 'merge_taxa()' to make it work much faster.
     * Added option 'backtransform' to decide whether cover-abundance values should be kept as percentage cover or back-transformed into original cover-abundance values
     * Option 'drop_zero' renamed to 'clean_matrix' and set on FALSE by default
 * Fixed an error in 'cov2per' when providing a data frame with only one column as community data
+* Fixed an unnecessary warning message in 'syntable' occurring at cover value transformation
 
 # goeveg 0.7.2
 * Added cover abundance scale "niwap" from Lower Saxony species survey programmes (Schacherer 2001)

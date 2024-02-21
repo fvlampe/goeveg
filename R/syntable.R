@@ -109,24 +109,25 @@
 
 syntable <- function(matrix, cluster, abund = "percentage", type = "percfreq") {
 
+  narep <- FALSE
   # Check for "" values and replace by NA
   if (length(matrix[matrix == ""]) != 0) {
     matrix[matrix == ""] <- NA
-    warning("Empty character values replaced by 0.")
+    narep <- TRUE
   }
-  
   # Check for NA values
   if (any(is.na(matrix))) {
     matrix[is.na(matrix)] <- 0
-    warning("NA values in matrix transformed into 0.")
+    narep <- TRUE
   }
+  if(narep == TRUE) print("NA and/or empty character values replaced by 0.")
 
   if (any(is.na(cluster))) {
     stop("NA values in cluster not allowed.")
   }
 
   # Check if values are numeric
-  if(any(is.na(as.numeric(unlist(matrix))))) {
+  if(any(is.na(suppressWarnings(as.numeric(unlist(matrix)))))) {
     warning("Non-numeric cover values transformed into 1. Using presence/absence scale.")
     matrix[matrix != 0] <- 1
     abund = "pa"

@@ -241,7 +241,7 @@ merge_taxa <- function(vegtable, scale = "percentage", layers = "FALSE", method 
   }
   
   if(clean_matrix == TRUE) {
-    print(paste0("Removed ", freq.0, " species without occurence and ", 
+    print(paste0("Clean matrix: Removed ", freq.0, " species without occurence and ", 
                  rich.0, " sample(s) without any species"))
   }
   
