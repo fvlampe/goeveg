@@ -51,6 +51,8 @@ When combining cover values there are two possibilities following Fischer (2014)
      Usually the chouce when merging within layers, e.g. aggregating distinct taxa.
      }
 Percentage cover values will eventually be truncated to 100%.
+
+You may use the function \code{\link{trans_matrix}} to easily transpose the resulting vegetation table into a statistically analyzable species matrix.
 }
 
 \examples{

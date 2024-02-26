@@ -4,12 +4,14 @@
 \alias{trans_matrix}
 \title{Transpose species matrix}
 \usage{
-trans_matrix(matrix, row.names = T)
+trans_matrix(matrix, row.names = T, rmchar = FALSE)
 }
 \arguments{
 \item{matrix}{Community data, a data frame.}
 
 \item{row.names}{A logical evaluation indicating whether the new column names are stored as row names of the data frame \code{TRUE} \emph{(default)} or in the first column \code{FALSE}.}
+
+\item{rmchar}{A logical evaluation indicating whether the first character of the original column names should be removed (default: \code{FALSE}).}
 }
 \value{
 A transposed data frame.
@@ -18,6 +20,15 @@ A transposed data frame.
 The function transposes a species matrix, while preserving correct species and sample names. 
 The new column names must be stored as row names of the data frame. They may also be stored in the first column, when chosing the argument \code{row.names = F}.
 }
+\section{Details}{
+
+Sometimes vegetation data is organized as a data frame with samples in columns and taxa in rows, with taxon names stored in the first column, e.g. as result of the function \code{\link{merge_taxa}}.
+In this case you can use \code{row.names = F} to directly convert this species matrix into a statistically analyzable format, e.g. with \code{vegan}.
+
+If your dataframe contains prepended “X” to each header due to numbered samples, you can use \code{rmchar = TRUE} to remove the first character of the column names during transposing. 
+(You may also avoid this problem at all by using \code{check.names = FALSE} when loading the data in \code{\link[utils]{read.table}})
+}
+
 \examples{
 # Transpose species matrix
 schedenveg.trans <- trans_matrix(schedenveg)

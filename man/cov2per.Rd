@@ -5,14 +5,16 @@
 \alias{per2cov}
 \title{Conversion between cover-abundance codes and percentage cover}
 \usage{
-cov2per(matrix, scale = "braun.blanquet")
+cov2per(matrix, scale = "braun.blanquet", multiscale = FALSE)
 
-per2cov(matrix, scale = "braun.blanquet")
+per2cov(matrix, scale = "braun.blanquet", multiscale = FALSE)
 }
 \arguments{
 \item{matrix}{Community data, a vector or matrix-like object with cover-abundance values}
 
 \item{scale}{Cover-abundance scale (from \code{\link{scale_tabs}}) or dataframe with custom conversion table following the same format.}
+
+\item{multiscale}{A logical evaluation to \code{FALSE} \emph{(default)} or \code{TRUE} indicating whether individual scales per sample should be used. For individual scales, you must provide a vector of the same length as the number of samples to the \code{scale} argument, defining the scale (from \code{\link{scale_tabs}}) for each sample (with samples as rows in matrix).}
 }
 \value{
 A dataframe or vector containing the transformed data

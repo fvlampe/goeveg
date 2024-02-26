@@ -28,6 +28,7 @@
 #'      }
 #' Percentage cover values will eventually be truncated to 100%.
 #' 
+#' You may use the function \code{\link{trans_matrix}} to easily transpose the resulting vegetation table into a statistically analyzable species matrix.
 #'
 #' @return
 #' A data frame based on \code{vegtable} with merged taxa.

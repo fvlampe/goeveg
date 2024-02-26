@@ -12,7 +12,7 @@ A list of 6 dataframes, each containing one conversion table
     \item \code{"kohler" }- Kohler scale (Kohler 1978). Own conversion adapted from Lüderitz et al. (2009) and Janauer & Heindl (1998).
     \item \code{"kohler.zeltner" }- Simplified 3-level Kohler scale (Kohler & Zeltner 1974). Own conversion.
     \item \code{"londo" }- Londo scale (Londo 1976).
-    \item \code{"niwap" }- Scale used by Lower Saxony species survey programmes (Schacherer 2001). Own conversion as approximation based on a/b-values, which are based on individual counts. Needs to be adapted to sample sizes. 
+    \item \code{"niwap" }- Scale used by Lower Saxony species survey programs (Schacherer 2001). Own conversion as approximation based on a/b-values, which are based on individual counts. Needs to be adapted to sample sizes. 
     \item \code{"pa" }- Presence/absence data (1/0).
     }
 
