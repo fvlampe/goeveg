@@ -2,7 +2,6 @@
 #' @description
 #' The function transposes a species matrix, while preserving correct species and sample names. 
 #' The new column names must be stored as row names of the data frame. They may also be stored in the first column, when chosing the argument \code{row.names = F}. 
-#' Missing values (NA) will be transformed to 0.
 #' 
 #' @param matrix Community data, a data frame. 
 #' @param row.names A logical evaluation indicating whether the new column names are stored as row names of the data frame \code{TRUE} \emph{(default)} or in the first column \code{FALSE}.
