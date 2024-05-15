@@ -1,3 +1,9 @@
+# goeveg 0.7.5
+* Added argument to define number of decimal places in 'syntable()'-results
+* Empty cell values are transformed to 0 in 'clean_matrix()'
+* Fixed 'clean_matrix()' to work correctly with non-numeric values in data tables
+
+
 # goeveg 0.7.4
 * Added option to transform with individual scales per sample in 'cov2per' and 'per2cov'
 * Added descriptions and option 'rmchar' to 'trans_matrix()'

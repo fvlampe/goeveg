@@ -4,7 +4,7 @@
 #'  
 #' It will also subset the corresponding observations of environmental data (samples in rows) or species trait data (species in rows), if passed to the function.
 #'
-#' @param matrix Community data, a matrix-like object with samples in rows and species in columns. Missing values (NA) will be transformed to 0.
+#' @param matrix Community data, a matrix-like object with samples in rows and species in columns. Missing values (NA) or empty character cell values will be transformed to 0.
 #' @param env Optionally, a data frame of environmental variables, with samples in rows and variables in columns
 #' @param traits Optionally, a data frame of species traits, with species in rows and trait variables in columns
 #'
@@ -38,12 +38,18 @@ clean_matrix <- function(matrix, env = NULL, traits = NULL) {
     print("NA values in matrix transformed into 0.")
   }
   
+  # Check for empty character cells 
+  if (any(matrix == "")) {
+    matrix[matrix == ""] <- 0
+    print("Empty cell values in matrix transformed into 0.")
+  }
+  
   # Calculate frequencies and richness
-  freq <- apply(matrix > 0, 2, sum)
+  freq <- apply(matrix != 0, 2, sum)
   freq
   freq.0 <- length(freq[freq == 0])  
   
-  rich <- apply(matrix > 0, 1, sum)
+  rich <- apply(matrix != 0, 1, sum)
   rich
   rich.0 <- length(rich[rich == 0])  
   

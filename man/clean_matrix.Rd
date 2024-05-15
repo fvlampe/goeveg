@@ -7,7 +7,7 @@
 clean_matrix(matrix, env = NULL, traits = NULL)
 }
 \arguments{
-\item{matrix}{Community data, a matrix-like object with samples in rows and species in columns. Missing values (NA) will be transformed to 0.}
+\item{matrix}{Community data, a matrix-like object with samples in rows and species in columns. Missing values (NA) or empty character cell values will be transformed to 0.}
 
 \item{env}{Optionally, a data frame of environmental variables, with samples in rows and variables in columns}
 

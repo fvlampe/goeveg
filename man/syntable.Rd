@@ -5,7 +5,7 @@
 \title{Synoptic tables and calculation of cluster-wise frequencies, fidelity and
 differential species character}
 \usage{
-syntable(matrix, cluster, abund = "percentage", type = "percfreq")
+syntable(matrix, cluster, abund = "percentage", type = "percfreq", digits = 0)
 }
 \arguments{
 \item{matrix}{Species matrix or data frame with species in columns and samples in rows.
@@ -23,6 +23,8 @@ cover-abundance values from different scales into percentage cover.}
 
 \item{type}{Type of synoptic table output \code{type = c("percfreq", "totalfreq", "mean",
 "median", "diffspec", "phi")}. See Details.}
+
+\item{digits}{Integer indicating the number of decimal places to be displayed in result tables (default 0)}
 }
 \value{
 The function returns an (invisible) list of result components.

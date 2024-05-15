@@ -26,6 +26,7 @@
 #' cover-abundance values from different scales into percentage cover.
 #' @param type Type of synoptic table output \code{type = c("percfreq", "totalfreq", "mean",
 #' "median", "diffspec", "phi")}. See Details.
+#' @param digits Integer indicating the number of decimal places to be displayed in result tables (default 0)
 #'
 #' @section Details:
 #' For synoptic table calculation, six types are available.
@@ -107,7 +108,7 @@
 
 
 
-syntable <- function(matrix, cluster, abund = "percentage", type = "percfreq") {
+syntable <- function(matrix, cluster, abund = "percentage", type = "percfreq", digits = 0) {
 
   narep <- FALSE
   # Check for "" values and replace by NA
@@ -161,12 +162,12 @@ syntable <- function(matrix, cluster, abund = "percentage", type = "percfreq") {
     } else if (type=="percfreq") {
       samplesize <- tapply(rep(1,length(cluster)), cluster ,sum)
       for (i in cluster) {
-        syntab[,i] <- round(apply(matrix[cluster==i,]>0, 2, sum) * (100/samplesize[i]), digits=0)}
+        syntab[,i] <- round(apply(matrix[cluster==i,]>0, 2, sum) * (100/samplesize[i]), digits=digits)}
       results <- list("syntable" = syntab, "samplesize" = samplesize)
 
     } else if (type=="mean" & abund=="percentage") {
       samplesize <- tapply(rep(1,length(cluster)),cluster,sum)
-      for (i in cluster) { syntab[,i] <- round(apply(matrix[cluster==i,],2,mean), digits=0) }
+      for (i in cluster) { syntab[,i] <- round(apply(matrix[cluster==i,],2,mean), digits=digits) }
       results <- list("syntable" = syntab, "samplesize" = samplesize)
 
     } else if (type=="mean" & abund=="pa") {
@@ -174,7 +175,7 @@ syntable <- function(matrix, cluster, abund = "percentage", type = "percfreq") {
 
     } else if (type=="median" & abund=="percentage") {
       samplesize <- tapply(rep(1,length(cluster)),cluster,sum)
-      for (i in cluster) { syntab[,i] <- round(apply(matrix[cluster==i,],2,median), digits=0) }
+      for (i in cluster) { syntab[,i] <- round(apply(matrix[cluster==i,],2,median), digits=digits) }
       results <- list("syntable" = syntab, "samplesize" = samplesize)
 
     } else if (type=="median" & abund=="pa") {
@@ -187,7 +188,7 @@ syntable <- function(matrix, cluster, abund = "percentage", type = "percfreq") {
       #Calculate samplesize and percentage frequency
       samplesize <- tapply(rep(1,length(cluster)),cluster,sum)
       for (i in cluster) {
-        syntab[,i] <- round(apply(matrix[cluster==i,]>0, 2, sum) * (100/samplesize[i]), digits=0)}
+        syntab[,i] <- round(apply(matrix[cluster==i,]>0, 2, sum) * (100/samplesize[i]), digits=digits)}
       syn <- syntab
       setTxtProgressBar(pb, 2)
 

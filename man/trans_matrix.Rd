@@ -18,7 +18,8 @@ A transposed data frame.
 }
 \description{
 The function transposes a species matrix, while preserving correct species and sample names. 
-The new column names must be stored as row names of the data frame. They may also be stored in the first column, when chosing the argument \code{row.names = F}.
+The new column names must be stored as row names of the data frame. They may also be stored in the first column, when chosing the argument \code{row.names = F}. 
+Missing values (NA) will be transformed to 0.
 }
 \section{Details}{
 
