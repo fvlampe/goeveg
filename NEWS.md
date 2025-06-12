@@ -1,3 +1,6 @@
+# goeveg 0.7.6
+* Fixed a mistake in per2cov(), leading to wrong assignments in specific cases
+
 # goeveg 0.7.5
 * Added argument to define number of decimal places in 'syntable()'-results
 * Empty cell values are transformed to 0 in 'clean_matrix()'

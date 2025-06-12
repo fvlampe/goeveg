@@ -92,7 +92,7 @@ cov2per <- function(matrix, scale = "braun.blanquet", multiscale = FALSE) {
     
     # Convert into numeric values
     if(is.null(dim(matrix))) {
-      matrix <- as.numeric(cover_new)
+      matrix <- as.numeric(as.character(cover_new))
     } else {
       matrix <- apply(cover_new, 2,  function(x) as.numeric(as.character(x)))
       # Following names are only assigned when still 2-dimensional
@@ -184,7 +184,7 @@ per2cov <- function(matrix, scale = "braun.blanquet", multiscale = FALSE) {
   
   # tranform matrix to numeric; creates NA for non-numeric values
   if(is.null(dim(matrix))) {
-    matrix <- as.numeric(matrix)
+    matrix <- as.numeric(as.character(matrix))
   } else {
     matrix <- apply(matrix, 2,  function(x) as.numeric(as.character(x)))
   }
@@ -207,15 +207,15 @@ per2cov <- function(matrix, scale = "braun.blanquet", multiscale = FALSE) {
     # Load cover-abundance scale
     if (is.data.frame(scale)) {
       
-      if(ncol(scale_tab) != 3) {
+      if(ncol(scale) != 3) {
         stop("Custom conversion table need exactly 3 columns: code, cov_mean & cov_max.")
       }
       
-      if(nrow(scale_tab) < 1) {
+      if(nrow(scale) < 1) {
         stop("No entries in custom conversion table.")
       }
       
-      scale_tab <- rbind(c(0,0,0), scale_tab)
+      scale_tab <- rbind(c(0,0,0), scale)
       names(scale_tab) <- c("code", "cov_mean", "cov_max")
       
     } else if (any(scale == names(goeveg::scale_tabs))) {
@@ -279,7 +279,7 @@ per2cov <- function(matrix, scale = "braun.blanquet", multiscale = FALSE) {
       
       # Calculate back-transformed cover values
       # according to the class limits of the corresponding scale table
-      for(l in 1:length(scale_tab_clean$cov_max)-1) {
+      for(l in 1:(length(scale_tab_clean$cov_max) - 1)) {
         cover_new[(cover > scale_tab_clean$cov_max[l]) &
                     (cover <= scale_tab_clean$cov_max[l+1])] <- scale_tab_clean$code[l+1]
       }
