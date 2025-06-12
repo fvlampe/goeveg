@@ -1,5 +1,5 @@
 ## Test environments
-* local windows install, R 4.4.0
+* local windows install, R 4.5.0
 * win-builder (devel and release)
 * R-hub builder
 
