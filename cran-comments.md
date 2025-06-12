@@ -1,7 +1,7 @@
 ## Test environments
 * local windows install, R 4.5.0
 * win-builder (devel and release)
-* R-hub builder
+* R-hub (linux, macos, windows)
 
 
 ## R CMD check results
