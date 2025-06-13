@@ -6,6 +6,10 @@ Date: 2025-06-11
 Author: Friedemann von Lampe [aut, cre],
   Jenny Schellenberg [aut]
 Maintainer: Friedemann von Lampe <fvonlampe@uni-goettingen.de>
+Authors@R: c(
+    person("Friedemann", "von Lampe", , "fvonlampe@uni-goettingen.de", role = c("aut", "cre"),
+    comment = c(ORCID = "0009-0004-8015-9202")),
+    person("Schellenberg", "Jenny", role = c("aut")))
 Description: A collection of functions useful in (vegetation) community analyses and ordinations. Includes automatic species selection for ordination diagrams, NMDS stress/scree plots, species response curves, merging of taxa as well as calculation and sorting of synoptic tables.
 License: GPL (>= 2)
 LazyData: TRUE
