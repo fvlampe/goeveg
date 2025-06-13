@@ -3,8 +3,6 @@ Type: Package
 Title: Functions for Community Data and Ordinations
 Version: 0.7.6
 Date: 2025-06-13
-Author: Friedemann von Lampe [aut, cre],
-  Jenny Schellenberg [aut]
 Maintainer: Friedemann von Lampe <fvonlampe@uni-goettingen.de>
 Authors@R: c(
     person("Friedemann", "von Lampe", , "fvonlampe@uni-goettingen.de", role = c("aut", "cre"),
