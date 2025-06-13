@@ -1,5 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.github$
 ^cran-comments\.md$
 ^data-raw/*
 ^CRAN-SUBMISSION$
