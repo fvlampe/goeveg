@@ -7,11 +7,14 @@
 synsort(
   syn1,
   syn2 = syn1,
-  matrix,
+  matrix = NULL,
   cluster,
+  cluster_order = NULL,
   method = "allspec",
   min1 = 0,
-  min2 = 0
+  min2 = 0,
+  samples = FALSE,
+  manual_order = NULL
 )
 }
 \arguments{
@@ -22,13 +25,17 @@ The values of this table will be displayed in the final output table.}
 \item{syn2}{Optional second input table with additional numeric or differential character
 sorting criteria.}
 
-\item{matrix}{Species-sample matrix, already used for \code{\link{syntable}} function input}
+\item{matrix}{Optional species-sample matrix, already used for \code{\link{syntable}} function input; used only when calculating the
+sorted species-sample matrix (`samples = TRUE`). Site names are imported from row names.}
 
 \item{cluster}{Integer or character vector/factor with classification cluster identity. Ensure matching order of
 cluster identity and samples in matrix for correct allocation of cluster numbers to samples.}
 
-\item{method}{Sorting algorithm and synoptic table output options (\code{method = c("allspec", "alldiff")}).
-See Details.}
+\item{cluster_order}{Optional vector giving the desired order of cluster levels.
+If provided, only clusters listed here are included in the output.}
+
+\item{method}{Sorting algorithm and synoptic table output options
+(\code{method = c("allspec", "alldiff", "totalfreq", "manual")}).}
 
 \item{min1}{Cluster-wise threshold minimum value for species shown in the final sorted synoptic table.
 Species below that minimum will be listed in the output (\code{$others} section).}
@@ -36,6 +43,13 @@ Species below that minimum will be listed in the output (\code{$others} section)
 \item{min2}{Threshold minimum value for considering species values of a numerical second input table \code{syn2}.
 Species below that minimum will not be displayed in final synoptic table, but will be listed in the
 output (\code{$others} section).}
+
+\item{samples}{Logical; if \code{TRUE}, a sorted species-sample matrix is returned. Defaults to \code{FALSE}.}
+
+\item{manual_order}{Optional character vector of species names (matching
+row names of \code{syn1}) to impose a manual row order when
+\code{method = "manual"}. Species not listed are appended and ordered by
+their overall frequency (row sums of \code{syn1}, descending).}
 }
 \value{
 Returns an (invisible) list composed of:
@@ -50,7 +64,8 @@ Returns an (invisible) list composed of:
   \item \code{$others} Species that are omitted in Synoptic table due to their failing
   reaching the given threshold values \code{min1} and \code{min2}. Sorted alphabetically.
   \item \code{$samples} Sorted original species-sample matrix, with original Plot-IDs (as column
-  names) and the cluster identity (Cluster_No as first row of output samples table)
+  names) and the cluster identity (Cluster_No as first row of output samples table) (only when `samples = TRUE`)
+  \item \code{$omitted_clusters} Names of clusters removed because they were not listed in `cluster_order`
   }
 }
 \description{
@@ -84,6 +99,15 @@ Two types of sorted synoptic tables can be created with this function:
  positive differential character will then be listed on the top of a species block.
  Within such a block, the differentiating and high-abundant species are sorted in a way favoring
  species that are positive in only one or at least few clusters.
+ \item \code{method = "totalfreq"}: Sorts species by their overall
+   frequency in \code{syn1} (row sums) in descending order. Only species with
+   at least one cluster value \eqn{\ge} \code{min1} are kept in the table; the
+   rest are listed in \code{$others}.
+   \item \code{method = "manual"}: The rows are ordered by \code{manual_order}
+     (species not present are ignored). Any remaining species are appended,
+     sorted by their overall frequency (row sums of \code{syn1}, descending).
+     Species must still pass \code{min1} (max across clusters \eqn{\ge} \code{min1});
+     the rest go to \code{$others}.
  }
 }
 
@@ -114,6 +138,12 @@ phi_table <- synsort(syn1 = phi$syntable, matrix = schedenveg, cluster = pam1$cl
                      method = "allspec", min1 = 0.3)
 phi_table     # view results
 
+## Synoptic table with total frequency (global ranking)
+total <- synsort(syn1 = unordered$syntable,
+               cluster = pam1$clustering,
+               method = "totalfreq",
+               min1 = 5)
+total         # view results
 
 ### Two numerical tables for sorting:
 ## Synoptic table showing percentage frequencies, but only for species with minimum phi-value
@@ -141,6 +171,7 @@ complete <- synsort(syn1 = unordered$syntable, syn2 = differential$syntable,
 complete            # view result table
 differential$differentials  # list differential species for clusters
 
+
 }
 \references{
 Bruelheide, H. (2000): A new measure of fidelity and its application to defining species groups.
@@ -158,5 +189,5 @@ determination of differential taxa. \emph{Journal of Vegetation Science} \strong
 \code{\link{syntable}}
 }
 \author{
-Jenny Schellenberg (\email{jschell@gwdg.de})
+Jenny Schellenberg (\email{jschell@gwdg.de}) and Friedemann von Lampe
 }

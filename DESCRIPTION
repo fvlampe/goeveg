@@ -1,8 +1,8 @@
 Package: goeveg
 Type: Package
 Title: Functions for Community Data and Ordinations
-Version: 0.7.6
-Date: 2025-06-13
+Version: 0.7.7
+Date: 2025-08-28
 Maintainer: Friedemann von Lampe <fvonlampe@uni-goettingen.de>
 Authors@R: c(
     person("Friedemann", "von Lampe", , "fvonlampe@uni-goettingen.de", role = c("aut", "cre"),
@@ -12,7 +12,7 @@ Description: A collection of functions useful in (vegetation) community analyses
 License: GPL (>= 2)
 LazyData: TRUE
 Depends: R (>= 3.6.0)
-Imports: vegan, fields, mgcv, Hmisc
+Imports: vegan, fields, mgcv, Hmisc, data.table
 Suggests: vegdata, BiodiversityR, cluster
 URL: https://github.com/fvlampe/goeveg/
 BugReports: https://github.com/fvlampe/goeveg/issues

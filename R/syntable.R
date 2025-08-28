@@ -9,10 +9,11 @@
 #' by calculating cluster-wise percentage or absolute frequencies, mean/median cover values, fidelity
 #' (phi) or differential species character.
 #'
-#' \code{syntable} function calculates an unordered synoptic table for plant community analysis, using
-#' an input species-sample data frame and a vector of cluster identity input.
-#' The unordered output table can be sorted automatically with \code{\link[goeveg]{synsort}} function
-#' in this package.
+#' \code{syntable} calculates synoptic tables, using
+#' an input species-sample matrix and a vector of cluster identity.
+#' The unordered output table can be sorted automatically with \code{\link[goeveg]{synsort}} function.
+#' 
+#' For large databases in long-format, use the companion function \code{\link[goeveg]{syntable_long}}.
 #'
 #' @param matrix Species matrix or data frame with species in columns and samples in rows.
 #' Missing values (NA) will be transformed to 0.
@@ -74,7 +75,7 @@
 #' determination of differential taxa. \emph{Journal of Vegetation Science} \strong{20}: 233-240. \doi{https://doi.org/10.1111/j.1654-1103.2009.05273.x}
 #'
 #' @author Jenny Schellenberg (\email{jschell@gwdg.de}) and Friedemann von Lampe
-#' @seealso \code{\link{synsort}}
+#' @seealso \code{\link{synsort}}, \code{\link{syntable_long}}
 #' @examples
 #' ## Synoptic table of Scheden vegetation data
 #' library(cluster)

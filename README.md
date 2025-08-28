@@ -8,7 +8,7 @@ Includes:
 * Generation of species response curves (`specresponse` - function)
 * Scree/stress plots for NMDS (`screeplot_NMDS` - function)
 * Rank-abundance curve plotting for single or multiple samples (`racurve` and `racurves`-functions).
-* Calculation and sorting of synoptic tables with fidelity and differential species assessment (`syntable` and `synsort` functions)
+* Calculation and sorting of synoptic tables with fidelity and differential species assessment (`syntable`, `syntable_long` and `synsort` functions)
 * Taxa merging for taxa with identical names (`merge_taxa` - function)
 * One-step cleaning and transposing of vegetation matrices: (`clean_matrix` and `trans_matrix` - functions)
 * Conversion between cover-abundance codes and percentage cover (`cov2per` and `per2cov` - functions)
