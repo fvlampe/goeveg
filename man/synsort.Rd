@@ -10,7 +10,6 @@ synsort(
   matrix = NULL,
   cluster,
   cluster_order = NULL,
-  cluster_nosort = NULL,
   method = "allspec",
   min1 = 0,
   min2 = 0,
@@ -27,15 +26,13 @@ The values of this table will be displayed in the final output table.}
 sorting criteria.}
 
 \item{matrix}{Optional species-sample matrix, already used for \code{\link{syntable}} function input; used only when calculating the
-sorted species-sample matrix (`samples = TRUE`).}
+sorted species-sample matrix (`samples = TRUE`). Site names are imported from row names.}
 
 \item{cluster}{Integer or character vector/factor with classification cluster identity. Ensure matching order of
 cluster identity and samples in matrix for correct allocation of cluster numbers to samples.}
 
-\item{cluster_order}{Optional vector giving the desired order of cluster levels. If supplied,
-input tables and outputs are rearranged to follow this order.}
-
-\item{cluster_nosort}{Optional vector of cluster names that should not be used for sorting.}
+\item{cluster_order}{Optional vector giving the desired order of cluster levels.
+If provided, only clusters listed here are included in the output.}
 
 \item{method}{Sorting algorithm and synoptic table output options
 (\code{method = c("allspec", "alldiff", "totalfreq", "manual")}).}
@@ -68,6 +65,7 @@ Returns an (invisible) list composed of:
   reaching the given threshold values \code{min1} and \code{min2}. Sorted alphabetically.
   \item \code{$samples} Sorted original species-sample matrix, with original Plot-IDs (as column
   names) and the cluster identity (Cluster_No as first row of output samples table) (only when `samples = TRUE`)
+  \item \code{$omitted_clusters} Names of clusters removed because they were not listed in `cluster_order`
   }
 }
 \description{
@@ -101,7 +99,7 @@ Two types of sorted synoptic tables can be created with this function:
  positive differential character will then be listed on the top of a species block.
  Within such a block, the differentiating and high-abundant species are sorted in a way favoring
  species that are positive in only one or at least few clusters.
- \item \code{method = "totalfreq"}: Sorts species simply by their overall
+ \item \code{method = "totalfreq"}: Sorts species by their overall
    frequency in \code{syn1} (row sums) in descending order. Only species with
    at least one cluster value \eqn{\ge} \code{min1} are kept in the table; the
    rest are listed in \code{$others}.
