@@ -15,3 +15,17 @@ Includes:
 
 Furthermore some basic functions are included, such as standard error of the mean `sem`, coefficient of variance `cv` or conversion between degrees and radians `deg2rad`/`rad2deg`.
 
+
+## Installation
+
+Install the released version from CRAN:
+
+``` r
+install.packages("goeveg")
+```
+
+Install the latest version from Github using [`remotes`](https://github.com/r-lib/remotes)
+
+``` r
+remotes::install_github("fvlampe/goeveg")
+```
