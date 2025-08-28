@@ -16,14 +16,14 @@
 #' @param syn2 Optional second input table with additional numeric or differential character
 #' sorting criteria.
 #' @param matrix Optional species-sample matrix, already used for \code{\link{syntable}} function input; used only when calculating the
-#'   sorted species-sample matrix (`samples = TRUE`).
+#'   sorted species-sample matrix (`samples = TRUE`). Site names are imported from row names.
 #' @param cluster Integer or character vector/factor with classification cluster identity. Ensure matching order of
 #' cluster identity and samples in matrix for correct allocation of cluster numbers to samples.
 #' @param cluster_order Optional vector giving the desired order of cluster levels.
 #'   If provided, only clusters listed here are included in the output.
 #' @param method Sorting algorithm and synoptic table output options
 #'   (\code{method = c("allspec", "alldiff", "totalfreq", "manual")}).
-##' @param manual_order Optional character vector of species names (matching
+#' @param manual_order Optional character vector of species names (matching
 #'   row names of \code{syn1}) to impose a manual row order when
 #'   \code{method = "manual"}. Species not listed are appended and ordered by
 #'   their overall frequency (row sums of \code{syn1}, descending).
@@ -54,7 +54,7 @@
 #'  positive differential character will then be listed on the top of a species block.
 #'  Within such a block, the differentiating and high-abundant species are sorted in a way favoring
 #'  species that are positive in only one or at least few clusters.
-#'  \item \code{method = "totalfreq"}: Sorts species simply by their overall
+#'  \item \code{method = "totalfreq"}: Sorts species by their overall
 #'    frequency in \code{syn1} (row sums) in descending order. Only species with
 #'    at least one cluster value \eqn{\ge} \code{min1} are kept in the table; the
 #'    rest are listed in \code{$others}.
