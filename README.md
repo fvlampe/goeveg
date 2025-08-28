@@ -3,7 +3,8 @@ Functions for Community Data and Ordinations
 
 A collection of functions useful in (vegetation) community analyses and ordinations. The ordination functions work as an addition to the functions from the `vegan`-package. 
 
-Includes:
+## Features
+
 * Automatic species selection for ordination diagrams based on cover abundances and species fit (`ordiselect` - function)
 * Generation of species response curves (`specresponse` - function)
 * Scree/stress plots for NMDS (`screeplot_NMDS` - function)
