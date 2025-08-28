@@ -189,5 +189,5 @@ determination of differential taxa. \emph{Journal of Vegetation Science} \strong
 \code{\link{syntable}}
 }
 \author{
-Jenny Schellenberg (\email{jschell@gwdg.de}), Friedemann von Lampe
+Jenny Schellenberg (\email{jschell@gwdg.de}) and Friedemann von Lampe
 }
