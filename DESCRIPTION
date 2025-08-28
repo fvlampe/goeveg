@@ -1,7 +1,7 @@
 Package: goeveg
 Type: Package
 Title: Functions for Community Data and Ordinations
-Version: 0.7.6.2
+Version: 0.7.7
 Date: 2025-08-28
 Maintainer: Friedemann von Lampe <fvonlampe@uni-goettingen.de>
 Authors@R: c(

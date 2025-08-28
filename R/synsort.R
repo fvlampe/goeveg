@@ -95,7 +95,7 @@
 #' Tsiripidis, I., Bergmeier, E., Fotiadis, G. & Dimopoulos, P. (2009): A new algorithm for the
 #' determination of differential taxa. \emph{Journal of Vegetation Science} \strong{20}: 233-240. \doi{https://doi.org/10.1111/j.1654-1103.2009.05273.x}
 #'
-#' @author Jenny Schellenberg (\email{jschell@gwdg.de}), Friedemann von Lampe
+#' @author Jenny Schellenberg (\email{jschell@gwdg.de}) and Friedemann von Lampe
 #' @seealso \code{\link{syntable}}
 
 #' @examples
