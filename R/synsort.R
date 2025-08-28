@@ -19,9 +19,8 @@
 #'   sorted species-sample matrix (`samples = TRUE`).
 #' @param cluster Integer or character vector/factor with classification cluster identity. Ensure matching order of
 #' cluster identity and samples in matrix for correct allocation of cluster numbers to samples.
-#' @param cluster_order Optional vector giving the desired order of cluster levels. If supplied,
-#'   input tables and outputs are rearranged to follow this order.
-#' @param cluster_nosort Optional vector of cluster names that should not be used for sorting.
+#' @param cluster_order Optional vector giving the desired order of cluster levels.
+#'   If provided, only clusters listed here are included in the output.
 #' @param method Sorting algorithm and synoptic table output options
 #'   (\code{method = c("allspec", "alldiff", "totalfreq", "manual")}).
 ##' @param manual_order Optional character vector of species names (matching
@@ -80,6 +79,7 @@
 #'   reaching the given threshold values \code{min1} and \code{min2}. Sorted alphabetically.
 #'   \item \code{$samples} Sorted original species-sample matrix, with original Plot-IDs (as column
 #'   names) and the cluster identity (Cluster_No as first row of output samples table) (only when `samples = TRUE`)
+#'   \item \code{$omitted_clusters} Names of clusters removed because they were not listed in `cluster_order`
 #'   }
 #'
 #'
@@ -165,24 +165,26 @@
 
 
 synsort <- function(syn1, syn2 = syn1, matrix = NULL, cluster, cluster_order = NULL,
-                    cluster_nosort = NULL, method = "allspec", min1 = 0,
-                    min2 = 0, samples = FALSE, manual_order = NULL) {
+                    method = "allspec", min1 = 0, min2 = 0,
+                    samples = FALSE, manual_order = NULL) {
   
   cluster <- as.factor(cluster)
+  original_levels <- levels(cluster)
   if (is.null(cluster_order)) {
-    cluster_order <- levels(cluster)
+    cluster_order <- original_levels
   } else {
-    if (!all(levels(cluster) %in% cluster_order))
-      stop("cluster_order must contain all cluster levels")
-  }
-  if (!is.null(cluster_nosort)) {
-    if (!all(cluster_nosort %in% cluster_order))
-      stop("cluster_nosort must contain existing cluster levels")
-    # cluster_order <- c(setdiff(cluster_order, cluster_nosort), cluster_nosort)
-    # NOTE: no reordering here — nosort clusters remain where they are
+    if (!all(cluster_order %in% original_levels))
+      stop("cluster_order must contain existing cluster levels")
   }
   
-  cluster <- factor(cluster, levels = cluster_order)
+  omitted_clusters <- setdiff(original_levels, cluster_order)
+  #if (length(omitted_clusters))
+  #  message("Omitted clusters: ", paste(omitted_clusters, collapse = ", "))
+  
+  keep <- cluster %in% cluster_order
+  cluster <- factor(cluster[keep], levels = cluster_order)
+  if (!is.null(matrix))
+    matrix <- matrix[keep, , drop = FALSE]
   
   if (!all(cluster_order %in% colnames(syn1)))
     stop("cluster_order must match column names of syn1")
@@ -192,6 +194,7 @@ synsort <- function(syn1, syn2 = syn1, matrix = NULL, cluster, cluster_order = N
   
   names(cluster) <- row.names(matrix)   # Name cluster according to site names (if present)
   group <- cluster_order
+  
   
   if (method == "allspec") {
     if (all(syn2 == syn1)) {
@@ -240,7 +243,8 @@ synsort <- function(syn1, syn2 = syn1, matrix = NULL, cluster, cluster_order = N
                       "others" = if (length(sort(rownames(syn1[apply(syn1,1,max) < min1,]))) == 0)
                       {"No species excluded from Synoptic table."
                       } else {sort(rownames(syn1[apply(syn1,1,max) < min1,]))},
-                      "samples" = specsam)
+                      "samples" = specsam,
+                      "omitted_clusters" = omitted_clusters)
     } else {
       if (is.numeric(unlist(syn2)) == TRUE)
       { all <-  syn1[rowSums(syn2) >= min2,]
@@ -288,7 +292,8 @@ synsort <- function(syn1, syn2 = syn1, matrix = NULL, cluster, cluster_order = N
                       "others" = if (length(sort(rownames(syn1[apply(syn1,1,max) < min1,]))) == 0)
                       {"No species excluded from Synoptic table."
                       } else {sort(rownames(syn1[apply(syn1,1,max) < min1,]))},
-                      "samples" = specsam)
+                      "samples" = specsam,
+                      "omitted_clusters" = omitted_clusters)
     }
     
     
@@ -340,7 +345,8 @@ synsort <- function(syn1, syn2 = syn1, matrix = NULL, cluster, cluster_order = N
       } else {
         sort(rownames(syn1[apply(syn1, 1, max) < min1, , drop = FALSE]))
       },
-      "samples" = specsam
+      "samples" = specsam,
+      "omitted_clusters" = omitted_clusters
     )
     
   } else if (method == "manual") {
@@ -410,7 +416,8 @@ synsort <- function(syn1, syn2 = syn1, matrix = NULL, cluster, cluster_order = N
       } else {
         sort(rownames(syn1[apply(syn1, 1, max) < min1, , drop = FALSE]))
       },
-      "samples" = specsam
+      "samples" = specsam,
+      "omitted_clusters" = omitted_clusters
     )
     
   }  else if (method == "alldiff") {
@@ -469,7 +476,8 @@ synsort <- function(syn1, syn2 = syn1, matrix = NULL, cluster, cluster_order = N
                     "others" = if (length(sort(rownames(syn1[apply(syn1,1,max) < min1,]))) == 0)
                     {"No species excluded from Synoptic table."
                     } else {sort(rownames(syn1[apply(syn1,1,max) < min1,]))},
-                    "samples" = specsam)
+                    "samples" = specsam,
+                    "omitted_clusters" = omitted_clusters)
   } else {stop("Sorting of synoptic table failed: wrong method entry. Check correct formula input")}
   
   return(invisible(results))
