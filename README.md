@@ -1,7 +1,8 @@
 # goeveg R-package
 Functions for Community Data and Ordinations
 
-A collection of functions useful in (vegetation) community analyses and ordinations. The ordination functions work as an addition to the functions from the `vegan`-package. 
+A collection of functions useful in ecological community analyses and ordinations. 
+The ordination functions work as an addition to the functions from the `vegan`-package. 
 
 ## Features
 
