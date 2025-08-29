@@ -6,7 +6,9 @@
 #' @noRd
 
 
-syntable_long <- function(vegdata, cluster, abund = "percentage", type = "percfreq", digits = 0) {
+syntable_long <- function(vegdata, cluster, abund = "percentage", type = "percfreq", digits = 0,
+                          phi_method = "default", phi_transform = "none",
+                          phi_standard = "none", phi_reps = 100) {
   if (!requireNamespace("data.table", quietly = TRUE)) {
     stop("Package 'data.table' is required for syntable_long.")
   }
@@ -112,20 +114,117 @@ syntable_long <- function(vegdata, cluster, abund = "percentage", type = "percfr
     stop("Cannot calculate median abundance in clusters with presence/absence values.")
     
   } else if (type == "phi") {
-    freq_dt <- dt[Abund > 0, .(freq = data.table::uniqueN(Sample)), by = .(TaxonName, cluster)]
-    freq <- data.table::dcast(freq_dt, TaxonName ~ cluster, value.var = "freq", fill = 0)
-    freq_df <- as.data.frame(freq)
-    rownames(freq_df) <- freq_df$TaxonName
-    freq_df$TaxonName <- NULL
-    freq_df <- freq_df[, group, drop = FALSE]
-    N <- sum(samplesize)
-    n <- rowSums(freq_df)
-    phitab <- freq_df
-    for (i in seq_along(group)) {
-      phitab[, i] <- (N * freq_df[, i] - n * samplesize[i]) /
-        sqrt(n * samplesize[i] * (N - n) * (N - samplesize[i]))
+    species <- sort(unique(dt$TaxonName))
+    N_full <- length(cluster_vec)
+    samplesize_full <- table(cluster_vec)
+    
+    calc_phi <- function(dt_sub) {
+      N <- length(unique(dt_sub$Sample))
+      samplesize <- table(dt_sub$cluster)
+      
+      if (phi_method %in% c("default", "ochiai", "uvalue")) {
+        freq_dt <- dt_sub[Abund > 0,
+                          .(freq = data.table::uniqueN(Sample)),
+                          by = .(TaxonName, cluster)]
+        freq_mat <- data.table::dcast(freq_dt, TaxonName ~ cluster,
+                                      value.var = "freq", fill = 0)
+        freq_mat <- merge(data.table::data.table(TaxonName = species),
+                          freq_mat, by = "TaxonName", all.x = TRUE)
+        freq_mat[is.na(freq_mat)] <- 0
+        a_mat <- as.matrix(freq_mat[, -1, with = FALSE])
+        rownames(a_mat) <- freq_mat$TaxonName
+        n_vec <- rowSums(a_mat)
+        phitab <- matrix(0, nrow = length(species), ncol = length(group),
+                         dimnames = list(species, group))
+        for (i in seq_along(group)) {
+          b <- samplesize[group[i]]
+          for (k in seq_along(species)) {
+            a <- a_mat[k, i]
+            n <- n_vec[k]
+            if (phi_method == "default") {
+              den <- sqrt(n * b * (N - n) * (N - b))
+              phitab[k, i] <- if (den == 0) 0 else (N * a - n * b) / den
+            } else if (phi_method == "ochiai") {
+              den <- sqrt(b * n)
+              phitab[k, i] <- if (den == 0) 0 else a / den
+            } else if (phi_method == "uvalue") {
+              den <- sqrt(n * b * (N - b) * (N - n) / (N * (N - 1)))
+              phitab[k, i] <- if (den == 0) 0 else (a - n * b / N) / den
+            }
+          }
+        }
+        return(list(phitab = phitab, samplesize = samplesize, N = N))
+        
+      } else if (phi_method == "cover") {
+        if (abund != "percentage") {
+          stop("Cover-based fidelity requires percentage abundances.")
+        }
+        dt_sub[, cov := switch(phi_transform,
+                               none = Abund,
+                               sqrt = sqrt(Abund),
+                               log = log(Abund + 1),
+                               stop("Unknown phi_transform"))]
+        total_stats <- dt_sub[, .(sum_x = sum(cov), sum_x2 = sum(cov^2)),
+                              by = TaxonName]
+        group_stats <- dt_sub[, .(sum_x = sum(cov)),
+                              by = .(TaxonName, cluster)]
+        total_stats <- merge(data.table::data.table(TaxonName = species),
+                             total_stats, by = "TaxonName", all.x = TRUE)
+        group_stats <- data.table::dcast(group_stats, TaxonName ~ cluster,
+                                         value.var = "sum_x", fill = 0)
+        group_stats <- merge(data.table::data.table(TaxonName = species),
+                             group_stats, by = "TaxonName", all.x = TRUE)
+        total_stats[is.na(total_stats)] <- 0
+        group_stats[is.na(group_stats)] <- 0
+        phitab <- matrix(0, nrow = length(species), ncol = length(group),
+                         dimnames = list(species, group))
+        for (i in seq_along(group)) {
+          b <- samplesize[group[i]]
+          sum_x_group <- group_stats[[group[i]]]
+          sum_x_total <- total_stats$sum_x
+          sum_x2_total <- total_stats$sum_x2
+          num <- N * sum_x_group - sum_x_total * b
+          den <- sqrt((N * sum_x2_total - sum_x_total^2) * b * (N - b))
+          phitab[, i] <- ifelse(den == 0, 0, num / den)
+        }
+        return(list(phitab = phitab, samplesize = samplesize, N = N))
+        
+      } else {
+        stop("Unknown phi_method")
+      }
     }
-    results <- list("syntable" = phitab, "samplesize" = samplesize)
+    
+    if (phi_standard == "rarefy") {
+      m <- min(samplesize_full)
+      phisum <- matrix(0, nrow = length(species), ncol = length(group),
+                       dimnames = list(species, group))
+      for (r in seq_len(phi_reps)) {
+        ids <- unlist(lapply(group, function(g) {
+          sample(unique(dt[cluster == g, Sample]), m)
+        }))
+        sub_dt <- dt[Sample %in% ids]
+        res <- calc_phi(sub_dt)
+        phisum <- phisum + res$phitab
+      }
+      phitab <- phisum / phi_reps
+      samplesize_out <- rep(m, length(group))
+      names(samplesize_out) <- group
+    } else {
+      res <- calc_phi(dt)
+      phitab <- res$phitab
+      samplesize_out <- samplesize_full
+      if (phi_standard == "adjust" && phi_method %in% c("default", "uvalue")) {
+        m <- min(samplesize_out)
+        for (i in seq_along(group)) {
+          b <- samplesize_out[i]
+          phitab[, i] <- phitab[, i] *
+            sqrt(m * (N_full - m) / (b * (N_full - b)))
+        }
+      }
+    }
+    
+    results <- list("syntable" = as.data.frame(phitab),
+                    "samplesize" = samplesize_out)
     
   } else {
     stop("Cannot calculate synoptic table. Define correct type of species matrix values to use (abund = c('percentage', 'pa')).\nCheck correct type of synoptic table output type (type = c('totalfreq', 'percfreq', 'mean', 'median', 'phi')).")

@@ -5,7 +5,9 @@
 #' @noRd
 
 
-syntable_wide <- function(matrix, cluster, abund = "percentage", type = "percfreq", digits = 0) {
+syntable_wide <- function(matrix, cluster, abund = "percentage", type = "percfreq", digits = 0,
+                          phi_method = "default", phi_transform = "none",
+                          phi_standard = "none", phi_reps = 100) {
 
   narep <- FALSE
   # Check for "" values and replace by NA
@@ -275,23 +277,107 @@ syntable_wide <- function(matrix, cluster, abund = "percentage", type = "percfre
                       "differentials" = diffspeclist)
 
     } else if (type == "phi") {
-      # Calculate total frequency and sample size
-      for (i in cluster) {syntab[,i] <- apply(matrix[cluster == i,]>0, 2 ,sum)}
-
-      samplesize <- tapply(rep(1, length(cluster)), cluster, sum)
-      N = length(matrix[,1])
-      n = rowSums(syntab)
-
-      phitab <-  data.frame(matrix(NA, nrow=length(names(matrix)), ncol=length(group)))
-      for (i in 1:length(group)) {
-        for (k in 1:length(matrix[1,])) {
-          phitab[k,i] <- (N * syntab[k,i] - n[k] * samplesize[i]) / sqrt(n[k] * samplesize[i]*(N-n[k]) * (N-samplesize[i]))
-        }}
-
-      names(phitab) <- group
-      rownames(phitab) <- names(matrix)
-      results <- list("syntable" = phitab,
-                      "samplesize" = samplesize)
+      samplesize_full <- tapply(rep(1, length(cluster)), cluster, sum)
+      N <- nrow(matrix)
+      
+      if (phi_standard == "rarefy") {
+        m <- min(samplesize_full)
+        phisum <- matrix(0, nrow = length(names(matrix)), ncol = length(group))
+        rownames(phisum) <- names(matrix)
+        colnames(phisum) <- group
+        for (r in 1:phi_reps) {
+          idx <- unlist(lapply(group, function(g) sample(which(cluster == g), m)))
+          sub_matrix <- matrix[idx, , drop = FALSE]
+          sub_cluster <- cluster[idx]
+          res <- syntable_wide(sub_matrix, sub_cluster, abund = abund, type = "phi",
+                               digits = digits, phi_method = phi_method,
+                               phi_transform = phi_transform,
+                               phi_standard = "none", phi_reps = phi_reps)
+          phisum <- phisum + as.matrix(res$syntable)
+        }
+        phitab <- phisum / phi_reps
+        samplesize <- rep(m, length(group))
+        names(samplesize) <- group
+        results <- list("syntable" = as.data.frame(phitab),
+                        "samplesize" = samplesize)
+      } else {
+        if (phi_method == "default") {
+          for (i in cluster) {syntab[, i] <- apply(matrix[cluster == i, ] > 0, 2, sum)}
+          samplesize <- samplesize_full
+          n <- rowSums(syntab)
+          phitab <- data.frame(matrix(NA, nrow = length(names(matrix)), ncol = length(group)))
+          for (i in 1:length(group)) {
+            for (k in 1:length(matrix[1, ])) {
+              phitab[k, i] <- (N * syntab[k, i] - n[k] * samplesize[i]) /
+                sqrt(n[k] * samplesize[i] * (N - n[k]) * (N - samplesize[i]))
+            }
+          }
+          if (phi_standard == "adjust") {
+            m <- min(samplesize)
+            for (i in 1:length(group)) {
+              b <- samplesize[i]
+              phitab[, i] <- phitab[, i] * sqrt(m * (N - m) / (b * (N - b)))
+            }
+          }
+        } else if (phi_method == "cover") {
+          if (abund != "percentage") {
+            stop("Cover-based fidelity requires percentage abundances.")
+          }
+          cover_matrix <- switch(phi_transform,
+                                 none = matrix,
+                                 sqrt = sqrt(matrix),
+                                 log = log(matrix + 1),
+                                 stop("Unknown phi_transform"))
+          phitab <- data.frame(matrix(0, nrow = ncol(cover_matrix), ncol = length(group)))
+          rownames(phitab) <- colnames(cover_matrix)
+          samplesize <- samplesize_full
+          for (i in 1:length(group)) {
+            y <- as.numeric(cluster == group[i])
+            for (k in seq_len(ncol(cover_matrix))) {
+              x <- cover_matrix[, k]
+              if (all(x == 0) || stats::var(x) == 0) {
+                phitab[k, i] <- 0
+              } else {
+                phitab[k, i] <- stats::cor(x, y)
+              }
+            }
+          }
+        } else if (phi_method == "ochiai") {
+          for (i in cluster) {syntab[, i] <- apply(matrix[cluster == i, ] > 0, 2, sum)}
+          samplesize <- samplesize_full
+          n <- rowSums(syntab)
+          phitab <- data.frame(matrix(NA, nrow = length(names(matrix)), ncol = length(group)))
+          for (i in 1:length(group)) {
+            for (k in 1:length(matrix[1, ])) {
+              a <- syntab[k, i]
+              phitab[k, i] <- if (n[k] == 0 || samplesize[i] == 0) 0 else a / sqrt(samplesize[i] * n[k])
+            }
+          }
+        } else if (phi_method == "uvalue") {
+          for (i in cluster) {syntab[, i] <- apply(matrix[cluster == i, ] > 0, 2, sum)}
+          samplesize <- samplesize_full
+          n <- rowSums(syntab)
+          phitab <- data.frame(matrix(NA, nrow = length(names(matrix)), ncol = length(group)))
+          for (i in 1:length(group)) {
+            b <- samplesize[i]
+            for (k in 1:ncol(matrix)) {
+              a <- syntab[k, i]
+              phitab[k, i] <- (a - n[k] * b / N) /
+                sqrt(n[k] * b * (N - b) * (N - n[k]) / (N * (N - 1)))
+            }
+            if (phi_standard == "adjust") {
+              m <- min(samplesize)
+              phitab[, i] <- phitab[, i] * sqrt(m * (N - m) / (b * (N - b)))
+            }
+          }
+        } else {
+          stop("Unknown phi_method")
+        }
+        names(phitab) <- group
+        rownames(phitab) <- names(matrix)
+        results <- list("syntable" = phitab,
+                        "samplesize" = samplesize)
+      }
 
     } else {stop("Cannot calculate synoptic table. Define correct type of species matrix values to use (abund = c('percentage', 'pa')). \nCheck correct type of synoptic table output type (type = c('totalfreq', 'percfreq', 'mean', 'median', 'diffspec')).")
     }

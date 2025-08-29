@@ -1,3 +1,9 @@
+# goeveg 0.7.7.3
+* Added new function `hcr_resampling` to perform heterogeneity-constrained random (HCR) resampling
+
+# goeveg 0.7.7.2
+* Added different variants of fidelity calculation (experimental for testing)
+
 # goeveg 0.7.7.1
 * `syntable` now unifies `syntable_long` and original `syntable` in one interface
 

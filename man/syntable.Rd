@@ -8,10 +8,14 @@ differential species character}
 syntable(
   vegdata,
   cluster,
-  long = FALSE,
   abund = "percentage",
   type = "percfreq",
-  digits = 0
+  digits = 0,
+  long = FALSE,
+  phi_method = "default",
+  phi_transform = "none",
+  phi_standard = "none",
+  phi_reps = 100
 )
 }
 \arguments{
@@ -28,8 +32,6 @@ If non-numeric abundance values are present, the matrix will be transformed to p
 \item{cluster}{Integer or character vector/factor with classification cluster identity. Ensure matching order of
 cluster identity and samples in vegdata for correct allocation of cluster numbers to samples.}
 
-\item{long}{Logical. If \code{TRUE}, \code{vegdata} is treated as long-format data otherwise as species-sample matrix (\emph{default})}
-
 \item{abund}{Type of abundances. Define whether vegetation data are percentage cover (\code{abund = "percentage"}, default)
 or presence/absence data (\code{abund = "pa"}, with values 0/1). You may use function \code{\link{cov2per}} to transform
 cover-abundance values from different scales into percentage cover.}
@@ -38,6 +40,22 @@ cover-abundance values from different scales into percentage cover.}
 "median", "diffspec", "phi")}. See Details.}
 
 \item{digits}{Integer indicating the number of decimal places to be displayed in result tables (default 0)}
+
+\item{long}{Logical. If \code{TRUE}, \code{vegdata} is treated as long-format data otherwise as species-sample matrix (\emph{default})}
+
+\item{phi_method}{Fidelity measure when \code{type = "phi"}. Choose \code{"default"} for the
+classical binary phi coefficient, \code{"cover"} for a cover-weighted phi based on the
+correlation between species cover and group membership, \code{"ochiai"} for the Ochiai
+coefficient or \code{"uvalue"} for the hypergeometric \eqn{u}-value.}
+
+\item{phi_transform}{Transformation of cover values when \code{phi_method = "cover"}.
+Options are \code{"none"}, \code{"sqrt"} or \code{"log"} (using \code{log(x + 1)}).}
+
+\item{phi_standard}{Standardisation of group sizes for fidelity calculation. Use \code{"none"}
+for the original group sizes, \code{"rarefy"} for random rarefaction to the smallest group
+(repeated \code{phi_reps} times) or \code{"adjust"} for analytical adjustment of \eqn{\phi}.}
+
+\item{phi_reps}{Number of repetitions for random rarefaction (default 100).}
 }
 \value{
 The function returns an (invisible) list of result components.
@@ -72,15 +90,11 @@ For synoptic table calculation, six types are available.
   \item \code{type = "mean" }  Calculates mean of species values given in \code{matrix} per cluster
   \item \code{type = "median" }  Calculates median of species values given in \code{matrix} per
    cluster
-  \item \code{type = "diffspec" } Calculates differential character of species according to
-   Tsiripidis et al. 2009, with resulting character p = positive, n = negative, pn = positive-
-   negative or no differential character (-). Consider that differential character is always
-   restricted to some and not necessarily all of the other units, thus considering percentage
-   frequency is essential for correct interpretation of the diagnostic species character.
-   This calculation needs at least three groups. Only available for (\code{long = FALSE}).
-  \item \code{type = "phi" } Calculates fidelity measure phi (algorithm basing on Sokal & Rohlf
-   1995, Bruelheide 2000). Values are ranging between -1 and 1 with high values near 1 indicating
-   high fidelity.
+  \item \code{type = "phi" } Calculates species fidelity. The default corresponds to the
+   classical phi coefficient (Sokal & Rohlf 1995, Bruelheide 2000) with values between -1 and 1.
+   Alternatively, a cover-weighted phi based on correlation, the Ochiai coefficient or the
+   hypergeometric \eqn{u}-value can be selected via \code{phi_method}. Group size effects can
+   be handled by \code{phi_standard}.
    }
 
 For sorting the output synoptic table, use \code{\link{synsort}} function, providing several
@@ -92,10 +106,12 @@ options.
 library(cluster)
 pam1 <- pam(schedenveg, 4)  # PAM clustering with 4 clusters output
 
+
 ## 1) Unordered synoptic percentage frequency table
 percfreq <- syntable(schedenveg, pam1$clustering, abund = "percentage",
                          type = "percfreq")
                          percfreq                   # view results
+
 
 ## 2) Differential species analysis
 differential <- syntable(schedenveg, pam1$clustering, abund = "percentage",
@@ -105,10 +121,27 @@ differential$syntable
 # list differential species for second cluster
 differential$differentials[2]
 
+
 ## 3) Synoptic table with phi fidelity
 phitable <- syntable(schedenveg, pam1$clustering, abund = "percentage",
                          type = "phi")
 phitable
+
+## 3b) Cover-weighted phi with square-root transformed cover
+phicover <- syntable(schedenveg, pam1$clustering, abund = "percentage",
+                      type = "phi", phi_method = "cover", phi_transform = "sqrt")
+phicover
+
+## 3c) Ochiai coefficient
+ochiai <- syntable(schedenveg, pam1$clustering, abund = "percentage",
+                    type = "phi", phi_method = "ochiai")
+ochiai
+
+## 3d) Hypergeometric u-value
+phiu <- syntable(schedenveg, pam1$clustering, abund = "percentage",
+                 type = "phi", phi_method = "uvalue")
+phiu
+
 
 ## 4) Synoptic percentage frequency table based on historical classification from 1997
 percfreq <- syntable(schedenveg, schedenenv$comm, abund = "percentage",
