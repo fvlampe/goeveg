@@ -1,9 +1,11 @@
 # goeveg R-package
 Functions for Community Data and Ordinations
 
-A collection of functions useful in (vegetation) community analyses and ordinations. The ordination functions work as an addition to the functions from the `vegan`-package. 
+A collection of functions useful in ecological community analyses and ordinations.\
+The ordination functions work as an addition to the functions from the `vegan`-package. 
 
-Includes:
+## Features
+
 * Automatic species selection for ordination diagrams based on cover abundances and species fit (`ordiselect` - function)
 * Generation of species response curves (`specresponse` - function)
 * Scree/stress plots for NMDS (`screeplot_NMDS` - function)
@@ -15,3 +17,17 @@ Includes:
 
 Furthermore some basic functions are included, such as standard error of the mean `sem`, coefficient of variance `cv` or conversion between degrees and radians `deg2rad`/`rad2deg`.
 
+
+## Installation
+
+Install the released version from CRAN:
+
+``` r
+install.packages("goeveg")
+```
+
+Install the latest version from Github using [`remotes`](https://github.com/r-lib/remotes)
+
+``` r
+remotes::install_github("fvlampe/goeveg")
+```
