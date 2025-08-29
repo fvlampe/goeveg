@@ -8,22 +8,27 @@ differential species character}
 syntable(
   vegdata,
   cluster,
+  long = FALSE,
   abund = "percentage",
   type = "percfreq",
-  digits = 0,
-  long = FALSE
+  digits = 0
 )
 }
 \arguments{
-\item{vegdata}{A data-frame–like object, either species-sample matrix with species in columns and samples in rows 
-(species and sample names must be defined as column- and row names, respectively) OR
-a long-format table with at least the columns (the first three columns must contain sample names, taxon names and abundances, respectively)
+\item{vegdata}{A data-frame–like object. Can be:
+\itemize{
+  \item default: a species–sample matrix with species in columns and samples in rows.
+        Species and sample names must be defined as column and row names.
+  \item with \code{long = TRUE}: a long-format table with at least three columns.
+        The first three columns must contain sample names, taxon names, and abundances, respectively.
+}
 Missing values (NA) will be transformed to 0.
-If non-numeric abundance values are present, the matrix will be transformed to presence/absence with all
-non-zero values defined as 1.}
+If non-numeric abundance values are present, the matrix will be transformed to presence/absence with all non-zero values defined as 1.}
 
 \item{cluster}{Integer or character vector/factor with classification cluster identity. Ensure matching order of
 cluster identity and samples in vegdata for correct allocation of cluster numbers to samples.}
+
+\item{long}{Logical. If \code{TRUE}, \code{vegdata} is treated as long-format data otherwise as species-sample matrix (\emph{default})}
 
 \item{abund}{Type of abundances. Define whether vegetation data are percentage cover (\code{abund = "percentage"}, default)
 or presence/absence data (\code{abund = "pa"}, with values 0/1). You may use function \code{\link{cov2per}} to transform
@@ -33,8 +38,6 @@ cover-abundance values from different scales into percentage cover.}
 "median", "diffspec", "phi")}. See Details.}
 
 \item{digits}{Integer indicating the number of decimal places to be displayed in result tables (default 0)}
-
-\item{long}{Logical. If `TRUE`, `vegdata` is treated as long-format data otherwise as species-sample matrix (\emph{default})}
 }
 \value{
 The function returns an (invisible) list of result components.

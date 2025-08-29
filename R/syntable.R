@@ -15,13 +15,16 @@
 #' 
 #' The unordered output table can be sorted automatically with \code{\link[goeveg]{synsort}} function.
 #' 
-#' @param vegdata A data-frame–like object, either species-sample matrix with species in columns and samples in rows 
-#' (species and sample names must be defined as column- and row names, respectively) OR
-#' a long-format table with at least the columns (the first three columns must contain sample names, taxon names and abundances, respectively)
+##' @param vegdata A data-frame–like object. Can be:
+#' \itemize{
+#'   \item default: a species–sample matrix with species in columns and samples in rows.
+#'         Species and sample names must be defined as column and row names.
+#'   \item with \code{long = TRUE}: a long-format table with at least three columns.
+#'         The first three columns must contain sample names, taxon names, and abundances, respectively.
+#' }
 #' Missing values (NA) will be transformed to 0.
-#' If non-numeric abundance values are present, the matrix will be transformed to presence/absence with all
-#' non-zero values defined as 1.
-#' @param long Logical. If `TRUE`, `vegdata` is treated as long-format data otherwise as species-sample matrix (\emph{default})
+#' If non-numeric abundance values are present, the matrix will be transformed to presence/absence with all non-zero values defined as 1.
+#' @param long Logical. If \code{TRUE}, \code{vegdata} is treated as long-format data otherwise as species-sample matrix (\emph{default})
 #' @param cluster Integer or character vector/factor with classification cluster identity. Ensure matching order of
 #' cluster identity and samples in vegdata for correct allocation of cluster numbers to samples.
 #' @param abund Type of abundances. Define whether vegetation data are percentage cover (\code{abund = "percentage"}, default)
@@ -109,8 +112,8 @@
 #' @export
 
 
-syntable <- function(vegdata, cluster, abund = "percentage",
-                           type = "percfreq", digits = 0, long = FALSE) {
+syntable <- function(vegdata, cluster, long = FALSE, abund = "percentage",
+                           type = "percfreq", digits = 0) {
   if (long) {
     
     if (type == "diffspec") {
