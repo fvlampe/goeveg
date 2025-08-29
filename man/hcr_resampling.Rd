@@ -72,7 +72,8 @@ Within each stratum (e.g., grid cell), many random subsets of plots are evaluate
 the highest mean dissimilarity and the lowest variance of dissimilarities is retained. Optionally, the
 number of plots per stratum is adapted from the stratum’s mean pairwise dissimilarity (β-diversity).
 }
-\details{
+\section{Details}{
+
 This function follows Lengyel, Chytrý & Tichý (2011) and the JUICE implementation (Tichý, 2002). 
 For speed, it precomputes per-stratum distance matrices (once) and reuses them across trials, which
 enables large numbers of trials (default \code{trials = 1000}). 
@@ -88,6 +89,7 @@ Additionally group-specific limits for minimum and maximum numbers of plots per 
 (e.g., country or region), and the minimum and maximum number of plots are defined per group. 
 This allows, for example, larger plot limits to be set for larger countries or regions.
 }
+
 \references{
 Lengyel, A., Chytrý, M., & Tichý, L. (2011). Heterogeneity-constrained random resampling of phytosociological databases.
 \emph{Journal of Vegetation Science}, \strong{22(1)}, 175–183. \doi{10.1111/j.1654-1103.2010.01225.x}

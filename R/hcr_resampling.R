@@ -1,26 +1,10 @@
 #' Heterogeneity-constrained random resampling (HCR)
-#'
 #' @description
 #' Performs heterogeneity-constrained random (HCR) resampling (Lengyel, Chytrý & Tichý, 2011) of community data.
 #' Within each stratum (e.g., grid cell), many random subsets of plots are evaluated and the subset with
 #' the highest mean dissimilarity and the lowest variance of dissimilarities is retained. Optionally, the
 #' number of plots per stratum is adapted from the stratum’s mean pairwise dissimilarity (β-diversity).
 #' 
-#' @details
-#' This function follows Lengyel, Chytrý & Tichý (2011) and the JUICE implementation (Tichý, 2002). 
-#' For speed, it precomputes per-stratum distance matrices (once) and reuses them across trials, which
-#' enables large numbers of trials (default \code{trials = 1000}). 
-#' 
-#' Within each stratum candidate subsets are scored using \code{score_dist} by high mean dissimilarity and low variance of dissimilarities.
-#' 
-#' If \code{adaptive_n = TRUE} (default), the target number of plots is computed as a linear function of the mean pairwise 
-#' dissimilarity (β-diversity; \code{beta_dist}) and the maximum number of plots (\code{beta_mean * max_plots}; Wiser & de Cáceres, 2013) and then
-#' bounded to \code{[min_plots, max_plots]} and the stratum size. 
-#' 
-#' Additionally group-specific limits for minimum and maximum numbers of plots per stratum can be supplied via 
-#' \code{group_vec} and \code{group_limits}. Each sample is assigned to a higher-level group 
-#' (e.g., country or region), and the minimum and maximum number of plots are defined per group. 
-#' This allows, for example, larger plot limits to be set for larger countries or regions.
 #'
 #' @param data_wide a data-frame like object with: col 1 = sample id, col 2 = strata, col 3.. = species.
 #' @param transform One of \code{c("none","sqrt","log1p","binary")}. If "binary", values become 0/1 and
@@ -47,14 +31,29 @@
 #' @param write_csv Optional file path to write a CSV with columns \code{sample_id, selected}. If \code{NULL}, no file.
 #' @param progress Show a text progress bar (default: \code{interactive()}).
 #' @param seed Optional integer seed for reproducibility of random subset trials.
-#'
+#'   
+#' @section Details:
+#' This function follows Lengyel, Chytrý & Tichý (2011) and the JUICE implementation (Tichý, 2002). 
+#' For speed, it precomputes per-stratum distance matrices (once) and reuses them across trials, which
+#' enables large numbers of trials (default \code{trials = 1000}). 
+#' 
+#' Within each stratum candidate subsets are scored using \code{score_dist} by high mean dissimilarity and low variance of dissimilarities.
+#' 
+#' If \code{adaptive_n = TRUE} (default), the target number of plots is computed as a linear function of the mean pairwise 
+#' dissimilarity (β-diversity; \code{beta_dist}) and the maximum number of plots (\code{beta_mean * max_plots}; Wiser & de Cáceres, 2013) and then
+#' bounded to \code{[min_plots, max_plots]} and the stratum size. 
+#' 
+#' Additionally group-specific limits for minimum and maximum numbers of plots per stratum can be supplied via 
+#' \code{group_vec} and \code{group_limits}. Each sample is assigned to a higher-level group 
+#' (e.g., country or region), and the minimum and maximum number of plots are defined per group. 
+#' This allows, for example, larger plot limits to be set for larger countries or regions.
+#' 
 #' @return A \code{data.frame} with \code{sample_id} and \code{selected} (0/1).
 #'   Attributes: \code{selected_rows} (logical) and \code{params}.
 #'   
 #' @author Friedemann von Lampe
 #'
 #' @references 
-#' 
 #' Lengyel, A., Chytrý, M., & Tichý, L. (2011). Heterogeneity-constrained random resampling of phytosociological databases.
 #' \emph{Journal of Vegetation Science}, \strong{22(1)}, 175–183. \doi{10.1111/j.1654-1103.2010.01225.x}
 #' 
@@ -63,9 +62,10 @@
 #' 
 #' Wiser, S. K., & de Cáceres, M. (2013). Updating vegetation classifications: an example with New Zealand's woody vegetation. 
 #' \emph{Journal of Vegetation Science}, \strong{24(1)}, 80–93.  \doi{10.1111/j.1654-1103.2012.01450.x}
-#'
-#' @importFrom stats var
+#' 
 #' @export
+#' @importFrom stats var
+
 
 hcr_resampling <- function(
     data_wide,

@@ -48,6 +48,7 @@
 #' \emph{Applied Vegetation Science}, \strong{18}: 169–170. \doi{https://doi.org/10.1111/avsc.12130}
 #'
 #' Tichý, L. & Holt, J. (2011): JUICE. Program for management, analysis and classification of ecological data. Vegetation Science Group, Masaryk University Brno, CZ.
+#' 
 #' @author Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de})
 #' @export
 #' @import stats utils
