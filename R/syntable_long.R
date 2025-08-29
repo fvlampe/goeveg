@@ -1,66 +1,11 @@
 #' Synoptic tables and calculation of cluster-wise frequencies and fidelity for
 #' long-format vegetation databases
-#'
-#' @description
-#' Synoptic tables are a tool for the visualization and interpretation of previously
-#' defined plant species groups (clusters), e.g. from cluster analysis, classification methods or
-#' pre-defined categories, e.g. spatial distribution units.
-#' They help to determine characteristic patterning of species occurrences in plant communities
-#' by calculating cluster-wise percentage or absolute frequencies, mean/median cover values or fidelity
-#' (phi) values. 
 #' 
-#' `syntable_long` calculates synoptic tables from long-format vegetation data (one row per species occurrence)
-#' where the first column contains the sample identifier. A parallel vector provides the cluster identity for each sample.
-#' It is therefore particularly suited for comprehensive vegetation databases, where usual species-sample matrices are very large.
-#' The unordered output table can be sorted automatically with \code{\link[goeveg]{synsort}} function.
-#'  
-#' For data in wide species-by-sample matrix form, use the companion function \code{\link[goeveg]{syntable}}.
-#'
-#' @param vegdata A data-frame–like object in long format, with at least the columns. The first three columns must contain
-#'   sample names, taxon names and abundances, respectively.
-#' @param cluster Integer or character vector/factor with classification
-#'  cluster identity for each sample. Ensure matching order of cluster identity and samples in vegdata for correct allocation of cluster numbers to samples.
-#' @param abund Type of abundances. Define whether the third column contains
-#'   percentage cover (`abund = "percentage"`, default) or presence/absence
-#'   data (`abund = "pa"`, with values 0/1).
-#' @param type Type of synoptic table output
-#'   `type = c("percfreq", "totalfreq", "mean", "median", "phi")`. See Details.
-#' @param digits Integer indicating the number of decimal places to be
-#'   displayed in result tables (default 0).
-#'   
-#' @section Details:
-#' For synoptic table calculation, five types are available.
-#'   \itemize{
-#'   \item \code{type = "percfreq" } Creates a percentage frequency table \emph{(default)}
-#'   \item \code{type = "totalfreq" } Creates an absolute frequency table
-#'   \item \code{type = "mean" }  Calculates mean of species values given in \code{matrix} per cluster
-#'   \item \code{type = "median" }  Calculates median of species values given in \code{matrix} per
-#'    cluster
-#'   \item \code{type = "phi" } Calculates fidelity measure phi (algorithm basing on Sokal & Rohlf
-#'    1995, Bruelheide 2000). Values are ranging between -1 and 1 with high values near 1 indicating
-#'    high fidelity.
-#'    }
-#'
-#' For sorting the output synoptic table, use \code{\link{synsort}} function, providing several
-#' options.
-#'
-#' @return An (invisible) list with components:
-#'   \item{\code{$syntable }}{unordered synoptic table for given species and clusters}
-#'   \item{\code{$samplesize }}{total number of samples per cluster}
-#'   
-#' @references
-#' Bruelheide, H. (2000): A new measure of fidelity and its application to defining species groups.
-#'  \emph{Journal of Vegetation Science} \strong{11}: 167-178. \doi{https://doi.org/10.2307/3236796}
-#'
-#' Chytry, M., Tichy, L., Holt, J., Botta-Dukat, Z. (2002): Determination of diagnostic species with
-#'  statistical fidelity measures. \emph{Journal of Vegetation Science} \strong{13}: 79-90. \doi{https://doi.org/10.1111/j.1654-1103.2002.tb02025.x}
-#'
-#' Sokal, R.R. & Rohlf, F.J. (1995): Biometry. 3rd edition Freemann, New York.
-#'
-#' @author Friedemann von Lampe and Jenny Schellenberg
-#' @seealso [syntable()], [synsort()]
 #' @import data.table
-#' @export
+#' @keywords internal
+#' @noRd
+
+
 syntable_long <- function(vegdata, cluster, abund = "percentage", type = "percfreq", digits = 0) {
   if (!requireNamespace("data.table", quietly = TRUE)) {
     stop("Package 'data.table' is required for syntable_long.")

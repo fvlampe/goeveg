@@ -80,16 +80,19 @@ descending importance for plant community description.
 }
 \section{Details}{
 
-Two types of sorted synoptic tables can be created with this function:
+Different types of sorted synoptic tables can be created with this function. Methods \code{"allspec"} and \code{"alldiff"} are based upon
+the calculation of cluster-wise frequencies. They basically build species blocks left-to-right, for one cluster at a time (\emph{1..k}):
+For cluster \emph{i = 1}, all species whose row maximum equals the value in column \emph{i} are taken and sorted in descending order within that block.
+This is repeated for all subsequent clusters, appending species step-by-step. For clusters \emph{2..k}, duplicates that were already bound to a previous cluster are dropped.
 
  \itemize{
- \item \code{method = "allspec"} (\emph{default}) creates a sorted synoptic table basing on one or
- two numeric input tables, e.g. percentage or absolute frequencies, or phi fidelity values.
- Sorting criteria can be either given by only one input table by using only \code{syn1}
- argument, as well as by two input tables with specifying \code{syn2}, too.
- Thereby, only values of \code{syn1} will be shown in the final sorted table.
- \item \code{method = "alldiff"}: With including differential species
- character as sorting criteria, \code{syn1} must be numeric (e.g. percentage frequency) and
+ \item \code{method = "allspec"} (\emph{default}): Computes a sorted synoptic table based on one or
+ two numeric input tables, e.g. percentage or absolute frequencies, or phi fidelity values.  
+ When specifying a second table with \code{syn2}, the threshold minimum value defined in \code{min2} 
+ will be applied for considering species values of \code{syn1} for sorting. 
+ 
+ \item \code{method = "alldiff"}: Includes differential speciescharacter as sorting criteria.
+ Table \code{syn1} must be numeric (e.g. percentage frequency) and
  \code{syn2} must contain information on differential character (output from \code{\link{syntable}}
  function with defined \code{type = "diffspec"}). The result table shows ALL diagnostic and
  non-diagnostic species, as long as they match the \code{min1} and \code{min2} thresholds.
@@ -99,11 +102,13 @@ Two types of sorted synoptic tables can be created with this function:
  positive differential character will then be listed on the top of a species block.
  Within such a block, the differentiating and high-abundant species are sorted in a way favoring
  species that are positive in only one or at least few clusters.
+ 
  \item \code{method = "totalfreq"}: Sorts species by their overall
    frequency in \code{syn1} (row sums) in descending order. Only species with
    at least one cluster value \eqn{\ge} \code{min1} are kept in the table; the
    rest are listed in \code{$others}.
-   \item \code{method = "manual"}: The rows are ordered by \code{manual_order}
+   
+ \item \code{method = "manual"}: The rows are ordered by \code{manual_order}
      (species not present are ignored). Any remaining species are appended,
      sorted by their overall frequency (row sums of \code{syn1}, descending).
      Species must still pass \code{min1} (max across clusters \eqn{\ge} \code{min1});

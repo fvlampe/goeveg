@@ -5,19 +5,27 @@
 \title{Synoptic tables and calculation of cluster-wise frequencies, fidelity and
 differential species character}
 \usage{
-syntable(matrix, cluster, abund = "percentage", type = "percfreq", digits = 0)
+syntable(
+  vegdata,
+  cluster,
+  abund = "percentage",
+  type = "percfreq",
+  digits = 0,
+  long = FALSE
+)
 }
 \arguments{
-\item{matrix}{Species matrix or data frame with species in columns and samples in rows.
+\item{vegdata}{A data-frame–like object, either species-sample matrix with species in columns and samples in rows 
+(species and sample names must be defined as column- and row names, respectively) OR
+a long-format table with at least the columns (the first three columns must contain sample names, taxon names and abundances, respectively)
 Missing values (NA) will be transformed to 0.
 If non-numeric abundance values are present, the matrix will be transformed to presence/absence with all
-non-zero values defined as 1.
-Species and sample names must be defined as column- and row names, respectively.}
+non-zero values defined as 1.}
 
 \item{cluster}{Integer or character vector/factor with classification cluster identity. Ensure matching order of
-cluster identity and samples in matrix for correct allocation of cluster numbers to samples.}
+cluster identity and samples in vegdata for correct allocation of cluster numbers to samples.}
 
-\item{abund}{Type of abundances. Define whether input species matrix or data frame is percentage cover (\code{abund = "percentage"}, default)
+\item{abund}{Type of abundances. Define whether vegetation data are percentage cover (\code{abund = "percentage"}, default)
 or presence/absence data (\code{abund = "pa"}, with values 0/1). You may use function \code{\link{cov2per}} to transform
 cover-abundance values from different scales into percentage cover.}
 
@@ -25,6 +33,8 @@ cover-abundance values from different scales into percentage cover.}
 "median", "diffspec", "phi")}. See Details.}
 
 \item{digits}{Integer indicating the number of decimal places to be displayed in result tables (default 0)}
+
+\item{long}{Logical. If `TRUE`, `vegdata` is treated as long-format data otherwise as species-sample matrix (\emph{default})}
 }
 \value{
 The function returns an (invisible) list of result components.
@@ -44,11 +54,11 @@ They help to determine characteristic patterning of species occurrences in plant
 by calculating cluster-wise percentage or absolute frequencies, mean/median cover values, fidelity
 (phi) or differential species character.
 
-\code{syntable} calculates synoptic tables, using
-an input species-sample matrix and a vector of cluster identity.
-The unordered output table can be sorted automatically with \code{\link[goeveg]{synsort}} function.
+\code{syntable} calculates synoptic tables, using vegetation sample data and a vector of cluster identity.
+The vegetation data can either be provided as species-sample matrix (\emph{default}) or as long-format vegetation 
+data (one row per species occurrence) (\code{long = TRUE}). 
 
-For large databases in long-format, use the companion function \code{\link[goeveg]{syntable_long}}.
+The unordered output table can be sorted automatically with \code{\link[goeveg]{synsort}} function.
 }
 \section{Details}{
 
@@ -64,7 +74,7 @@ For synoptic table calculation, six types are available.
    negative or no differential character (-). Consider that differential character is always
    restricted to some and not necessarily all of the other units, thus considering percentage
    frequency is essential for correct interpretation of the diagnostic species character.
-   This calculation needs at least three groups.
+   This calculation needs at least three groups. Only available for (\code{long = FALSE}).
   \item \code{type = "phi" } Calculates fidelity measure phi (algorithm basing on Sokal & Rohlf
    1995, Bruelheide 2000). Values are ranging between -1 and 1 with high values near 1 indicating
    high fidelity.
@@ -116,7 +126,7 @@ Tsiripidis, I., Bergmeier, E., Fotiadis, G. & Dimopoulos, P. (2009): A new algor
 determination of differential taxa. \emph{Journal of Vegetation Science} \strong{20}: 233-240. \doi{https://doi.org/10.1111/j.1654-1103.2009.05273.x}
 }
 \seealso{
-\code{\link{synsort}}, \code{\link{syntable_long}}
+\code{\link{synsort}}
 }
 \author{
 Jenny Schellenberg (\email{jschell@gwdg.de}) and Friedemann von Lampe

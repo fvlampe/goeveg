@@ -1,4 +1,7 @@
-# goeveg 0.7.6.1
+# goeveg 0.7.7.1
+* `syntable` now unifies `syntable_long` and original `syntable` in one interface
+
+# goeveg 0.7.7
 * `synsort()`: Added `method = "totalfreq"` (order species by overall frequency) and `method = "manual"` (order by a user-supplied vector).
 * `synsort()`: The species–sample matrix is no longer returned by default; set `samples = TRUE` to include it.
 * `synsort()`: Added `cluster_order` to select and order cluster columns; columns not listed are omitted.
