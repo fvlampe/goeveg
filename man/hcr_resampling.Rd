@@ -27,7 +27,7 @@ hcr_resampling(
 \itemize{
   \item column 1: sample ids
   \item column 2: strata
-  \item column 3...n: species.
+  \item columns 3...n: species.
 }}
 
 \item{transform}{One of \code{c("none","sqrt","log1p","binary")}. If "binary", values become 0/1 and
