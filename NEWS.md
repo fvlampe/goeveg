@@ -1,18 +1,11 @@
-# goeveg 0.7.7.4
-* `syntable()`: Fixed different issues in fidelity calculation, replaced loops by faster vectorised computations, many small fixes
-
-# goeveg 0.7.7.3
+# goeveg 0.7.8
 * Added new function `hcr_resampling` to perform heterogeneity-constrained random (HCR) resampling
-
-# goeveg 0.7.7.2
-* Added different variants of fidelity calculation (experimental for testing)
-
-# goeveg 0.7.7.1
-* `syntable` now unifies `syntable_long` and original `syntable` in one interface
+* `syntable()`: Added different options of fidelity calculation, replaced some loops by faster vectorised computations
+* `syntable` now wraps `syntable_long` and original `syntable` in one interface
 
 # goeveg 0.7.7
 * `synsort()`: Added `method = "totalfreq"` (order species by overall frequency) and `method = "manual"` (order by a user-supplied vector).
-* `synsort()`: The species–sample matrix is no longer returned by default; set `samples = TRUE` to include it.
+* `synsort()`: The species–sample matrix is no longer returned by default (for performance on large datasets); set `samples = TRUE` to include it.
 * `synsort()`: Added `cluster_order` to select and order cluster columns; columns not listed are omitted.
 * New function `syntable_long` calculates synoptic tables from long-format vegetation data; implemented with `data.table` for faster performance on large databases.
 

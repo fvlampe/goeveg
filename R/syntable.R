@@ -2,9 +2,9 @@
 #' differential species character
 #'
 #' @description
-#' Synoptic tables are a tool for the visualization and interpretation of previously
-#' defined plant species groups, e.g. from cluster analysis, classification methods or
-#' pre-defined categories, e.g. spatial distribution units.
+#' Synoptic tables summarize previously defined plant community groups, e.g., from
+#  cluster analysis, classification methods or pre-defined strata, such as spatial distribution units.
+#' 
 #' They help to determine characteristic patterning of species occurrences in plant communities
 #' by calculating group-wise percentage or absolute frequencies, mean/median cover values, fidelity
 #' (phi) or differential species character.
@@ -15,48 +15,67 @@
 #' 
 #' The unordered output table can be sorted automatically with \code{\link[goeveg]{synsort}} function.
 #' 
-##' @param vegdata A data-frame-like object. Can be:
+##' @param vegdata A data-frame-like object. Either:
 #' \itemize{
 #'   \item default: a species-sample matrix with species in columns and samples in rows.
 #'         Species names must be column names, sample (row) names are optional.
-#'   \item with \code{long = TRUE}: a long-format table with at least three columns.
-#'         The first three columns must contain sample names, taxon names, and abundances, respectively.
+#'   \item with \code{long = TRUE}: a long-format table with at least three columns: sample ID, taxon name, and abundance/cover
+#'         (these must be the first three columns).
 #' }
-#' Missing values (NA) will be transformed to 0.
+#' Missing values (NA) are converted to 0.
 #' If non-numeric abundance values are present, the matrix will be transformed to presence/absence with all non-zero values defined as 1.
-#' @param long Logical. If \code{TRUE}, \code{vegdata} is treated as long-format data otherwise as species-sample matrix (\emph{default})
-#' @param groups Integer or character vector/factor with groups identity. Ensure matching order of
-#' groups identity and samples in vegdata for correct allocation of groups numbers to samples.
-#' @param abund Type of abundances. Define whether vegetation data are percentage cover (\code{abund = "percentage"}, default)
-#' or presence/absence data (\code{abund = "pa"}, with values 0/1). You may use function \code{\link{cov2per}} to transform
-#' cover-abundance values from different scales into percentage cover.
-#' @param type Type of synoptic table output \code{type = c("percfreq", "totalfreq", "mean",
-#' "median", "diffspec", "phi")}. See Details.
-#' @param digits Integer indicating the number of decimal places to be displayed in result tables (default 0)
-#' @param phi_method Fidelity measure when \code{type = "phi"}. Choose \code{"default"} for the
-#'  classical binary phi coefficient, \code{"cover"} for a cover-weighted phi based on the
-#'  correlation between species cover and group membership, \code{"ochiai"} for the Ochiai
-#'  coefficient or \code{"uvalue"} for the hypergeometric \eqn{u}-value.
-#' @param phi_transform Transformation of cover values when \code{phi_method = "cover"}.
-#'  Options are \code{"none"}, \code{"sqrt"} or \code{"log"} (using \code{log(x + 1)}).
-#' @param phi_standard Standardisation of group sizes for fidelity calculation. Use \code{"none"}
-#'  for the original group sizes, \code{"rarefy"} for random rarefaction to the smallest group
-#'  (repeated \code{phi_reps} times) or \code{"adjust"} for analytical adjustment of phi.
+#' @param long Logical. If \code{TRUE}, \code{vegdata} is treated as long-format data; otherwise as species-sample matrix (\emph{default})
+#' @param groups Group identities for samples. For wide data (\emph{default}): a vector/factor of length
+#'   \code{nrow(vegdata)} (one group per sample/row). For long data: either a
+#'   per-\emph{row} vector (length \code{nrow(vegdata)}), a per-\emph{sample} vector
+#'   (named by sample IDs, or in the order of first appearance of samples), or
+#'   \code{NULL} when \code{group_col} is used. Within each sample, exactly one group
+#'   must be defined. 
+#' @param abund Type of abundances: percentage cover (\code{"percentage"}, default)
+#'   or presence/absence (\code{"pa"} with values 0/1). Use \code{\link{cov2per}}
+#'   to transform cover-abundance scales to percentage cover if needed.
+#' @param type Output type. One of \code{c("percfreq","totalfreq","mean","median","diffspec","phi")}.
+#'   See \strong{Details}.
+#' @param digits Integer indicating the number of decimal places to be displayed in result tables (default 0; for phi 3)
+#' @param phi_method Fidelity measure when \code{type = "phi"}. One of:
+#'   \itemize{
+#'     \item \code{"default"}: binary phi coefficient (classical)
+#'     \item \code{"cover"}: cover-weighted phi (correlation of cover with group membership)
+#'     \item \code{"ochiai"}: Ochiai coefficient
+#'     \item \code{"uvalue"}: hypergeometric \eqn{u}-value
+#'   }
+#' @param phi_transform Transformation for cover-based fidelity (\code{phi_method = "cover"}):
+#'   \code{"none"}, \code{"sqrt"}, or \code{"log"} (applies \code{log(x + 1)}).
+#'   
+#' @param phi_standard Group-size standardisation for fidelity:
+#'   \code{"none"} (original sizes), \code{"rarefy"} (random rarefaction to the smallest
+#'   group, repeated \code{phi_reps} times), or \code{"adjust"} (analytical adjustment;
+#'   defined for \code{"default"} and \code{"uvalue"}).
+#'  
 #' @param phi_reps Number of repetitions for random rarefaction (default 100).
+#' 
+#' @param group_col (Long data only) Optional name of a column
+#'   in \code{vegdata} that contains the group labels. When supplied, \code{groups}
+#'   may be \code{NULL}.
 #'
 #' @section Details:
 #' For synoptic table calculation, six types are available.
 #'   \itemize{
-#'   \item \code{type = "percfreq" } Creates a percentage frequency table \emph{(default)}
-#'   \item \code{type = "totalfreq" } Creates an absolute frequency table
-#'   \item \code{type = "mean" }  Calculates mean of species values given in \code{matrix} per group
-#'   \item \code{type = "median" }  Calculates median of species values given in \code{matrix} per
-#'    group
+#'   \item \code{type = "percfreq" }: percentage frequency of occurrence per group \emph{(default)}
+#'   \item \code{type = "totalfreq" }: absolute frequency (number of plots with presence) per group
+#'   \item \code{type = "mean" }  mean cover per group (\code{abund = "percentage"} only)
+#'   \item \code{type = "median" }  median cover per group (\code{abund = "percentage"} only)
 #'   \item \code{type = "phi" } Calculates species fidelity. The default corresponds to the
 #'    classical phi coefficient (Sokal & Rohlf 1995, Bruelheide 2000) with values between -1 and 1.
 #'    Alternatively, a cover-weighted phi based on correlation, the Ochiai coefficient or the
 #'    hypergeometric \eqn{u}-value can be selected via \code{phi_method} (see Chytry et al., 2002). Group size effects can
-#'    be handled by \code{phi_standard}.
+#'    be handled via \code{phi_standard}.
+#'   \item \code{type = "diffspec" } Calculates differential character of species according to
+#'    Tsiripidis et al. 2009, with resulting character p = positive, n = negative, pn = positive-
+#'    negative or no differential character (-). Consider that differential character is always
+#'    restricted to some and not necessarily all of the other units, thus considering percentage
+#'    frequency is essential for correct interpretation of the diagnostic species character.
+#'    This calculation needs at least 3 groups.
 #'    }
 #'
 #' For sorting the output synoptic table, use \code{\link{synsort}} function, providing several
@@ -137,11 +156,35 @@
 #' @export
 
 
-syntable <- function(vegdata, groups, abund = "percentage",
-                           type = "percfreq", digits = 0, long = FALSE,
-                           phi_method = "default", phi_transform = "none",
-                           phi_standard = "none", phi_reps = 100) {
+syntable <- function(vegdata, 
+                     groups = NULL, 
+                     abund = "percentage",
+                     type = "percfreq", 
+                     digits = NULL, 
+                     long = FALSE,
+                     group_col     = NULL,
+                     phi_method = "default", 
+                     phi_transform = "none",
+                     phi_standard = "none", 
+                     phi_reps = 100
+                     ) {
   
+  # Validate args (clear errors)
+  type         <- match.arg(type,         c("percfreq","totalfreq","mean","median","diffspec","phi"))
+  abund        <- match.arg(abund,        c("percentage","pa"))
+  phi_method   <- match.arg(phi_method,   c("default","cover","ochiai","uvalue"))
+  phi_transform<- match.arg(phi_transform,c("none","sqrt","log"))
+  phi_standard <- match.arg(phi_standard, c("none","rarefy","adjust"))
+  
+  
+  if (type != "phi") {
+    if (!identical(phi_method, "default") || !identical(phi_standard, "none") ||
+        !identical(phi_transform, "none") || !identical(phi_reps, 100)) {
+      message("Arguments phi_method/phi_standard/phi_transform/phi_reps are ignored when type != 'phi'.")
+    }
+  } else if (type == "phi" && phi_method != "cover" && phi_transform != "none") {
+    message("Argument 'phi_transform' is only used with phi_method = 'cover'.")
+  }
   
   if (isTRUE(long)) {
     if (type == "diffspec") {
@@ -149,26 +192,41 @@ syntable <- function(vegdata, groups, abund = "percentage",
            "Pivot your data to a wide species-sample matrix first (species in columns).")
     }
     
+    # For long data: require either a groups vector (per-row or per-sample) or a group_col
+    if (is.null(groups) && is.null(group_col)) {
+      stop("For long-format data, provide either 'groups' (per-row or per-sample) or 'group_col' (the name of a column in 'vegdata').")
+    }
+    
     res <- syntable_long(
-      vegdata, groups,
-      abund = abund,
-      type = type,
-      digits = digits,
-      phi_method = phi_method,
+      vegdata   = vegdata,
+      groups    = groups,
+      abund     = abund,
+      type      = type,
+      digits    = digits,
+      phi_method    = phi_method,
       phi_transform = phi_transform,
-      phi_standard = phi_standard,
-      phi_reps = phi_reps
+      phi_standard  = phi_standard,
+      phi_reps      = phi_reps,
+      group_col     = group_col
     )
   } else {
+    
+    # Wide matrix requires a groups vector (per-sample)
+    if (is.null(groups)) {
+      stop("For wide (matrix) data, 'groups' must be provided (one group per sample/row).")
+    }
+    
+    
     res <- syntable_wide(
-      matrix = vegdata, groups,
-      abund = abund,
-      type = type,
-      digits = digits,
-      phi_method = phi_method,
+      matrix    = vegdata,
+      groups    = groups,
+      abund     = abund,
+      type      = type,
+      digits    = digits,
+      phi_method    = phi_method,
       phi_transform = phi_transform,
-      phi_standard = phi_standard,
-      phi_reps = phi_reps
+      phi_standard  = phi_standard,
+      phi_reps      = phi_reps
     )
   }
   

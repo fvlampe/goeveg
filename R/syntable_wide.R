@@ -3,9 +3,19 @@
 #'
 #' @keywords internal
 #' @noRd
-syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq", digits = 0,
+syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq", digits = NULL,
                           phi_method = "default", phi_transform = "none",
                           phi_standard = "none", phi_reps = 100) {
+  
+  # Rounding: 3 for phi when 'digits' not supplied; 0 otherwise
+  if (is.null(digits)) {
+    digits_nonphi <- 0L
+    digits_phi    <- 3L
+  } else {
+    d <- as.integer(digits)
+    digits_nonphi <- d
+    digits_phi    <- d
+  }
   
   # --- Input & cleaning -------------------------------------------------------
   X <- as.matrix(matrix)
@@ -88,7 +98,7 @@ syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq
     percfreq <- t(counts_Gp)                           # p x G
     percfreq <- sweep(percfreq, 2, b_vec, "/", check.margin = FALSE) * 100
     percfreq[, b_vec == 0] <- NA                 # avoid div/0 artefacts
-    percfreq <- round(percfreq, digits = digits)
+    percfreq <- round(percfreq, digits = digits_nonphi)
     results <- list("syntable" = .finalize(percfreq),
                     "samplesize" = b_vec)
     
@@ -96,7 +106,7 @@ syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq
     sums_Gp <- crossprod(Z, X)
     means   <- t(sweep(sums_Gp, 1, b_vec, "/", check.margin = FALSE))
     means[, b_vec == 0] <- NA
-    means   <- round(means, digits = digits)
+    means   <- round(means, digits = digits_nonphi)
     results <- list("syntable" = .finalize(means),
                     "samplesize" = b_vec)
     
@@ -109,7 +119,7 @@ syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq
       idx <- which(grp_factor == grp_levels[j]) 
       med[, j] <- if (length(idx)) apply(X[idx, , drop = FALSE], 2, stats::median) else NA
     }
-    med <- round(med, digits = digits)
+    med <- round(med, digits = digits_nonphi)
     results <- list("syntable" = .finalize(med),
                     "samplesize" = b_vec)
     
@@ -127,7 +137,7 @@ syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq
     counts_Gp <- crossprod(Z, P)               # G x p
     syn <- t(counts_Gp)                        # p x G
     syn <- sweep(syn, 2, b_vec, "/", check.margin = FALSE) * 100
-    syn <- round(syn, digits = digits)
+    syn <- round(syn, digits = digits_nonphi)
     
     pb <- utils::txtProgressBar(min = 1, max = 23, style = 3)
     
@@ -303,6 +313,8 @@ syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq
         phisum <- phisum + as.matrix(tmp$syntable)
       }
       phitab <- phisum / phi_reps
+      phitab <- round(phitab, digits = digits_phi)  
+      
       samplesize <- rep(m, length(grp_levels)); names(samplesize) <- grp_levels
       results <- list("syntable" = as.data.frame(phitab),
                       "samplesize" = samplesize)
@@ -348,6 +360,8 @@ syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq
           }
         }
         
+        phitab <- round(phitab, digits = digits_phi)
+        
         results <- list("syntable" = as.data.frame(phitab),
                         "samplesize" = b)
         
@@ -376,11 +390,15 @@ syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq
                   "Returning unadjusted values. Use 'rarefy' for size standardisation.")
         }
         
+        phitab <- round(phitab, digits = digits_phi)
+        
         results <- list("syntable" = as.data.frame(phitab),
                         "samplesize" = b)
       } else {
         stop("Unknown phi_method. Use 'default', 'cover', 'ochiai', or 'uvalue'.")
       }
+      
+
     }
   } else {
     stop("Cannot calculate synoptic table. Check 'abund' (percentage|pa) and 'type' (totalfreq|percfreq|mean|median|diffspec|phi).")

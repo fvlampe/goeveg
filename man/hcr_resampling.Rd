@@ -23,7 +23,12 @@ hcr_resampling(
 )
 }
 \arguments{
-\item{data_wide}{a data-frame like object with: col 1 = sample id, col 2 = strata, col 3.. = species.}
+\item{data_wide}{a data-frame like object with the following column contents: 
+\itemize{
+  \item column 1: sample ids
+  \item column 2: strata
+  \item column 3...n: species.
+}}
 
 \item{transform}{One of \code{c("none","sqrt","log1p","binary")}. If "binary", values become 0/1 and
 \code{vegan::vegdist(binary = TRUE)} is used.}
