@@ -1,189 +1,340 @@
-#' Synoptic tables and calculation of cluster-wise frequencies and fidelity for
+#' Synoptic tables and calculation of group-wise frequencies and fidelity for
 #' long-format vegetation databases
 #'
-#' @description
-#' Synoptic tables are a tool for the visualization and interpretation of previously
-#' defined plant species groups (clusters), e.g. from cluster analysis, classification methods or
-#' pre-defined categories, e.g. spatial distribution units.
-#' They help to determine characteristic patterning of species occurrences in plant communities
-#' by calculating cluster-wise percentage or absolute frequencies, mean/median cover values or fidelity
-#' (phi) values. 
-#' 
-#' `syntable_long` calculates synoptic tables from long-format vegetation data (one row per species occurrence)
-#' where the first column contains the sample identifier. A parallel vector provides the cluster identity for each sample.
-#' It is therefore particularly suited for comprehensive vegetation databases, where usual species-sample matrices are very large.
-#' The unordered output table can be sorted automatically with \code{\link[goeveg]{synsort}} function.
-#'  
-#' For data in wide species-by-sample matrix form, use the companion function \code{\link[goeveg]{syntable}}.
-#'
-#' @param vegdata A data-frame–like object in long format, with at least the columns. The first three columns must contain
-#'   sample names, taxon names and abundances, respectively.
-#' @param cluster Integer or character vector/factor with classification
-#'  cluster identity for each sample. Ensure matching order of cluster identity and samples in vegdata for correct allocation of cluster numbers to samples.
-#' @param abund Type of abundances. Define whether the third column contains
-#'   percentage cover (`abund = "percentage"`, default) or presence/absence
-#'   data (`abund = "pa"`, with values 0/1).
-#' @param type Type of synoptic table output
-#'   `type = c("percfreq", "totalfreq", "mean", "median", "phi")`. See Details.
-#' @param digits Integer indicating the number of decimal places to be
-#'   displayed in result tables (default 0).
-#'   
-#' @section Details:
-#' For synoptic table calculation, five types are available.
-#'   \itemize{
-#'   \item \code{type = "percfreq" } Creates a percentage frequency table \emph{(default)}
-#'   \item \code{type = "totalfreq" } Creates an absolute frequency table
-#'   \item \code{type = "mean" }  Calculates mean of species values given in \code{matrix} per cluster
-#'   \item \code{type = "median" }  Calculates median of species values given in \code{matrix} per
-#'    cluster
-#'   \item \code{type = "phi" } Calculates fidelity measure phi (algorithm basing on Sokal & Rohlf
-#'    1995, Bruelheide 2000). Values are ranging between -1 and 1 with high values near 1 indicating
-#'    high fidelity.
-#'    }
-#'
-#' For sorting the output synoptic table, use \code{\link{synsort}} function, providing several
-#' options.
-#'
-#' @return An (invisible) list with components:
-#'   \item{\code{$syntable }}{unordered synoptic table for given species and clusters}
-#'   \item{\code{$samplesize }}{total number of samples per cluster}
-#'   
-#' @references
-#' Bruelheide, H. (2000): A new measure of fidelity and its application to defining species groups.
-#'  \emph{Journal of Vegetation Science} \strong{11}: 167-178. \doi{https://doi.org/10.2307/3236796}
-#'
-#' Chytry, M., Tichy, L., Holt, J., Botta-Dukat, Z. (2002): Determination of diagnostic species with
-#'  statistical fidelity measures. \emph{Journal of Vegetation Science} \strong{13}: 79-90. \doi{https://doi.org/10.1111/j.1654-1103.2002.tb02025.x}
-#'
-#' Sokal, R.R. & Rohlf, F.J. (1995): Biometry. 3rd edition Freemann, New York.
-#'
-#' @author Friedemann von Lampe and Jenny Schellenberg
-#' @seealso [syntable()], [synsort()]
 #' @import data.table
-#' @export
-syntable_long <- function(vegdata, cluster, abund = "percentage", type = "percfreq", digits = 0) {
-  if (!requireNamespace("data.table", quietly = TRUE)) {
-    stop("Package 'data.table' is required for syntable_long.")
+#' @keywords internal
+#' @noRd
+syntable_long <- function(vegdata,
+                          groups,               
+                          abund = "percentage",
+                          type = "percfreq",
+                          digits = NULL,
+                          phi_method = "default",
+                          phi_transform = "none",
+                          phi_standard = "none",
+                          phi_reps = 100,
+                          group_col = NULL) {   
+  
+  # avoid R CMD check notes for data.table
+  Sample <- TaxonName <- Abund <- groups_dt <- cov <- sum_x <- sum_x2 <- value <- grp <- n <- NULL 
+  
+  # Rounding: 3 for phi when 'digits' not supplied; 0 otherwise
+  if (is.null(digits)) {
+    digits_nonphi <- 0L
+    digits_phi    <- 3L
+  } else {
+    d <- as.integer(digits)
+    digits_nonphi <- d
+    digits_phi    <- d
   }
+  
+  # --- Input & cleaning -------------------------------------------------------
   dt <- data.table::as.data.table(vegdata)
-  if (ncol(dt) < 3) {
-    stop("Input table must contain at least three columns (sample, taxon, abundance).")
-  }
+  if (ncol(dt) < 3) stop("Input table must contain at least three columns (sample, taxon, abundance).")
   data.table::setnames(dt, 1:3, c("Sample", "TaxonName", "Abund"))
   
-  narep <- FALSE
-  if (any(dt$Abund == "", na.rm = TRUE)) {
-    dt$Abund[dt$Abund == ""] <- NA
-    narep <- TRUE
-  }
-  if (any(is.na(dt$Abund))) {
-    dt$Abund[is.na(dt$Abund)] <- 0
-    narep <- TRUE
-  }
-  if (narep) {
-    print("NA and/or empty character values replaced by 0.")
-  }
+  # empties -> NA
+  if (any(dt$Abund == "", na.rm = TRUE)) dt$Abund[dt$Abund == ""] <- NA
   
-  if (any(is.na(cluster))) {
-    stop("NA values in cluster not allowed.")
-  }
+  # numeric/PA handling
+  Abund_char <- as.character(dt$Abund)
+  Abund_num  <- suppressWarnings(as.numeric(Abund_char))
+  nonnum     <- is.na(Abund_num) & !is.na(Abund_char)
   
-  if (any(is.na(suppressWarnings(as.numeric(dt$Abund))))) {
-    warning("Non-numeric abundance values transformed into 1. Using presence/absence scale.")
-    dt$Abund[dt$Abund != 0] <- 1
+  if (any(nonnum)) {
+    # presence if numeric non-zero OR non-numeric string != "0"
+    pres <- rep(FALSE, nrow(dt))
+    pres[!is.na(Abund_num)] <- Abund_num[!is.na(Abund_num)] != 0
+    pres[nonnum] <- Abund_char[nonnum] != "0"
+    pres[is.na(Abund_char)] <- FALSE
+    dt[, Abund := as.numeric(pres)]
     abund <- "pa"
-  }
-  dt$Abund <- as.numeric(dt$Abund)
-  
-  if (is.null(names(cluster))) {
-    if (length(cluster) != length(unique(dt$Sample))) {
-      stop("Cluster vector length must equal number of unique samples.")
+    message("Non-numeric abundance values detected -> using presence/absence scale.")
+  } else {
+    if (any(is.na(Abund_num))) {
+      Abund_num[is.na(Abund_num)] <- 0
+      message("NA values in abundances replaced by 0.")
     }
-    names(cluster) <- unique(dt$Sample)
+    dt[, Abund := Abund_num]
   }
-  cluster_vec <- factor(cluster)
-  group <- levels(cluster_vec)
-  dt[, cluster := factor(cluster_vec[as.character(Sample)], levels = group)]
-  if (any(is.na(dt$cluster))) {
-    stop("Cluster vector does not cover all samples.")
-  }
-  samplesize <- table(cluster_vec)
   
   if (!abund %in% c("percentage", "pa")) {
-    stop("Argument 'abund' must be either percentages ('percentage') or presence/absence data ('pa')")
+    stop("Argument 'abund' must be either 'percentage' (cover) or 'pa' (presence/absence).")
   }
   
-  if (type == "totalfreq") {
-    freq_dt <- dt[Abund > 0, .(freq = data.table::uniqueN(Sample)), by = .(TaxonName, cluster)]
-    syntab <- data.table::dcast(freq_dt, TaxonName ~ cluster, value.var = "freq", fill = 0)
-    syntab_df <- as.data.frame(syntab)
+  # --- Groups mapping (accept column, per-row vector, or per-sample vector) ---
+  # Result of this block:
+  #   dt$groups_dt : factor with the group of each row
+  #   sample_map   : per-sample table with a single group per Sample (factor)
+  #   grp_levels   : group level names
+  if (!is.null(group_col)) {
+    if (!group_col %in% names(dt))
+      stop("group_col '", group_col, "' not found in vegdata.")
+    if (any(is.na(dt[[group_col]])))
+      stop("NA values in group_col are not allowed.")
+    dt[, groups_dt := factor(.SD[[1]]), .SDcols = group_col]
+    
+  } else if (!missing(groups) && length(groups) == nrow(dt)) {
+    if (any(is.na(groups))) stop("NA values in 'groups' are not allowed.")
+    dt[, groups_dt := factor(groups)]
+    
+  } else if (!missing(groups) && !is.null(names(groups))) {
+    # named per-sample vector
+    if (!all(unique(dt$Sample) %in% names(groups)))
+      stop("Named 'groups' must include all sample IDs in column 1 (Sample).")
+    dt[, groups_dt := factor(groups[as.character(Sample)])]
+    if (any(is.na(dt$groups_dt)))
+      stop("'groups' vector does not cover all samples present in 'vegdata'.")
+    
+  } else if (!missing(groups) && length(groups) == data.table::uniqueN(dt$Sample)) {
+    # per-sample vector in the order of first appearance of each Sample
+    sample_order <- dt[, .SD[1L], by = Sample][, Sample]
+    dt[, groups_dt := factor(groups[match(Sample, sample_order)])]
+    if (any(is.na(dt$groups_dt)))
+      stop("'groups' vector (per-sample ordered) could not be mapped to all samples.")
+    
+  } else {
+    stop("Provide 'groups' via group_col=, or as a vector: ",
+         "per-row (length nrow(vegdata)) or per-sample (named or length = number of unique samples).")
+  }
+  
+  # Validate: each Sample must have exactly one group (no within-sample conflicts)
+  consistency <- dt[, .(n = data.table::uniqueN(groups_dt)), by = Sample]
+  if (any(consistency$n != 1L)) {
+    bad <- consistency[n != 1L, Sample]
+    stop("Group assignment is not consistent within samples. ",
+         "These samples have >1 group: ", paste(head(bad, 10), collapse = ", "),
+         if (length(bad) > 10) " ...")
+  }
+  
+  # Build per-sample map and canonical levels
+  sample_map <- dt[, .(grp = groups_dt[1L]), by = Sample]
+  sample_map[, grp := factor(grp)]    # drop to observed levels
+  grp_levels  <- levels(sample_map$grp)
+  dt[, groups_dt := factor(groups_dt, levels = grp_levels)]
+  
+  # Samplesize per group (counts SAMPLES, not rows)
+  samplesize_vec <- table(sample_map$grp)  # ordered like grp_levels
+  
+  # Helper to coerce output with consistent column order
+  .finalize_syntab <- function(syntab_dt) {
+    syntab_df <- as.data.frame(syntab_dt)
     rownames(syntab_df) <- syntab_df$TaxonName
     syntab_df$TaxonName <- NULL
-    syntab_df <- syntab_df[, group, drop = FALSE]
-    results <- list("syntable" = syntab_df, "samplesize" = samplesize)
+    syntab_df <- syntab_df[, grp_levels, drop = FALSE]
+    syntab_df
+  }
+  
+  # --- Calculations by 'type' -------------------------------------------------
+  if (type == "totalfreq") {
+    
+    # absolute frequency = number of plots with presence per group
+    dt_pa <- unique(dt[Abund > 0, .(TaxonName, groups = groups_dt, Sample)])
+    freq_dt <- dt_pa[, .N, by = .(TaxonName, groups)]
+    data.table::setnames(freq_dt, "N", "freq")
+    syntab <- data.table::dcast(freq_dt, TaxonName ~ groups, value.var = "freq", fill = 0)
+    results <- list("syntable"  = .finalize_syntab(syntab),
+                    "samplesize" = samplesize_vec)
     
   } else if (type == "percfreq") {
-    freq_dt <- dt[Abund > 0, .(freq = data.table::uniqueN(Sample)), by = .(TaxonName, cluster)]
-    syntab <- data.table::dcast(freq_dt, TaxonName ~ cluster, value.var = "freq", fill = 0)
-    syntab_df <- as.data.frame(syntab)
-    rownames(syntab_df) <- syntab_df$TaxonName
-    syntab_df$TaxonName <- NULL
-    for (g in group) {
-      syntab_df[[g]] <- round(syntab_df[[g]] * 100 / samplesize[g], digits = digits)
+    
+    dt_pa <- unique(dt[Abund > 0, .(TaxonName, groups = groups_dt, Sample)])
+    freq_dt <- dt_pa[, .N, by = .(TaxonName, groups)]
+    data.table::setnames(freq_dt, "N", "freq")
+    syntab <- data.table::dcast(freq_dt, TaxonName ~ groups, value.var = "freq", fill = 0)
+    syntab_df <- .finalize_syntab(syntab)
+    for (g in grp_levels) {
+      denom <- as.numeric(samplesize_vec[g])
+      syntab_df[[g]] <- if (denom > 0) round(syntab_df[[g]] * 100 / denom, digits = digits_nonphi) else NA
     }
-    results <- list("syntable" = syntab_df, "samplesize" = samplesize)
+    results <- list("syntable"  = syntab_df,
+                    "samplesize" = samplesize_vec)
     
   } else if (type == "mean" && abund == "percentage") {
-    sum_dt <- dt[, .(sum = sum(Abund)), by = .(TaxonName, cluster)]
-    syntab <- data.table::dcast(sum_dt, TaxonName ~ cluster, value.var = "sum", fill = 0)
-    syntab_df <- as.data.frame(syntab)
-    rownames(syntab_df) <- syntab_df$TaxonName
-    syntab_df$TaxonName <- NULL
-    for (g in group) {
-      syntab_df[[g]] <- round(syntab_df[[g]] / samplesize[g], digits = digits)
+    
+    sum_dt <- dt[, .(sum = sum(Abund)), by = .(TaxonName, groups = groups_dt)]
+    syntab <- data.table::dcast(sum_dt, TaxonName ~ groups, value.var = "sum", fill = 0)
+    syntab_df <- .finalize_syntab(syntab)
+    for (g in grp_levels) {
+      denom <- as.numeric(samplesize_vec[g])
+      syntab_df[[g]] <- if (denom > 0) round(syntab_df[[g]] / denom, digits = digits_nonphi) else NA
     }
-    results <- list("syntable" = syntab_df, "samplesize" = samplesize)
+    results <- list("syntable"  = syntab_df,
+                    "samplesize" = samplesize_vec)
     
   } else if (type == "mean" && abund == "pa") {
-    stop("Cannot calculate mean abundance in clusters with presence/absence values.")
+    
+    stop("Cannot calculate mean abundance in groups with presence/absence values.")
     
   } else if (type == "median" && abund == "percentage") {
+    
     species <- sort(unique(dt$TaxonName))
     ids <- unique(dt$Sample)
     complete <- data.table::CJ(Sample = ids, TaxonName = species)
     complete <- merge(complete, dt[, .(Sample, TaxonName, Abund)],
                       by = c("Sample", "TaxonName"), all.x = TRUE)
-    complete[, cluster := factor(cluster_vec[as.character(Sample)], levels = group)]
+    # attach groups for these sample IDs
+    gmap <- sample_map[, .(Sample, grp)]
+    complete <- merge(complete, gmap, by = "Sample", all.x = TRUE)
+    setnames(complete, "grp", "groups_dt")
     complete[is.na(Abund), Abund := 0]
-    med_dt <- complete[, .(value = stats::median(Abund)), by = .(TaxonName, cluster)]
-    syntab <- data.table::dcast(med_dt, TaxonName ~ cluster, value.var = "value", fill = 0)
-    syntab_df <- as.data.frame(syntab)
-    rownames(syntab_df) <- syntab_df$TaxonName
-    syntab_df$TaxonName <- NULL
-    syntab_df <- round(syntab_df, digits = digits)
-    results <- list("syntable" = syntab_df, "samplesize" = samplesize)
+    med_dt <- complete[, .(value = stats::median(Abund)), by = .(TaxonName, groups = groups_dt)]
+    syntab <- data.table::dcast(med_dt, TaxonName ~ groups, value.var = "value", fill = 0)
+    syntab_df <- round(.finalize_syntab(syntab), digits = digits_nonphi)
+    results <- list("syntable"  = syntab_df,
+                    "samplesize" = samplesize_vec)
     
   } else if (type == "median" && abund == "pa") {
-    stop("Cannot calculate median abundance in clusters with presence/absence values.")
+    
+    stop("Cannot calculate median abundance in groups with presence/absence values.")
     
   } else if (type == "phi") {
-    freq_dt <- dt[Abund > 0, .(freq = data.table::uniqueN(Sample)), by = .(TaxonName, cluster)]
-    freq <- data.table::dcast(freq_dt, TaxonName ~ cluster, value.var = "freq", fill = 0)
-    freq_df <- as.data.frame(freq)
-    rownames(freq_df) <- freq_df$TaxonName
-    freq_df$TaxonName <- NULL
-    freq_df <- freq_df[, group, drop = FALSE]
-    N <- sum(samplesize)
-    n <- rowSums(freq_df)
-    phitab <- freq_df
-    for (i in seq_along(group)) {
-      phitab[, i] <- (N * freq_df[, i] - n * samplesize[i]) /
-        sqrt(n * samplesize[i] * (N - n) * (N - samplesize[i]))
+    
+    # ----- Fidelity -----------------------------------------------------------
+    species <- sort(unique(dt$TaxonName))
+    
+    calc_phi <- function(dt_sub, samp_ids = NULL) {
+      # Determine N and samplesize from SAMPLES (plots), not rows
+      if (is.null(samp_ids)) {
+        samp_unique <- unique(dt_sub[, .(Sample, groups = groups_dt)])
+        N <- data.table::uniqueN(samp_unique$Sample)
+        samplesize <- table(factor(samp_unique$groups, levels = grp_levels))
+      } else {
+        N <- length(unique(samp_ids))
+        cl_map <- sample_map[Sample %in% samp_ids, grp]
+        samplesize <- table(factor(cl_map, levels = grp_levels))
+      }
+      if (N <= 1) {
+        phitab0 <- matrix(0, nrow = length(species), ncol = length(grp_levels),
+                          dimnames = list(species, grp_levels))
+        return(list(phitab = phitab0, samplesize = samplesize, N = N))
+      }
+      
+      if (phi_method %in% c("default", "ochiai", "uvalue")) {
+        # presence counts per (Taxon, group)
+        dt_pa <- unique(dt_sub[Abund > 0, .(TaxonName, groups = groups_dt, Sample)])
+        a_dt  <- dt_pa[, .N, by = .(TaxonName, groups)]
+        freq_mat <- data.table::dcast(a_dt, TaxonName ~ groups, value.var = "N", fill = 0)
+        freq_mat <- merge(data.table::data.table(TaxonName = species),
+                          freq_mat, by = "TaxonName", all.x = TRUE)
+        freq_mat[is.na(freq_mat)] <- 0
+        
+        a_mat <- as.matrix(freq_mat[, -1, with = FALSE])       # species x groups
+        rownames(a_mat) <- freq_mat$TaxonName
+        n_vec <- rowSums(a_mat)                                # species totals
+        b_vec <- as.numeric(samplesize)                         # group sizes
+        Nv    <- as.numeric(N)
+        
+        if (phi_method == "default") {
+          num <- Nv * a_mat - n_vec %o% b_vec
+          den <- sqrt((n_vec * (Nv - n_vec)) %o% (b_vec * (Nv - b_vec)))
+        } else if (phi_method == "ochiai") {
+          num <- a_mat
+          den <- sqrt(n_vec %o% b_vec)
+        } else { # uvalue
+          num <- a_mat - (n_vec %o% (b_vec / Nv))
+          den <- sqrt((n_vec * (Nv - n_vec)) %o% (b_vec * (Nv - b_vec) / (Nv * (Nv - 1))))
+        }
+        
+        phitab <- num / den
+        phitab[!is.finite(phitab)] <- 0
+        dimnames(phitab) <- list(rownames(a_mat), colnames(a_mat))
+        return(list(phitab = phitab, samplesize = samplesize, N = N))
+        
+      } else if (phi_method == "cover") {
+        if (abund != "percentage") stop("Cover-based fidelity requires percentage abundances.")
+        dt_sub[, cov := switch(phi_transform,
+                               none = Abund,
+                               sqrt = sqrt(Abund),
+                               log  = log(Abund + 1),
+                               stop("Unknown phi_transform"))]
+        
+        total_stats <- dt_sub[, .(sum_x = sum(cov), sum_x2 = sum(cov^2)), by = TaxonName]
+        total_stats <- merge(data.table::data.table(TaxonName = species),
+                             total_stats, by = "TaxonName", all.x = TRUE)
+        total_stats[is.na(total_stats)] <- 0
+        
+        group_stats <- dt_sub[, .(sum_x = sum(cov)), by = .(TaxonName, groups = groups_dt)]
+        group_stats <- data.table::dcast(group_stats, TaxonName ~ groups, value.var = "sum_x", fill = 0)
+        group_stats <- merge(data.table::data.table(TaxonName = species),
+                             group_stats, by = "TaxonName", all.x = TRUE)
+        group_stats[is.na(group_stats)] <- 0
+        
+        sx   <- as.matrix(group_stats[, -1, with = FALSE])     # species x groups
+        rownames(sx) <- group_stats$TaxonName
+        sxt  <- total_stats$sum_x
+        sx2t <- total_stats$sum_x2
+        b_vec <- as.numeric(samplesize)
+        Nv <- as.numeric(N)
+        
+        num <- Nv * sx - sxt %o% b_vec
+        den <- sqrt((Nv * sx2t - sxt^2) %o% (b_vec * (Nv - b_vec)))
+        phitab <- num / den
+        phitab[!is.finite(phitab)] <- 0
+        dimnames(phitab) <- list(rownames(sx), colnames(sx))
+        return(list(phitab = phitab, samplesize = samplesize, N = N))
+        
+      } else {
+        stop("Unknown phi_method. Use 'default', 'cover', 'ochiai', or 'uvalue'.")
+      }
     }
-    results <- list("syntable" = phitab, "samplesize" = samplesize)
+    
+    # Sample IDs per group (from per-sample map)
+    ids_by_group <- lapply(grp_levels, function(g) sample_map[grp == g, Sample])
+    
+    if (phi_standard == "rarefy") {
+      m <- min(lengths(ids_by_group))
+      if (m < 1) stop("At least one group has zero samples; cannot rarefy.")
+      phisum <- matrix(0, nrow = length(species), ncol = length(grp_levels),
+                       dimnames = list(species, grp_levels))
+      for (r in seq_len(phi_reps)) {
+        samp_ids <- unlist(lapply(ids_by_group, function(v) sample(v, m)))
+        sub_dt <- dt[Sample %in% samp_ids]
+        res <- calc_phi(sub_dt, samp_ids = samp_ids)
+        phisum <- phisum + res$phitab
+      }
+      phitab <- phisum / phi_reps
+      phitab <- round(phitab, digits = digits_phi)  
+      
+      samplesize_out <- rep(m, length(grp_levels))
+      names(samplesize_out) <- grp_levels
+      
+    } else {
+      # No rarefaction: compute directly on full data
+      res <- calc_phi(dt)
+      phitab <- res$phitab
+      samplesize_out <- res$samplesize
+      
+      if (phi_standard == "adjust") {
+        if (phi_method %in% c("default", "uvalue")) {
+          # analytical adjustment only for these methods
+          N_adj <- res$N
+          m <- min(as.numeric(samplesize_out))
+          for (i in seq_along(grp_levels)) {
+            b <- as.numeric(samplesize_out[i])
+            if (is.finite(b) && b > 0 && b < N_adj) {
+              phitab[, i] <- phitab[, i] * sqrt(m * (N_adj - m) / (b * (N_adj - b)))
+            } else {
+              phitab[, i] <- 0
+            }
+          }
+        } else {
+          message("phi_standard = 'adjust' is not defined for phi_method = '",
+                  phi_method, "'. Returning unadjusted values. ",
+                  "Use phi_standard = 'rarefy' if you need size standardisation.")
+        }
+      } else if (phi_standard != "none" && phi_standard != "rarefy") {
+        stop("Unknown phi_standard. Use 'none', 'rarefy', or 'adjust'.")
+      }
+      
+      phitab <- round(phitab, digits = digits_phi)
+    }
+    
+    results <- list("syntable"  = as.data.frame(phitab),
+                    "samplesize" = samplesize_out)
     
   } else {
-    stop("Cannot calculate synoptic table. Define correct type of species matrix values to use (abund = c('percentage', 'pa')).\nCheck correct type of synoptic table output type (type = c('totalfreq', 'percfreq', 'mean', 'median', 'phi')).")
+    stop("Cannot calculate synoptic table. Check 'abund' (percentage|pa) and 'type' (totalfreq|percfreq|mean|median|phi).")
   }
   
   return(invisible(results))

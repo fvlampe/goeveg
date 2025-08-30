@@ -2,72 +2,116 @@
 % Please edit documentation in R/syntable.R
 \name{syntable}
 \alias{syntable}
-\title{Synoptic tables and calculation of cluster-wise frequencies, fidelity and
+\title{Synoptic tables and calculation of group-wise frequencies, fidelity and
 differential species character}
 \usage{
-syntable(matrix, cluster, abund = "percentage", type = "percfreq", digits = 0)
+syntable(
+  vegdata,
+  groups = NULL,
+  abund = "percentage",
+  type = "percfreq",
+  digits = NULL,
+  long = FALSE,
+  group_col = NULL,
+  phi_method = "default",
+  phi_transform = "none",
+  phi_standard = "none",
+  phi_reps = 100
+)
 }
 \arguments{
-\item{matrix}{Species matrix or data frame with species in columns and samples in rows.
-Missing values (NA) will be transformed to 0.
-If non-numeric abundance values are present, the matrix will be transformed to presence/absence with all
-non-zero values defined as 1.
-Species and sample names must be defined as column- and row names, respectively.}
+\item{vegdata}{A data-frame-like object. Either:
+\itemize{
+  \item default: a species-sample matrix with species in columns and samples in rows.
+        Species names must be column names, sample (row) names are optional.
+  \item with \code{long = TRUE}: a long-format table with at least three columns: sample ID, taxon name, and abundance/cover
+        (these must be the first three columns).
+}
+Missing values (NA) are converted to 0.
+If non-numeric abundance values are present, the matrix will be transformed to presence/absence with all non-zero values defined as 1.}
 
-\item{cluster}{Integer or character vector/factor with classification cluster identity. Ensure matching order of
-cluster identity and samples in matrix for correct allocation of cluster numbers to samples.}
+\item{groups}{Group identities for samples. For wide data (\emph{default}): a vector/factor of length
+\code{nrow(vegdata)} (one group per sample/row). For long data: either a
+per-\emph{row} vector (length \code{nrow(vegdata)}), a per-\emph{sample} vector
+(named by sample IDs, or in the order of first appearance of samples), or
+\code{NULL} when \code{group_col} is used. Within each sample, exactly one group
+must be defined.}
 
-\item{abund}{Type of abundances. Define whether input species matrix or data frame is percentage cover (\code{abund = "percentage"}, default)
-or presence/absence data (\code{abund = "pa"}, with values 0/1). You may use function \code{\link{cov2per}} to transform
-cover-abundance values from different scales into percentage cover.}
+\item{abund}{Type of abundances: percentage cover (\code{"percentage"}, default)
+or presence/absence (\code{"pa"} with values 0/1). Use \code{\link{cov2per}}
+to transform cover-abundance scales to percentage cover if needed.}
 
-\item{type}{Type of synoptic table output \code{type = c("percfreq", "totalfreq", "mean",
-"median", "diffspec", "phi")}. See Details.}
+\item{type}{Output type. One of \code{c("percfreq","totalfreq","mean","median","diffspec","phi")}.
+See \strong{Details}.}
 
-\item{digits}{Integer indicating the number of decimal places to be displayed in result tables (default 0)}
+\item{digits}{Integer indicating the number of decimal places to be displayed in result tables (default 0; for phi 3)}
+
+\item{long}{Logical. If \code{TRUE}, \code{vegdata} is treated as long-format data; otherwise as species-sample matrix (\emph{default})}
+
+\item{group_col}{(Long data only) Optional name of a column
+in \code{vegdata} that contains the group labels. When supplied, \code{groups}
+may be \code{NULL}.}
+
+\item{phi_method}{Fidelity measure when \code{type = "phi"}. One of:
+\itemize{
+  \item \code{"default"}: binary phi coefficient (classical)
+  \item \code{"cover"}: cover-weighted phi (correlation of cover with group membership)
+  \item \code{"ochiai"}: Ochiai coefficient
+  \item \code{"uvalue"}: hypergeometric \eqn{u}-value
+}}
+
+\item{phi_transform}{Transformation for cover-based fidelity (\code{phi_method = "cover"}):
+\code{"none"}, \code{"sqrt"}, or \code{"log"} (applies \code{log(x + 1)}).}
+
+\item{phi_standard}{Group-size standardisation for fidelity:
+\code{"none"} (original sizes), \code{"rarefy"} (random rarefaction to the smallest
+group, repeated \code{phi_reps} times), or \code{"adjust"} (analytical adjustment;
+defined for \code{"default"} and \code{"uvalue"}).}
+
+\item{phi_reps}{Number of repetitions for random rarefaction (default 100).}
 }
 \value{
 The function returns an (invisible) list of result components.
-  \item{\code{$syntable }}{unordered synoptic table for given species and clusters}
-  \item{\code{$samplesize }}{total number of samples per cluster}
+  \item{\code{$syntable }}{unordered synoptic table for given species and groups}
+  \item{\code{$samplesize }}{total number of samples per group}
 
 Additionally for differential species character calculation:
   \item{\code{$onlydiff }}{Synoptic table only with differential species}
   \item{\code{$others }}{List of non-differential species}
-  \item{\code{$differentials }}{Lists differential species for each cluster}
+  \item{\code{$differentials }}{Lists differential species for each group}
 }
 \description{
-Synoptic tables are a tool for the visualization and interpretation of previously
-defined plant species groups (clusters), e.g. from cluster analysis, classification methods or
-pre-defined categories, e.g. spatial distribution units.
+Synoptic tables summarize previously defined plant community groups, e.g., from
+
 They help to determine characteristic patterning of species occurrences in plant communities
-by calculating cluster-wise percentage or absolute frequencies, mean/median cover values, fidelity
+by calculating group-wise percentage or absolute frequencies, mean/median cover values, fidelity
 (phi) or differential species character.
 
-\code{syntable} calculates synoptic tables, using
-an input species-sample matrix and a vector of cluster identity.
-The unordered output table can be sorted automatically with \code{\link[goeveg]{synsort}} function.
+\code{syntable} calculates synoptic tables, using vegetation sample data and a vector of groups identity.
+The vegetation data can either be provided as species-sample matrix (\emph{default}) or as long-format vegetation 
+data (one row per species occurrence) (\code{long = TRUE}). 
 
-For large databases in long-format, use the companion function \code{\link[goeveg]{syntable_long}}.
+The unordered output table can be sorted automatically with \code{\link[goeveg]{synsort}} function.
 }
 \section{Details}{
 
 For synoptic table calculation, six types are available.
   \itemize{
-  \item \code{type = "percfreq" } Creates a percentage frequency table \emph{(default)}
-  \item \code{type = "totalfreq" } Creates an absolute frequency table
-  \item \code{type = "mean" }  Calculates mean of species values given in \code{matrix} per cluster
-  \item \code{type = "median" }  Calculates median of species values given in \code{matrix} per
-   cluster
+  \item \code{type = "percfreq" }: percentage frequency of occurrence per group \emph{(default)}
+  \item \code{type = "totalfreq" }: absolute frequency (number of plots with presence) per group
+  \item \code{type = "mean" }  mean cover per group (\code{abund = "percentage"} only)
+  \item \code{type = "median" }  median cover per group (\code{abund = "percentage"} only)
+  \item \code{type = "phi" } Calculates species fidelity. The default corresponds to the
+   classical phi coefficient (Sokal & Rohlf 1995, Bruelheide 2000) with values between -1 and 1.
+   Alternatively, a cover-weighted phi based on correlation, the Ochiai coefficient or the
+   hypergeometric \eqn{u}-value can be selected via \code{phi_method} (see Chytry et al., 2002). Group size effects can
+   be handled via \code{phi_standard}.
   \item \code{type = "diffspec" } Calculates differential character of species according to
    Tsiripidis et al. 2009, with resulting character p = positive, n = negative, pn = positive-
    negative or no differential character (-). Consider that differential character is always
    restricted to some and not necessarily all of the other units, thus considering percentage
    frequency is essential for correct interpretation of the diagnostic species character.
-   This calculation needs at least three groups.
-  \item \code{type = "phi" } Calculates fidelity measure phi (algorithm basing on Sokal & Rohlf
-   1995, Bruelheide 2000). Values are ranging between -1 and 1 with high values near 1 indicating
-   high fidelity.
+   This calculation needs at least 3 groups.
    }
 
 For sorting the output synoptic table, use \code{\link{synsort}} function, providing several
@@ -79,10 +123,12 @@ options.
 library(cluster)
 pam1 <- pam(schedenveg, 4)  # PAM clustering with 4 clusters output
 
+
 ## 1) Unordered synoptic percentage frequency table
 percfreq <- syntable(schedenveg, pam1$clustering, abund = "percentage",
                          type = "percfreq")
                          percfreq                   # view results
+
 
 ## 2) Differential species analysis
 differential <- syntable(schedenveg, pam1$clustering, abund = "percentage",
@@ -92,10 +138,27 @@ differential$syntable
 # list differential species for second cluster
 differential$differentials[2]
 
+
 ## 3) Synoptic table with phi fidelity
 phitable <- syntable(schedenveg, pam1$clustering, abund = "percentage",
                          type = "phi")
 phitable
+
+## 3b) Cover-weighted phi with square-root transformed cover
+phicover <- syntable(schedenveg, pam1$clustering, abund = "percentage",
+                      type = "phi", phi_method = "cover", phi_transform = "sqrt")
+phicover
+
+## 3c) Ochiai coefficient
+ochiai <- syntable(schedenveg, pam1$clustering, abund = "percentage",
+                    type = "phi", phi_method = "ochiai")
+ochiai
+
+## 3d) Hypergeometric u-value
+phiu <- syntable(schedenveg, pam1$clustering, abund = "percentage",
+                 type = "phi", phi_method = "uvalue")
+phiu
+
 
 ## 4) Synoptic percentage frequency table based on historical classification from 1997
 percfreq <- syntable(schedenveg, schedenenv$comm, abund = "percentage",
@@ -116,7 +179,7 @@ Tsiripidis, I., Bergmeier, E., Fotiadis, G. & Dimopoulos, P. (2009): A new algor
 determination of differential taxa. \emph{Journal of Vegetation Science} \strong{20}: 233-240. \doi{https://doi.org/10.1111/j.1654-1103.2009.05273.x}
 }
 \seealso{
-\code{\link{synsort}}, \code{\link{syntable_long}}
+\code{\link{synsort}}
 }
 \author{
 Jenny Schellenberg (\email{jschell@gwdg.de}) and Friedemann von Lampe
