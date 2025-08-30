@@ -1,32 +1,32 @@
-#' Synoptic tables and calculation of cluster-wise frequencies, fidelity and
+#' Synoptic tables and calculation of group-wise frequencies, fidelity and
 #' differential species character
 #'
 #' @description
 #' Synoptic tables are a tool for the visualization and interpretation of previously
-#' defined plant species groups (clusters), e.g. from cluster analysis, classification methods or
+#' defined plant species groups, e.g. from cluster analysis, classification methods or
 #' pre-defined categories, e.g. spatial distribution units.
 #' They help to determine characteristic patterning of species occurrences in plant communities
-#' by calculating cluster-wise percentage or absolute frequencies, mean/median cover values, fidelity
+#' by calculating group-wise percentage or absolute frequencies, mean/median cover values, fidelity
 #' (phi) or differential species character.
 #'
-#' \code{syntable} calculates synoptic tables, using vegetation sample data and a vector of cluster identity.
+#' \code{syntable} calculates synoptic tables, using vegetation sample data and a vector of groups identity.
 #' The vegetation data can either be provided as species-sample matrix (\emph{default}) or as long-format vegetation 
 #' data (one row per species occurrence) (\code{long = TRUE}). 
 #' 
 #' The unordered output table can be sorted automatically with \code{\link[goeveg]{synsort}} function.
 #' 
-##' @param vegdata A data-frame–like object. Can be:
+##' @param vegdata A data-frame-like object. Can be:
 #' \itemize{
-#'   \item default: a species–sample matrix with species in columns and samples in rows.
-#'         Species and sample names must be defined as column and row names.
+#'   \item default: a species-sample matrix with species in columns and samples in rows.
+#'         Species names must be column names, sample (row) names are optional.
 #'   \item with \code{long = TRUE}: a long-format table with at least three columns.
 #'         The first three columns must contain sample names, taxon names, and abundances, respectively.
 #' }
 #' Missing values (NA) will be transformed to 0.
 #' If non-numeric abundance values are present, the matrix will be transformed to presence/absence with all non-zero values defined as 1.
 #' @param long Logical. If \code{TRUE}, \code{vegdata} is treated as long-format data otherwise as species-sample matrix (\emph{default})
-#' @param cluster Integer or character vector/factor with classification cluster identity. Ensure matching order of
-#' cluster identity and samples in vegdata for correct allocation of cluster numbers to samples.
+#' @param groups Integer or character vector/factor with groups identity. Ensure matching order of
+#' groups identity and samples in vegdata for correct allocation of groups numbers to samples.
 #' @param abund Type of abundances. Define whether vegetation data are percentage cover (\code{abund = "percentage"}, default)
 #' or presence/absence data (\code{abund = "pa"}, with values 0/1). You may use function \code{\link{cov2per}} to transform
 #' cover-abundance values from different scales into percentage cover.
@@ -41,7 +41,7 @@
 #'  Options are \code{"none"}, \code{"sqrt"} or \code{"log"} (using \code{log(x + 1)}).
 #' @param phi_standard Standardisation of group sizes for fidelity calculation. Use \code{"none"}
 #'  for the original group sizes, \code{"rarefy"} for random rarefaction to the smallest group
-#'  (repeated \code{phi_reps} times) or \code{"adjust"} for analytical adjustment of \eqn{\phi}.
+#'  (repeated \code{phi_reps} times) or \code{"adjust"} for analytical adjustment of phi.
 #' @param phi_reps Number of repetitions for random rarefaction (default 100).
 #'
 #' @section Details:
@@ -49,13 +49,13 @@
 #'   \itemize{
 #'   \item \code{type = "percfreq" } Creates a percentage frequency table \emph{(default)}
 #'   \item \code{type = "totalfreq" } Creates an absolute frequency table
-#'   \item \code{type = "mean" }  Calculates mean of species values given in \code{matrix} per cluster
+#'   \item \code{type = "mean" }  Calculates mean of species values given in \code{matrix} per group
 #'   \item \code{type = "median" }  Calculates median of species values given in \code{matrix} per
-#'    cluster
+#'    group
 #'   \item \code{type = "phi" } Calculates species fidelity. The default corresponds to the
 #'    classical phi coefficient (Sokal & Rohlf 1995, Bruelheide 2000) with values between -1 and 1.
 #'    Alternatively, a cover-weighted phi based on correlation, the Ochiai coefficient or the
-#'    hypergeometric \eqn{u}-value can be selected via \code{phi_method}. Group size effects can
+#'    hypergeometric \eqn{u}-value can be selected via \code{phi_method} (see Chytry et al., 2002). Group size effects can
 #'    be handled by \code{phi_standard}.
 #'    }
 #'
@@ -64,13 +64,13 @@
 #'
 #' @return
 #' The function returns an (invisible) list of result components.
-#'   \item{\code{$syntable }}{unordered synoptic table for given species and clusters}
-#'   \item{\code{$samplesize }}{total number of samples per cluster}
+#'   \item{\code{$syntable }}{unordered synoptic table for given species and groups}
+#'   \item{\code{$samplesize }}{total number of samples per group}
 #'
 #'Additionally for differential species character calculation:
 #'   \item{\code{$onlydiff }}{Synoptic table only with differential species}
 #'   \item{\code{$others }}{List of non-differential species}
-#'   \item{\code{$differentials }}{Lists differential species for each cluster}
+#'   \item{\code{$differentials }}{Lists differential species for each group}
 #'
 #'
 #' @references
@@ -137,25 +137,40 @@
 #' @export
 
 
-syntable <- function(vegdata, cluster, abund = "percentage",
+syntable <- function(vegdata, groups, abund = "percentage",
                            type = "percfreq", digits = 0, long = FALSE,
                            phi_method = "default", phi_transform = "none",
                            phi_standard = "none", phi_reps = 100) {
-  if (long) {
-
+  
+  
+  if (isTRUE(long)) {
     if (type == "diffspec") {
-      stop("Differential species analysis not available for long-format data.")
+      stop("Differential species analysis ('diffspec') is not available for long-format data.\n",
+           "Pivot your data to a wide species-sample matrix first (species in columns).")
     }
-
-    syntable_long(vegdata, cluster, abund = abund, type = type, digits = digits,
-                  phi_method = phi_method, phi_transform = phi_transform,
-                  phi_standard = phi_standard, phi_reps = phi_reps)
-
+    
+    res <- syntable_long(
+      vegdata, groups,
+      abund = abund,
+      type = type,
+      digits = digits,
+      phi_method = phi_method,
+      phi_transform = phi_transform,
+      phi_standard = phi_standard,
+      phi_reps = phi_reps
+    )
   } else {
-
-    matrix <- vegdata
-    syntable_wide(matrix, cluster, abund = abund, type = type, digits = digits,
-                  phi_method = phi_method, phi_transform = phi_transform,
-                  phi_standard = phi_standard, phi_reps = phi_reps)
+    res <- syntable_wide(
+      matrix = vegdata, groups,
+      abund = abund,
+      type = type,
+      digits = digits,
+      phi_method = phi_method,
+      phi_transform = phi_transform,
+      phi_standard = phi_standard,
+      phi_reps = phi_reps
+    )
   }
+  
+  return(invisible(res))
 }
