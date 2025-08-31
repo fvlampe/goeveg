@@ -164,6 +164,26 @@ hcr_resampling <- function(
     gl_max_plots <- suppressWarnings(as.numeric(group_limits[["max_plots"]]))
   }
   
+  # check if group limit definitions are provided
+  if (!is.null(group_vec)) {
+    if (!have_group_limits) {
+      message("group_limits not provided; using global min_plots/max_plots for all groups.")
+    } else {
+      used_groups     <- unique(as.character(group_vec[!is.na(group_vec)]))
+      defined_groups  <- unique(gl_key)  # first column of group_limits
+      missing_groups  <- setdiff(used_groups, defined_groups)
+      
+      if (length(missing_groups) > 0) {
+        message("Groups not defined in 'group_limits' (using global min/max): ",
+                paste(sort(missing_groups), collapse = ", "))
+      }
+      if (any(is.na(group_vec))) {
+        message("Some samples have NA in 'group_vec'; they will use global min/max.")
+      }
+    }
+  }
+  
+  
   # initialise progress bar
   pb <- NULL
   if (isTRUE(progress)) {
