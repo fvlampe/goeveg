@@ -15,8 +15,8 @@
 #' @param transform One of \code{c("none","sqrt","log1p","binary")}. If "binary", values become 0/1 and
 #'   \code{vegan::vegdist(binary = TRUE)} is used.
 #' @param score_dist Dissimilarity method for trial scoring; any method accepted by
-#'   \code{vegan::vegdist} (e.g., "bray","jaccard","euclidean","manhattan","canberra",
-#'   "gower","altGower","kulczynski","morisita","horn","mountford","raup","binomial",
+#'   \code{vegan::vegdist} (e.g., "bray","jaccard", "hellinger", "euclidean", "canberra",
+#'   "gower", "kulczynski","morisita","horn","mountford","raup","binomial",
 #'   "chao","cao", …).
 #' @param beta_dist One of \code{c("bray","jaccard")} for per-stratum mean dissimilarity used to calculate the 
 #' adaptive number of plots.
@@ -38,7 +38,7 @@
 #' @param seed Optional integer seed for reproducibility of random subset trials.
 #'   
 #' @section Details:
-#' This function follows Lengyel, Chytrý & Tichý (2011) and the JUICE implementation (Tichý, 2002). 
+#' The algorithm follows Lengyel, Chytrý & Tichý (2011) and was based upon the JUICE implementation (Tichý, 2002). 
 #' For speed, it precomputes per-stratum distance matrices (once) and reuses them across trials, which
 #' enables large numbers of trials (default \code{trials = 1000}). 
 #' 
