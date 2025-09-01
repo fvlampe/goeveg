@@ -10,10 +10,8 @@ syntable_long <- function(vegdata,
                           type = "percfreq",
                           digits = NULL,
                           phi_method = "default",
-                          phi_transform = "none",
-                          phi_standard = "none",
-                          phi_reps = 100,
-                          group_col = NULL) {   
+                          group_col = NULL) {
+  
   
   # avoid R CMD check notes for data.table
   Sample <- TaxonName <- Abund <- groups_dt <- cov <- sum_x <- sum_x2 <- value <- grp <- n <- NULL 
@@ -225,110 +223,36 @@ syntable_long <- function(vegdata,
         b_vec <- as.numeric(samplesize)                         # group sizes
         Nv    <- as.numeric(N)
         
-        if (phi_method == "default") {
-          num <- Nv * a_mat - n_vec %o% b_vec
-          den <- sqrt((n_vec * (Nv - n_vec)) %o% (b_vec * (Nv - b_vec)))
-        } else if (phi_method == "ochiai") {
-          num <- a_mat
-          den <- sqrt(n_vec %o% b_vec)
-        } else { # uvalue
-          num <- a_mat - (n_vec %o% (b_vec / Nv))
-          den <- sqrt((n_vec * (Nv - n_vec)) %o% (b_vec * (Nv - b_vec) / (Nv * (Nv - 1))))
+        if (phi_method == "ochiai") {
+          phitab <- a_mat / sqrt(n_vec %o% b_vec)
+          
+        } else {    
+          # compute classic binary phi first
+          phi_num <- Nv * a_mat - n_vec %o% b_vec
+          phi_den <- sqrt((n_vec * (Nv - n_vec)) %o% (b_vec * (Nv - b_vec)))
+          phi_mat <- phi_num / phi_den
+          
+          # uvalue = phi * sqrt(N - 1)  (JUICE / Chytrý et al. 2002)
+          phitab  <- if (phi_method == "uvalue") phi_mat * sqrt(Nv - 1) else phi_mat
         }
         
-        phitab <- num / den
         phitab[!is.finite(phitab)] <- 0
         dimnames(phitab) <- list(rownames(a_mat), colnames(a_mat))
         return(list(phitab = phitab, samplesize = samplesize, N = N))
         
-      } else if (phi_method == "cover") {
-        if (abund != "percentage") stop("Cover-based fidelity requires percentage abundances.")
-        dt_sub[, cov := switch(phi_transform,
-                               none = Abund,
-                               sqrt = sqrt(Abund),
-                               log  = log(Abund + 1),
-                               stop("Unknown phi_transform"))]
-        
-        total_stats <- dt_sub[, .(sum_x = sum(cov), sum_x2 = sum(cov^2)), by = TaxonName]
-        total_stats <- merge(data.table::data.table(TaxonName = species),
-                             total_stats, by = "TaxonName", all.x = TRUE)
-        total_stats[is.na(total_stats)] <- 0
-        
-        group_stats <- dt_sub[, .(sum_x = sum(cov)), by = .(TaxonName, groups = groups_dt)]
-        group_stats <- data.table::dcast(group_stats, TaxonName ~ groups, value.var = "sum_x", fill = 0)
-        group_stats <- merge(data.table::data.table(TaxonName = species),
-                             group_stats, by = "TaxonName", all.x = TRUE)
-        group_stats[is.na(group_stats)] <- 0
-        
-        sx   <- as.matrix(group_stats[, -1, with = FALSE])     # species x groups
-        rownames(sx) <- group_stats$TaxonName
-        sxt  <- total_stats$sum_x
-        sx2t <- total_stats$sum_x2
-        b_vec <- as.numeric(samplesize)
-        Nv <- as.numeric(N)
-        
-        num <- Nv * sx - sxt %o% b_vec
-        den <- sqrt((Nv * sx2t - sxt^2) %o% (b_vec * (Nv - b_vec)))
-        phitab <- num / den
-        phitab[!is.finite(phitab)] <- 0
-        dimnames(phitab) <- list(rownames(sx), colnames(sx))
-        return(list(phitab = phitab, samplesize = samplesize, N = N))
-        
       } else {
-        stop("Unknown phi_method. Use 'default', 'cover', 'ochiai', or 'uvalue'.")
+        stop("Unknown phi_method. Use 'default', 'ochiai', or 'uvalue'.")
       }
     }
     
     # Sample IDs per group (from per-sample map)
     ids_by_group <- lapply(grp_levels, function(g) sample_map[grp == g, Sample])
     
-    if (phi_standard == "rarefy") {
-      m <- min(lengths(ids_by_group))
-      if (m < 1) stop("At least one group has zero samples; cannot rarefy.")
-      phisum <- matrix(0, nrow = length(species), ncol = length(grp_levels),
-                       dimnames = list(species, grp_levels))
-      for (r in seq_len(phi_reps)) {
-        samp_ids <- unlist(lapply(ids_by_group, function(v) sample(v, m)))
-        sub_dt <- dt[Sample %in% samp_ids]
-        res <- calc_phi(sub_dt, samp_ids = samp_ids)
-        phisum <- phisum + res$phitab
-      }
-      phitab <- phisum / phi_reps
-      phitab <- round(phitab, digits = digits_phi)  
-      
-      samplesize_out <- rep(m, length(grp_levels))
-      names(samplesize_out) <- grp_levels
-      
-    } else {
-      # No rarefaction: compute directly on full data
-      res <- calc_phi(dt)
-      phitab <- res$phitab
-      samplesize_out <- res$samplesize
-      
-      if (phi_standard == "adjust") {
-        if (phi_method %in% c("default", "uvalue")) {
-          # analytical adjustment only for these methods
-          N_adj <- res$N
-          m <- min(as.numeric(samplesize_out))
-          for (i in seq_along(grp_levels)) {
-            b <- as.numeric(samplesize_out[i])
-            if (is.finite(b) && b > 0 && b < N_adj) {
-              phitab[, i] <- phitab[, i] * sqrt(m * (N_adj - m) / (b * (N_adj - b)))
-            } else {
-              phitab[, i] <- 0
-            }
-          }
-        } else {
-          message("phi_standard = 'adjust' is not defined for phi_method = '",
-                  phi_method, "'. Returning unadjusted values. ",
-                  "Use phi_standard = 'rarefy' if you need size standardisation.")
-        }
-      } else if (phi_standard != "none" && phi_standard != "rarefy") {
-        stop("Unknown phi_standard. Use 'none', 'rarefy', or 'adjust'.")
-      }
-      
-      phitab <- round(phitab, digits = digits_phi)
-    }
+    res <- calc_phi(dt)
+    phitab <- res$phitab
+    samplesize_out <- res$samplesize
+    
+    phitab <- round(phitab, digits = digits_phi)
     
     results <- list("syntable"  = as.data.frame(phitab),
                     "samplesize" = samplesize_out)

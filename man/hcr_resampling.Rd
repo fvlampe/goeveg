@@ -34,8 +34,8 @@ hcr_resampling(
 \code{vegan::vegdist(binary = TRUE)} is used.}
 
 \item{score_dist}{Dissimilarity method for trial scoring; any method accepted by
-\code{vegan::vegdist} (e.g., "bray","jaccard","euclidean","manhattan","canberra",
-"gower","altGower","kulczynski","morisita","horn","mountford","raup","binomial",
+\code{vegan::vegdist} (e.g., "bray","jaccard", "hellinger", "euclidean", "canberra",
+"gower", "kulczynski","morisita","horn","mountford","raup","binomial",
 "chao","cao", …).}
 
 \item{beta_dist}{One of \code{c("bray","jaccard")} for per-stratum mean dissimilarity used to calculate the 
@@ -79,7 +79,7 @@ number of plots per stratum is adapted from the stratum’s mean pairwise dissim
 }
 \section{Details}{
 
-This function follows Lengyel, Chytrý & Tichý (2011) and the JUICE implementation (Tichý, 2002). 
+The algorithm follows Lengyel, Chytrý & Tichý (2011) and was based upon the JUICE implementation (Tichý, 2002). 
 For speed, it precomputes per-stratum distance matrices (once) and reuses them across trials, which
 enables large numbers of trials (default \code{trials = 1000}). 
 

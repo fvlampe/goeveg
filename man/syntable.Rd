@@ -13,10 +13,7 @@ syntable(
   digits = NULL,
   long = FALSE,
   group_col = NULL,
-  phi_method = "default",
-  phi_transform = "none",
-  phi_standard = "none",
-  phi_reps = 100
+  phi_method = "default"
 )
 }
 \arguments{
@@ -55,20 +52,9 @@ may be \code{NULL}.}
 \item{phi_method}{Fidelity measure when \code{type = "phi"}. One of:
 \itemize{
   \item \code{"default"}: binary phi coefficient (classical)
-  \item \code{"cover"}: cover-weighted phi (correlation of cover with group membership)
   \item \code{"ochiai"}: Ochiai coefficient
   \item \code{"uvalue"}: hypergeometric \eqn{u}-value
 }}
-
-\item{phi_transform}{Transformation for cover-based fidelity (\code{phi_method = "cover"}):
-\code{"none"}, \code{"sqrt"}, or \code{"log"} (applies \code{log(x + 1)}).}
-
-\item{phi_standard}{Group-size standardisation for fidelity:
-\code{"none"} (original sizes), \code{"rarefy"} (random rarefaction to the smallest
-group, repeated \code{phi_reps} times), or \code{"adjust"} (analytical adjustment;
-defined for \code{"default"} and \code{"uvalue"}).}
-
-\item{phi_reps}{Number of repetitions for random rarefaction (default 100).}
 }
 \value{
 The function returns an (invisible) list of result components.
@@ -85,7 +71,7 @@ Synoptic tables summarize previously defined plant community groups, e.g., from
 
 They help to determine characteristic patterning of species occurrences in plant communities
 by calculating group-wise percentage or absolute frequencies, mean/median cover values, fidelity
-(phi) or differential species character.
+or differential species character.
 
 \code{syntable} calculates synoptic tables, using vegetation sample data and a vector of groups identity.
 The vegetation data can either be provided as species-sample matrix (\emph{default}) or as long-format vegetation 
@@ -102,10 +88,9 @@ For synoptic table calculation, six types are available.
   \item \code{type = "mean" }  mean cover per group (\code{abund = "percentage"} only)
   \item \code{type = "median" }  median cover per group (\code{abund = "percentage"} only)
   \item \code{type = "phi" } Calculates species fidelity. The default corresponds to the
-   classical phi coefficient (Sokal & Rohlf 1995, Bruelheide 2000) with values between -1 and 1.
-   Alternatively, a cover-weighted phi based on correlation, the Ochiai coefficient or the
-   hypergeometric \eqn{u}-value can be selected via \code{phi_method} (see Chytry et al., 2002). Group size effects can
-   be handled via \code{phi_standard}.
+   binary phi coefficient (Sokal & Rohlf 1995, Bruelheide 2000) with values between -1 and 1.
+   Alternatively, the Ochiai coefficient or the hypergeometric \eqn{u}-value can be selected via \code{phi_method} 
+   (see Chytry et al., 2002). Handling of group size effects are currently not implemented. 
   \item \code{type = "diffspec" } Calculates differential character of species according to
    Tsiripidis et al. 2009, with resulting character p = positive, n = negative, pn = positive-
    negative or no differential character (-). Consider that differential character is always
@@ -127,7 +112,7 @@ pam1 <- pam(schedenveg, 4)  # PAM clustering with 4 clusters output
 ## 1) Unordered synoptic percentage frequency table
 percfreq <- syntable(schedenveg, pam1$clustering, abund = "percentage",
                          type = "percfreq")
-                         percfreq                   # view results
+percfreq                   # view results
 
 
 ## 2) Differential species analysis
@@ -144,17 +129,8 @@ phitable <- syntable(schedenveg, pam1$clustering, abund = "percentage",
                          type = "phi")
 phitable
 
-## 3b) Cover-weighted phi with square-root transformed cover
-phicover <- syntable(schedenveg, pam1$clustering, abund = "percentage",
-                      type = "phi", phi_method = "cover", phi_transform = "sqrt")
-phicover
 
-## 3c) Ochiai coefficient
-ochiai <- syntable(schedenveg, pam1$clustering, abund = "percentage",
-                    type = "phi", phi_method = "ochiai")
-ochiai
-
-## 3d) Hypergeometric u-value
+## 3b) Hypergeometric u-value
 phiu <- syntable(schedenveg, pam1$clustering, abund = "percentage",
                  type = "phi", phi_method = "uvalue")
 phiu

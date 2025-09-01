@@ -4,8 +4,7 @@
 #' @keywords internal
 #' @noRd
 syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq", digits = NULL,
-                          phi_method = "default", phi_transform = "none",
-                          phi_standard = "none", phi_reps = 100) {
+                          phi_method = "default") {
   
   # Rounding: 3 for phi when 'digits' not supplied; 0 otherwise
   if (is.null(digits)) {
@@ -297,109 +296,43 @@ syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq
     
   } else if (type == "phi") {
     # ----- Fidelity -----------------------------------------------------------
-    if (phi_standard == "rarefy") {
-      m <- min(b_vec)
-      if (m < 1) stop("At least one group has zero samples; cannot rarefy.")
-      phisum <- matrix(0, nrow = p, ncol = length(grp_levels))
-      rownames(phisum) <- colnames(X); colnames(phisum) <- grp_levels
-      for (r in seq_len(phi_reps)) {
-        idx <- unlist(lapply(grp_levels, function(g) sample(which(grp_factor == g), m)))
-        sub <- X[idx, , drop = FALSE]
-        sub_cl <- grp_factor[idx]   
-        tmp <- syntable_wide(sub, sub_cl, abund = abund, type = "phi",
-                             digits = digits, phi_method = phi_method,
-                             phi_transform = phi_transform,
-                             phi_standard = "none", phi_reps = phi_reps)
-        phisum <- phisum + as.matrix(tmp$syntable)
-      }
-      phitab <- phisum / phi_reps
-      phitab <- round(phitab, digits = digits_phi)  
+    
+    if (phi_method %in% c("default", "ochiai", "uvalue")) {
+      P    <- X > 0
+      a_Gp <- crossprod(Z, P)                 # G x p (presences per group)
+      a_pg <- t(a_Gp)                         # p x G
+      n_vec <- colSums(P)                     # species totals (length p)
+      b     <- b_vec                          # group sizes (length G)
       
-      samplesize <- rep(m, length(grp_levels)); names(samplesize) <- grp_levels
-      results <- list("syntable" = as.data.frame(phitab),
-                      "samplesize" = samplesize)
-      
-    } else {
-      if (phi_method %in% c("default", "ochiai", "uvalue")) {
-        P <- X > 0
-        a_Gp <- crossprod(Z, P)                 # G x p
-        a_pg <- t(a_Gp)                         # p x G
-        n_vec <- colSums(P)                     # species totals (length p)
-        b <- b_vec                              # group sizes (length G)
+      if (phi_method == "ochiai") {
+        # Ochiai for binary data
+        phitab <- a_pg / sqrt(n_vec %o% b)
         
-        if (phi_method == "default") {
-          num <- N * a_pg - n_vec %o% b
-          den <- sqrt((n_vec * (N - n_vec)) %o% (b * (N - b)))
-        } else if (phi_method == "ochiai") {
-          num <- a_pg
-          den <- sqrt(n_vec %o% b)
-        } else { # uvalue
-          num <- a_pg - (n_vec %o% (b / N))
-          den <- sqrt((n_vec * (N - n_vec)) %o% (b * (N - b) / (N * (N - 1))))
-        }
-        
-        phitab <- num / den
-        phitab[!is.finite(phitab)] <- 0
-        rownames(phitab) <- colnames(X); colnames(phitab) <- grp_levels
-        
-        if (phi_standard == "adjust") {
-          if (phi_method %in% c("default", "uvalue")) {
-            m <- min(b)
-            for (j in seq_along(b)) {
-              bj <- b[j]
-              if (is.finite(bj) && bj > 0 && bj < N) {
-                phitab[, j] <- phitab[, j] * sqrt(m * (N - m) / (bj * (N - bj)))
-              } else {
-                phitab[, j] <- 0
-              }
-            }
-          } else {
-            message("phi_standard = 'adjust' is not defined for phi_method = '",
-                    phi_method, "'. Returning unadjusted values. ",
-                    "Use phi_standard = 'rarefy' if you need size standardisation.")
-          }
-        }
-        
-        phitab <- round(phitab, digits = digits_phi)
-        
-        results <- list("syntable" = as.data.frame(phitab),
-                        "samplesize" = b)
-        
-      } else if (phi_method == "cover") {
-        if (abund != "percentage")
-          stop("Cover-based fidelity requires percentage abundances.")
-        C <- switch(phi_transform,
-                    none = X,
-                    sqrt = sqrt(X),
-                    log  = log(X + 1),
-                    stop("Unknown phi_transform"))
-        sx_Gp <- crossprod(Z, C)                 # G x p
-        sx_pg <- t(sx_Gp)                        # p x G
-        sxt   <- colSums(C)
-        sx2t  <- colSums(C^2)
-        b <- b_vec
-        
-        num <- N * sx_pg - sxt %o% b
-        den <- sqrt((N * sx2t - sxt^2) %o% (b * (N - b)))
-        phitab <- num / den
-        phitab[!is.finite(phitab)] <- 0
-        rownames(phitab) <- colnames(X); colnames(phitab) <- grp_levels
-        
-        if (phi_standard == "adjust") {
-          message("phi_standard = 'adjust' is not defined for phi_method = 'cover'. ",
-                  "Returning unadjusted values. Use 'rarefy' for size standardisation.")
-        }
-        
-        phitab <- round(phitab, digits = digits_phi)
-        
-        results <- list("syntable" = as.data.frame(phitab),
-                        "samplesize" = b)
       } else {
-        stop("Unknown phi_method. Use 'default', 'cover', 'ochiai', or 'uvalue'.")
+        # Compute classic binary phi first
+        phi_num <- N * a_pg - n_vec %o% b
+        phi_den <- sqrt((n_vec * (N - n_vec)) %o% (b * (N - b)))
+        phi_mat <- phi_num / phi_den
+        
+        # uvalue = phi * sqrt(N - 1)  (JUICE / Chytrý et al. 2002)
+        phitab <- if (phi_method == "uvalue") phi_mat * sqrt(N - 1) else phi_mat
       }
       
-
+      # Clean non-finite
+      phitab[!is.finite(phitab)] <- 0
+      rownames(phitab) <- colnames(X); colnames(phitab) <- grp_levels
+      
+      # Round phi/u with the phi-specific digits
+      phitab <- round(phitab, digits = digits_phi)
+      
+      results <- list("syntable" = as.data.frame(phitab),
+                      "samplesize" = b)
+    } else {
+      stop("Unknown phi_method. Use 'default', 'ochiai', or 'uvalue'.")
     }
+    
+    
+    
   } else {
     stop("Cannot calculate synoptic table. Check 'abund' (percentage|pa) and 'type' (totalfreq|percfreq|mean|median|diffspec|phi).")
   }

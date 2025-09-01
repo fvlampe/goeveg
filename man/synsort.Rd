@@ -8,8 +8,8 @@ synsort(
   syn1,
   syn2 = syn1,
   matrix = NULL,
-  cluster,
-  cluster_order = NULL,
+  groups,
+  group_order = NULL,
   method = "allspec",
   min1 = 0,
   min2 = 0,
@@ -28,16 +28,17 @@ sorting criteria.}
 \item{matrix}{Optional species-sample matrix, already used for \code{\link{syntable}} function input; used only when calculating the
 sorted species-sample matrix (`samples = TRUE`). Site names are imported from row names.}
 
-\item{cluster}{Integer or character vector/factor with classification cluster identity. Ensure matching order of
-cluster identity and samples in matrix for correct allocation of cluster numbers to samples.}
+\item{groups}{Group identities for samples (identical to \code{\link{syntable}} function input). A vector/factor of length
+  \code{nrow(matrix)} (one group per sample/row). Ensure matching order of
+group identity and samples in matrix for correct allocation of group numbers to samples.}
 
-\item{cluster_order}{Optional vector giving the desired order of cluster levels.
-If provided, only clusters listed here are included in the output.}
+\item{group_order}{Optional vector giving the desired order of group levels.
+If provided, only groups listed here are included in the output.}
 
 \item{method}{Sorting algorithm and synoptic table output options
 (\code{method = c("allspec", "alldiff", "totalfreq", "manual")}).}
 
-\item{min1}{Cluster-wise threshold minimum value for species shown in the final sorted synoptic table.
+\item{min1}{Group-wise threshold minimum value for species shown in the final sorted synoptic table.
 Species below that minimum will be listed in the output (\code{$others} section).}
 
 \item{min2}{Threshold minimum value for considering species values of a numerical second input table \code{syn2}.
@@ -56,7 +57,7 @@ Returns an (invisible) list composed of:
 \itemize{
   \item \code{$output} Sorting method description
   \item \code{$species} Information to species included in the output table
-  \item \code{$samplesize} Sample sizes in clusters
+  \item \code{$samplesize} Sample sizes in groups
   \item \code{$syntable} Sorted synoptic table, with the numeric values of \code{syn1} in the left-side columns
   and differential character of species on the right-side of the output table. See Tsiripidis et al. (2009) for
   details and criteria for the assignment of a differential species as p = positive, n = negative,
@@ -64,13 +65,13 @@ Returns an (invisible) list composed of:
   \item \code{$others} Species that are omitted in Synoptic table due to their failing
   reaching the given threshold values \code{min1} and \code{min2}. Sorted alphabetically.
   \item \code{$samples} Sorted original species-sample matrix, with original Plot-IDs (as column
-  names) and the cluster identity (Cluster_No as first row of output samples table) (only when `samples = TRUE`)
-  \item \code{$omitted_clusters} Names of clusters removed because they were not listed in `cluster_order`
+  names) and the group identity (Group_No as first row of output samples table) (only when `samples = TRUE`)
+  \item \code{$omitted_groups} Names of groups removed because they were not listed in `group_order`
   }
 }
 \description{
 This function sorts synoptic tables from \code{\link{syntable}} function output. Sorting criteria
-can be either numerical values in synoptic tables, such as cluster-wise frequencies or fidelity
+can be either numerical values in synoptic tables, such as group-wise frequencies or fidelity
 measures, as well as combined criteria that also take into account differential character (according to
 the criteria defined by Tsiripidis et al., 2009).
 
@@ -81,9 +82,9 @@ descending importance for plant community description.
 \section{Details}{
 
 Different types of sorted synoptic tables can be created with this function. Methods \code{"allspec"} and \code{"alldiff"} are based upon
-the calculation of cluster-wise frequencies. They basically build species blocks left-to-right, for one cluster at a time (\emph{1..k}):
-For cluster \emph{i = 1}, all species whose row maximum equals the value in column \emph{i} are taken and sorted in descending order within that block.
-This is repeated for all subsequent clusters, appending species step-by-step. For clusters \emph{2..k}, duplicates that were already bound to a previous cluster are dropped.
+the calculation of group-wise frequencies. They basically build species blocks left-to-right, for one group at a time (\emph{1..k}):
+For group \emph{i = 1}, all species whose row maximum equals the value in column \emph{i} are taken and sorted in descending order within that block.
+This is repeated for all subsequent groups, appending species step-by-step. For groups \emph{2..k}, duplicates that were already bound to a previous group are dropped.
 
  \itemize{
  \item \code{method = "allspec"} (\emph{default}): Computes a sorted synoptic table based on one or
@@ -96,29 +97,29 @@ This is repeated for all subsequent clusters, appending species step-by-step. Fo
  \code{syn2} must contain information on differential character (output from \code{\link{syntable}}
  function with defined \code{type = "diffspec"}). The result table shows ALL diagnostic and
  non-diagnostic species, as long as they match the \code{min1} and \code{min2} thresholds.
- The algorithm detects highest cluster values of species calculated from
+ The algorithm detects highest group values of species calculated from
  \code{syn1} as base for sorting, but will consider differential character criterion
  from \code{syn2} as well. Species with high values in \code{syn1} AND
  positive differential character will then be listed on the top of a species block.
  Within such a block, the differentiating and high-abundant species are sorted in a way favoring
- species that are positive in only one or at least few clusters.
+ species that are positive in only one or at least few groups.
  
  \item \code{method = "totalfreq"}: Sorts species by their overall
    frequency in \code{syn1} (row sums) in descending order. Only species with
-   at least one cluster value \eqn{\ge} \code{min1} are kept in the table; the
+   at least one group value \eqn{\ge} \code{min1} are kept in the table; the
    rest are listed in \code{$others}.
    
  \item \code{method = "manual"}: The rows are ordered by \code{manual_order}
      (species not present are ignored). Any remaining species are appended,
      sorted by their overall frequency (row sums of \code{syn1}, descending).
-     Species must still pass \code{min1} (max across clusters \eqn{\ge} \code{min1});
+     Species must still pass \code{min1} (max across groups \eqn{\ge} \code{min1});
      the rest go to \code{$others}.
  }
 }
 
 \examples{
 ### Synoptic table of Scheden vegetation data using syntable()-function:
-# classification to create a vector of cluster identity
+# classification to create a vector of group identity
 library(cluster)
 pam1 <- pam(schedenveg, 4)
 
@@ -127,8 +128,9 @@ pam1 <- pam(schedenveg, 4)
 ## Synoptic table with percentage frequency of species in clusters, all species
 unordered <- syntable(schedenveg, pam1$clustering, abund = "percentage",
                       type = "percfreq")   # Unordered synoptic percentage frequency table
-sorted <- synsort(syn1 = unordered$syntable, matrix = schedenveg,
-                  cluster = pam1$clustering, method = "allspec", min1 = 0)
+sorted <- synsort(syn1 = unordered$syntable, matrix = schedenveg, 
+                  groups = pam1$clustering, method = "allspec", min1 = 0,
+                  samples = TRUE)
 sorted             # view results
 \dontrun{
 # Export sorted synoptic table
@@ -139,13 +141,13 @@ write.csv(sorted$samples, "output_species_sample.csv")}
 ## Synoptic table with only phi values
 phi <- syntable(schedenveg, pam1$clustering, abund = "percentage",
                      type = "phi")         # calculates cluster-wise phi for each species
-phi_table <- synsort(syn1 = phi$syntable, matrix = schedenveg, cluster = pam1$clustering,
-                     method = "allspec", min1 = 0.3)
+phi_table <- synsort(syn1 = phi$syntable, matrix = schedenveg, groups = pam1$clustering,
+                     method = "allspec", min1 = 0.3, samples = TRUE)
 phi_table     # view results
 
 ## Synoptic table with total frequency (global ranking)
 total <- synsort(syn1 = unordered$syntable,
-               cluster = pam1$clustering,
+               groups = pam1$clustering,
                method = "totalfreq",
                min1 = 5)
 total         # view results
@@ -160,8 +162,8 @@ phitable <- syntable(schedenveg, pam1$clustering, abund = "percentage",
                      type = "phi")         # calculates cluster-wise phi for each species
 # now sorting and arranging
 phi_complete <- synsort(syn1 = unordered$syntable, syn2 = phitable$syntable,
-                       matrix = schedenveg, cluster = pam1$clustering, method = "allspec",
-                       min1 = 25, min2 = 0.3)
+                       matrix = schedenveg, groups = pam1$clustering, method = "allspec",
+                       min1 = 25, min2 = 0.3, samples = TRUE)
 phi_complete      # view results
 
 ### Differential species analysis
@@ -171,10 +173,10 @@ differential <- syntable(schedenveg, pam1$clustering, abund = "percentage",
 ## Synoptic table with percentage frequency (only species >25\%) and
 ## differential character.
 complete <- synsort(syn1 = unordered$syntable, syn2 = differential$syntable,
-                    matrix = schedenveg, cluster = pam1$clustering,
-                    method = "alldiff", min1 = 25)
+                    matrix = schedenveg, groups = pam1$clustering,
+                    method = "alldiff", min1 = 25, samples = TRUE)
 complete            # view result table
-differential$differentials  # list differential species for clusters
+differential$differentials  # list differential species for groups
 
 
 }
