@@ -1,7 +1,7 @@
 # goeveg 0.7.9
 * Fixes in fidelity calculation when using the u-value
 * Added checks for groups limits in `hcr_resampling()` 
-* Harmonized documentation terminology between `synsort()` and `syntable()`
+* Harmonized terminology between `synsort()` and `syntable()`
 
 # goeveg 0.7.8.
 * Added new function `hcr_resampling()` to perform heterogeneity-constrained random (HCR) resampling
