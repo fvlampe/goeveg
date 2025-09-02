@@ -21,7 +21,6 @@
 #' cv(schedenenv$soil_depth)
 #' @seealso \code{\link[stats]{sd}}
 #' @references Dormann, C. (2017). Parametrische Statistik. Verteilungen, maximum likelihood und GLM in R. \emph{Springer}. \doi{10.1007/978-3-662-54684-0}
-#' @references Frost, J. (2023). Coefficient of variation in statistics. Statistics by Jim. \url{https://statisticsbyjim.com/basics/coefficient-variation/}.
 #' @export
 #' @import stats
 
