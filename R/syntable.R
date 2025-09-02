@@ -100,7 +100,7 @@
 #'
 #' de Cáceres, M., Font, X., & Oliva, F. (2008). Assessing species diagnostic value in large data sets: 
 #' A comparison between phi‐coefficient and Ochiai index. \emph{Journal of Vegetation Science}, \strong{19(6)}, 779–788. 
-#' \doi{doi.org/10.3170/2008-8-18446}
+#' \doi{10.3170/2008-8-18446}
 #'
 #' Sokal, R.R. & Rohlf, F.J. (1995): Biometry. 3rd edition Freemann, New York.
 #' 
