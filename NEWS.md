@@ -1,42 +1,42 @@
 # goeveg 0.7.9
 * `syntable()`: Fixes in fidelity calculation when using the u-value; added Fishers's exact test to exclude non-significant fidelity
-* `syntable()`: Added options for standardisation of sample group size
-* Added checks for groups limits in `hcr_resampling()` 
-* Harmonized terminology between `synsort()` and `syntable()`
+* `syntable()`: Added options for standardization of sample group size
+* `hcr_resampling()`: Added checks for groups limits
+* Harmonized terminology between `synsort()` and `syntable()`: Both refer to groups instead of clusters now.
 
 # goeveg 0.7.8.
-* Added new function `hcr_resampling()` to perform heterogeneity-constrained random (HCR) resampling
-* `syntable()`: Added new options of fidelity calculation (u-value and Ochiai index), replaced some loops by faster vectorised computations
+* New function `hcr_resampling()` to perform heterogeneity-constrained random (HCR) resampling (Lengyel, Chytrý & Tichý, 2011)
+* `syntable()`: Added new options of fidelity calculation (u-value and Ochiai index); improved speed using more vectorised computations
 * `syntable()`: Added option to calculate synoptic tables from long-format vegetation data; implemented with `data.table` for faster performance on large databases.
 * `synsort()`: Added `method = "totalfreq"` (order species by overall frequency) and `method = "manual"` (order by a user-supplied vector).
-* `synsort()`: The species–sample matrix is no longer returned by default (for performance on large datasets); set `samples = TRUE` to include it.
+* `synsort()`: The species–sample matrix is no longer returned by default (for faster performance on large datasets); set `samples = TRUE` to include it.
 * `synsort()`: Added `cluster_order` to select and order cluster columns; columns not listed are omitted.
 
 # goeveg 0.7.6
-* Fixed a mistake in `per2cov()`, leading to wrong assignments in specific cases
+* `per2cov()`: Fixed a mistake leading to wrong cover value assignments in specific cases
 
 # goeveg 0.7.5
-* Added argument to define number of decimal places in `syntable()`-results
-* Empty cell values are transformed to 0 in `clean_matrix()`
-* Fixed `clean_matrix()` to work correctly with non-numeric values in data tables
-
+* `syntable()`: Added argument to define number of decimal places in results
+* `clean_matrix()`: Empty cell values are transformed to 0; fixed to work correctly with non-numeric values in data tables
 
 # goeveg 0.7.4
-* Added option to transform with individual scales per sample in `cov2per` and `per2cov`
-* Added descriptions and option `rmchar` to `trans_matrix()`
+* `cov2per` and `per2cov`: Added option to transform with individual scales per sample
+* `trans_matrix()`: Added option `rmchar` to remove the first character of the original column names
+
 
 # goeveg 0.7.3
-* Added function `clean_matrix()` to remove species without occurrences (frequency = 0) and samples without species from a species matrix in one simple step
-* Added function `trans_matrix()` to transpose a species matrix, while preserving correct species and sample names. 
-* Simplified function `merge_taxa()` to make it work much faster.
+* New function `clean_matrix()` to remove species without occurrences (frequency = 0) and samples without species from a species matrix in one simple step
+* New function `trans_matrix()` to transpose a species matrix, while preserving correct species and sample names. 
+* Simplified function `merge_taxa()` with increased performance
     * Added option `backtransform` to decide whether cover-abundance values should be kept as percentage cover or back-transformed into original cover-abundance values
     * Option `drop_zero` renamed to `clean_matrix` and set on FALSE by default
-* Fixed an error in `cov2per` when providing a data frame with only one column as community data
-* Fixed an unnecessary warning message in `syntable` occurring at cover value transformation
+* `cov2per`: Fixed an error when providing a data frame with only one column as community data
+* `syntable`: Fixed an unnecessary warning message occurring at cover value transformation
 
 # goeveg 0.7.2
-* Added cover abundance scale "niwap" from Lower Saxony species survey programmes (Schacherer 2001)
-* Added `x`-value to presence/absence scale
+* Cover-abundance scales:
+    * Added scale "niwap" from Lower Saxony species survey programmes (Schacherer 2001)
+    * Added `x`-value to presence/absence scale
 * `merge_taxa()`:
     * returns names of merged taxa only once (not for each relevé)
     * added option `drop_zero` to decide whether species without occurrences or empty samples should be removed or kept

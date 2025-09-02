@@ -14,7 +14,7 @@ LazyData: TRUE
 Depends: R (>= 3.6.0)
 Imports: vegan, fields, mgcv, Hmisc, data.table
 Suggests: vegdata, BiodiversityR, cluster
-URL: https://github.com/fvlampe/goeveg/
+URL: https://github.com/fvlampe/goeveg
 BugReports: https://github.com/fvlampe/goeveg/issues
 RoxygenNote: 7.3.2
 Encoding: UTF-8
