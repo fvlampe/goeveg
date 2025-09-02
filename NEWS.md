@@ -1,11 +1,12 @@
 # goeveg 0.7.9
-* Fixes in fidelity calculation when using the u-value
+* `syntable()`: Fixes in fidelity calculation when using the u-value
+* `syntable()`: Added options for standardisation of sample group size
 * Added checks for groups limits in `hcr_resampling()` 
 * Harmonized terminology between `synsort()` and `syntable()`
 
 # goeveg 0.7.8.
 * Added new function `hcr_resampling()` to perform heterogeneity-constrained random (HCR) resampling
-* `syntable()`: Added different options of fidelity calculation, replaced some loops by faster vectorised computations
+* `syntable()`: Added new options of fidelity calculation (u-value and Ochiai index), replaced some loops by faster vectorised computations
 * `syntable()` now wraps `syntable_long()` and original `syntable()` in one interface
 
 # goeveg 0.7.7

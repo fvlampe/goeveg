@@ -5,13 +5,16 @@
 #' @keywords internal
 #' @noRd
 syntable_long <- function(vegdata,
-                          groups,               
+                          groups,
                           abund = "percentage",
                           type = "percfreq",
                           digits = NULL,
                           phi_method = "default",
+                          phi_standard = c("none", "target", "all"),
+                          phi_target_size = NULL,  # % of N for the target group; default = 100/G
                           group_col = NULL) {
   
+  phi_standard <- match.arg(phi_standard)
   
   # avoid R CMD check notes for data.table
   Sample <- TaxonName <- Abund <- groups_dt <- cov <- sum_x <- sum_x2 <- value <- grp <- n <- NULL 
@@ -217,32 +220,97 @@ syntable_long <- function(vegdata,
                           freq_mat, by = "TaxonName", all.x = TRUE)
         freq_mat[is.na(freq_mat)] <- 0
         
-        a_mat <- as.matrix(freq_mat[, -1, with = FALSE])       # species x groups
+        a_mat <- as.matrix(freq_mat[, -1, with = FALSE])   # species x groups
         rownames(a_mat) <- freq_mat$TaxonName
-        n_vec <- rowSums(a_mat)                                # species totals
-        b_vec <- as.numeric(samplesize)                         # group sizes
+        n_vec <- rowSums(a_mat)                            # species totals (length = #species)
+        b_vec <- as.numeric(samplesize)                    # group sizes          (length = G)
         Nv    <- as.numeric(N)
         
-        if (phi_method == "ochiai") {
-          phitab <- a_mat / sqrt(n_vec %o% b_vec)
+        
+        # equalization following Tichy & Chytry 2006 
+        # phi_standard: "none", "target", "all"
+        # phi_target_size: percentage of N for the target group (default = 100/G)
+        G <- length(b_vec)
+        
+        # r_in = a / b  (species × groups), Σ r_in across groups per species
+        Rin <- sweep(a_mat, 2, b_vec, "/")
+        Rin[!is.finite(Rin)] <- 0
+        sumR <- rowSums(Rin)
+        
+        if (phi_standard == "all") {
+          ## Target group gets s_t percent, others equally share the rest.
+          s_pct <- if (is.null(phi_target_size)) 100 / G else as.numeric(phi_target_size)
+          if (!is.finite(s_pct) || s_pct <= 0 || s_pct >= 100)
+            stop("phi_target_size must be a percentage in (0, 100).")
+          s_t <- (s_pct / 100) * Nv                       # conceptual size of target group
+          s_o <- ((100 - s_pct) / 100) * Nv / (G - 1)     # conceptual size of each non-target
+          N_eq <- s_t + (G - 1) * s_o                     # total conceptual plots
           
-        } else {    
-          # compute classic binary phi first
-          phi_num <- Nv * a_mat - n_vec %o% b_vec
-          phi_den <- sqrt((n_vec * (Nv - n_vec)) %o% (b_vec * (Nv - b_vec)))
-          phi_mat <- phi_num / phi_den
+          # a'_ij and n'_ij for each species i & column j (target = j)
+          Aeq_all <- Rin * s_t
+          # n'_ij = s_t * r_in_ij + s_o * (Σ r_in_i• - r_in_ij)
+          Neq_all <- matrix(s_o * sumR, nrow = nrow(Rin), ncol = G) + (s_t - s_o) * Rin
           
-          # uvalue = phi * sqrt(N - 1)  (JUICE / Chytrý et al. 2002)
-          phitab  <- if (phi_method == "uvalue") phi_mat * sqrt(Nv - 1) else phi_mat
+          if (phi_method == "ochiai") {
+            den <- sqrt(Neq_all * s_t)
+            den[den == 0] <- Inf
+            phitab <- Aeq_all / den
+          } else {
+            num <- N_eq * Aeq_all - Neq_all * s_t
+            den <- sqrt(Neq_all * (N_eq - Neq_all) * s_t * (N_eq - s_t))
+            den[den == 0] <- Inf
+            phi_mat <- num / den
+            phitab  <- if (phi_method == "uvalue") phi_mat * sqrt(max(N_eq - 1, 0)) else phi_mat
+          }
+          
+        } else if (phi_standard == "target") {
+          ## Equalize ONLY the target group to s_t; pool all other groups into "outside".
+          s_pct <- if (is.null(phi_target_size)) 100 / G else as.numeric(phi_target_size)
+          if (!is.finite(s_pct) || s_pct <= 0 || s_pct >= 100)
+            stop("phi_target_size must be a percentage in (0, 100).")
+          s_t <- (s_pct / 100) * Nv
+          
+          # r_out per target column: (n - a)/(N - b)
+          Rout <- sweep(a_mat, 2, b_vec, function(a, b) {
+            num <- (n_vec - a); den <- (Nv - b)
+            ifelse(den > 0, num / den, 0)
+          })
+          
+          Aeq <- Rin * s_t                            # a'
+          Neq <- Aeq + Rout * (Nv - s_t)              # n'
+          if (phi_method == "ochiai") {
+            den <- sqrt(Neq * s_t); den[den == 0] <- Inf
+            phitab <- Aeq / den
+          } else {
+            num     <- Nv * Aeq - Neq * s_t
+            den     <- sqrt(Neq * (Nv - Neq) * s_t * (Nv - s_t))
+            den[den == 0] <- Inf
+            phi_mat <- num / den
+            phitab  <- if (phi_method == "uvalue") phi_mat * sqrt(max(Nv - 1, 0)) else phi_mat
+          }
+          
+        } else {  # phi_standard == "none"
+          if (phi_method == "ochiai") {
+            phitab <- a_mat / sqrt(n_vec %o% b_vec)
+          } else {
+            num <- Nv * a_mat - n_vec %o% b_vec
+            den <- sqrt((n_vec * (Nv - n_vec)) %o% (b_vec * (Nv - b_vec)))
+            den[!is.finite(den) | den == 0] <- Inf
+            phi_mat <- num / den
+            phitab  <- if (phi_method == "uvalue") phi_mat * sqrt(max(Nv - 1, 0)) else phi_mat
+          }
         }
         
+        # clean + dimnames, then return from calc_phi()
         phitab[!is.finite(phitab)] <- 0
         dimnames(phitab) <- list(rownames(a_mat), colnames(a_mat))
         return(list(phitab = phitab, samplesize = samplesize, N = N))
         
+        
       } else {
         stop("Unknown phi_method. Use 'default', 'ochiai', or 'uvalue'.")
       }
+      
     }
     
     # Sample IDs per group (from per-sample map)
