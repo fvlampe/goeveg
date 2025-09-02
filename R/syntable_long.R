@@ -12,6 +12,7 @@ syntable_long <- function(vegdata,
                           phi_method = "default",
                           phi_standard = c("none", "target", "all"),
                           phi_target_size = NULL,  # % of N for the target group; default = 100/G
+                          phi_alpha = NULL,
                           group_col = NULL) {
   
   phi_standard <- match.arg(phi_standard)
@@ -226,6 +227,27 @@ syntable_long <- function(vegdata,
         b_vec <- as.numeric(samplesize)                    # group sizes          (length = G)
         Nv    <- as.numeric(N)
         
+        # one-tailed Fisher test on original counts
+        # If phi_alpha is provided, compute p = P[X >= a] with X ~ Hypergeom(N, b, n)
+        # using the original (non-equalized) 2x2 counts, and later zero-out cells with p >= alpha.
+        do_fisher <- !is.null(phi_alpha)
+        if (do_fisher) {
+          alpha <- as.numeric(phi_alpha)
+          if (!is.finite(alpha) || alpha <= 0 || alpha >= 1)
+            stop("phi_alpha must be a number in (0, 1).")
+          
+          p_mat <- matrix(1, nrow = nrow(a_mat), ncol = ncol(a_mat),
+                          dimnames = dimnames(a_mat))
+          for (j in seq_along(b_vec)) {
+            # one-tailed (greater): P(X >= a_ij) with X ~ Hypergeom(N, m=b_j, k=n_i)
+            p_mat[, j] <- stats::phyper(q = a_mat[, j] - 1L,
+                                        m = b_vec[j],
+                                        n = Nv - b_vec[j],
+                                        k = n_vec,
+                                        lower.tail = FALSE)
+          }
+        }
+        
         
         # equalization following Tichy & Chytry 2006 
         # phi_standard: "none", "target", "all"
@@ -299,6 +321,11 @@ syntable_long <- function(vegdata,
             phi_mat <- num / den
             phitab  <- if (phi_method == "uvalue") phi_mat * sqrt(max(Nv - 1, 0)) else phi_mat
           }
+        }
+        
+        # zero-out non-significant cells if Fisher test requested
+        if (do_fisher) {
+          phitab[p_mat >= alpha] <- 0
         }
         
         # clean + dimnames, then return from calc_phi()

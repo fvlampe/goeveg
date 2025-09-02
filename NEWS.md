@@ -1,5 +1,5 @@
 # goeveg 0.7.9
-* `syntable()`: Fixes in fidelity calculation when using the u-value
+* `syntable()`: Fixes in fidelity calculation when using the u-value; added Fishers's exact test to exclude non-significant fidelity
 * `syntable()`: Added options for standardisation of sample group size
 * Added checks for groups limits in `hcr_resampling()` 
 * Harmonized terminology between `synsort()` and `syntable()`

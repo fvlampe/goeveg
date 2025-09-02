@@ -6,7 +6,7 @@
 syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq", digits = NULL,
                           phi_method = "default", 
                           phi_standard = c("none", "target", "all"),
-                          phi_target_size = NULL)  {   
+                          phi_target_size = NULL, phi_alpha = NULL)  {   
   
   phi_standard <- match.arg(phi_standard)
   
@@ -311,6 +311,29 @@ syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq
     Nv    <- nrow(X)
     G     <- ncol(a_pg)
     
+    # one-tailed Fisher test on original counts
+    # If phi_alpha is provided, compute p = P[X >= a] with X ~ Hypergeom(N, b, n)
+    # using the original (non-equalized) 2x2 counts, and later zero-out cells with p >= alpha.
+    do_fisher <- !is.null(phi_alpha)
+    if (do_fisher) {
+      alpha <- as.numeric(phi_alpha)
+      if (!is.finite(alpha) || alpha <= 0 || alpha >= 1)
+        stop("phi_alpha must be a number in (0, 1).")
+      
+      # p-values per species (rows) × group (cols) from original 2x2 tables
+      p_mat <- matrix(1, nrow = nrow(a_pg), ncol = length(b_vec),
+                      dimnames = list(colnames(X), grp_levels))
+      for (j in seq_along(b_vec)) {
+        # one-tailed: P[X >= a] for X ~ Hypergeom(Nv, m=b_vec[j], k=n_vec)
+        p_mat[, j] <- stats::phyper(q = a_pg[, j] - 1L,
+                                    m = b_vec[j],
+                                    n = Nv - b_vec[j],
+                                    k = n_vec,
+                                    lower.tail = FALSE)
+      }
+    }
+    
+    
     # r_in = a / b (species × groups), Σ r_in across groups per species
     Rin <- sweep(a_pg, 2, b_vec, "/")
     Rin[!is.finite(Rin)] <- 0
@@ -383,6 +406,12 @@ syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq
         phitab  <- if (phi_method == "uvalue") phi_mat * sqrt(max(Nv - 1, 0)) else phi_mat
       }
     }
+    
+    # zero-out non-significant cells if Fisher test requested
+    if (do_fisher) {
+      phitab[p_mat >= alpha] <- 0
+    }
+    
     
     # Clean, name, round, package result
     phitab[!is.finite(phitab)] <- 0

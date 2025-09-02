@@ -47,6 +47,11 @@
 #' @param phi_target_size Numeric percentage in \code{(0, 100)} giving the conceptual size of
 #'   the target group used by \code{phi_standard}. If \code{NULL}, defaults to equal sizes
 #'   (i.e., \eqn{100 / G}, where \eqn{G} is the number of groups).
+#' @param phi_alpha Optional significance level for Fisher’s exact test when \code{type = "phi"}. 
+#'   If \code{NULL} (default), no test is performed.
+#'   If a numeric value in (0, 1) is given, a Fisher exact p-value is computed for
+#'   each species×group cell on the original 2×2 presence table; cells with
+#'   \eqn{p \ge} \code{phi_alpha} are set to 0 in the output fidelity table.
 #' @param group_col (Long data only) Optional name of a column
 #'   in \code{vegdata} that contains the group labels. When supplied, \code{groups}
 #'   may be \code{NULL}.
@@ -59,7 +64,8 @@
 #'   \item \code{type = "mean" }  mean cover per group (\code{abund = "percentage"} only)
 #'   \item \code{type = "median" }  median cover per group (\code{abund = "percentage"} only)
 #'   \item \code{type = "phi" } species fidelity. The default corresponds to the
-#'    binary phi coefficient (Sokal & Rohlf 1995, Bruelheide 2000) with values between -1 and 1.
+#'    binary phi coefficient (Sokal & Rohlf 1995, Bruelheide 2000) with values between -1 and 1, expressing the
+#'    avoidance or preference of a species for the target site group.
 #'    Alternatively, the Ochiai coefficient (see de Cáceres et al, 2008) or the hypergeometric \eqn{u}-value (see Chytrý et al., 2002) can be selected via \code{phi_method} 
 #'    Optional group-size equalization
 #'    follows Tichý & Chytrý (2006) via \code{phi_standard} and \code{phi_target_size}.
@@ -156,7 +162,8 @@ syntable <- function(vegdata,
                      group_col = NULL,
                      phi_method = "default",
                      phi_standard = "none",
-                     phi_target_size = NULL) {
+                     phi_target_size = NULL,
+                     phi_alpha = NULL) {
   
   # Validate args (clear errors)
   type         <- match.arg(type,         c("percfreq","totalfreq","mean","median","diffspec","phi"))
@@ -192,6 +199,7 @@ syntable <- function(vegdata,
       phi_method      = phi_method,
       phi_standard    = phi_standard,
       phi_target_size = phi_target_size,
+      phi_alpha       = phi_alpha,
       group_col       = group_col
     )
   } else {
@@ -210,7 +218,8 @@ syntable <- function(vegdata,
       digits          = digits,
       phi_method      = phi_method,
       phi_standard    = phi_standard,
-      phi_target_size = phi_target_size
+      phi_target_size = phi_target_size,
+      phi_alpha       = phi_alpha
     )
   }
   
