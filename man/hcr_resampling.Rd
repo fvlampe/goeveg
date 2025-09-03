@@ -75,7 +75,7 @@ A \code{data.frame} with \code{sample_id} and \code{selected} (0/1).
 Performs heterogeneity-constrained random (HCR) resampling (Lengyel, Chytrý & Tichý, 2011) of community data.
 Within each stratum (e.g., grid cell), many random subsets of plots are evaluated and the subset with
 the highest mean dissimilarity and the lowest variance of dissimilarities is retained. Optionally, the
-number of plots per stratum is adapted from the stratum’s mean pairwise dissimilarity (β-diversity).
+number of plots per stratum is adapted from the stratum’s mean pairwise dissimilarity (\eqn{\beta}-diversity).
 }
 \section{Details}{
 
@@ -86,7 +86,7 @@ enables large numbers of trials (default \code{trials = 1000}).
 Within each stratum candidate subsets are scored using \code{score_dist} by high mean dissimilarity and low variance of dissimilarities.
 
 If \code{adaptive_n = TRUE} (default), the target number of plots is computed as a linear function of the mean pairwise 
-dissimilarity (β-diversity; \code{beta_dist}) and the maximum number of plots (\code{beta_mean * max_plots}; Wiser & de Cáceres, 2013) and then
+dissimilarity (\eqn{\beta}-diversity; \code{beta_dist}) and the maximum number of plots (\code{beta_mean * max_plots}; Wiser & de Cáceres, 2013) and then
 bounded to \code{[min_plots, max_plots]} and the stratum size. 
 
 Additionally group-specific limits for minimum and maximum numbers of plots per stratum can be supplied via 

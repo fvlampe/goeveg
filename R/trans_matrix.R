@@ -21,7 +21,7 @@
 #' # Transpose species matrix
 #' schedenveg.trans <- trans_matrix(schedenveg)
 #' 
-#' @author Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de})
+#' @author Friedemann von Lampe
 #' @export
 #' @import stats utils
 

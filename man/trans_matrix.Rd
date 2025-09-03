@@ -35,5 +35,5 @@ schedenveg.trans <- trans_matrix(schedenveg)
 
 }
 \author{
-Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de})
+Friedemann von Lampe
 }

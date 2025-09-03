@@ -57,7 +57,7 @@
 #'
 #' @seealso \code{\link[vegan]{metaMDS}} \code{\link[vegan:goodness.metaMDS]{stressplot}}
 #' @references Clarke, K. R. (1993). Non-parametric multivariate analysis of changes in community structure. \emph{Austral J Ecol} \strong{18:} 117-143. \doi{10.1111/j.1442-9993.1993.tb00438.x}
-#' @author Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de}) and Jenny Schellenberg
+#' @author Friedemann von Lampe, Jenny Schellenberg
 #' @export dimcheckMDS screeplot_NMDS
 #' @aliases dimcheckMDS
 #' @import graphics utils

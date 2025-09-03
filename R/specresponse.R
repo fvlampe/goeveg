@@ -64,7 +64,7 @@
 #' specresponse(schedenveg[ ,c(9,18,14,19)], scheden.dca, method = "ord")
 #' specresponse(schedenveg[ ,c(9,18,14,19)], scheden.dca, method = "ord", axis = 2)
 #'
-#' @author Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de})
+#' @author Friedemann von Lampe
 #' @export
 #' @import graphics
 #' @import stats

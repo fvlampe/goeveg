@@ -21,7 +21,7 @@
 #' schedenveg.clean <- scheden.clean$matrix
 #' schedenenv.clean <- scheden.clean$env
 #' 
-#' @author Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de})
+#' @author Friedemann von Lampe
 #' @export
 #' @import stats utils
 

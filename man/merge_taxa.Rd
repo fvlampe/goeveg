@@ -73,5 +73,5 @@ Fischer, H. S. (2015): On the combination of species cover values from different
 Tichý, L. & Holt, J. (2011): JUICE. Program for management, analysis and classification of ecological data. Vegetation Science Group, Masaryk University Brno, CZ.
 }
 \author{
-Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de})
+Friedemann von Lampe
 }

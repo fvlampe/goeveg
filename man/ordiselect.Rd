@@ -110,5 +110,5 @@ ordipointlabel(nmds, display="species", choices = c(1,3),
 
 }
 \author{
-Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de}) and Jenny Schellenberg
+Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de}), Jenny Schellenberg
 }

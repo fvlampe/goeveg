@@ -75,7 +75,7 @@
 #' ordipointlabel(nmds, display="species", choices = c(1,3),
 #'     select = limited13, col="red", cex=0.7, add = TRUE)
 #'
-#' @author Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de}) and Jenny Schellenberg
+#' @author Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de}), Jenny Schellenberg
 #' @export
 #' @import stats
 #' @importFrom fields rdist

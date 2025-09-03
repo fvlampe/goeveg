@@ -54,5 +54,5 @@ schedenveg.per <- cov2per(schedenveg.bb)
 \code{\link{scale_tabs}} for explanation and references of included conversion tables
 }
 \author{
-Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de})
+Friedemann von Lampe
 }

@@ -37,7 +37,7 @@
 #'   See \strong{Details}.
 #' @param digits Integer indicating the number of decimal places to be displayed in result tables (default 0; for phi 3)
 #' @param phi_method Fidelity measure when \code{type = "phi"}:
-#'   \code{"default"} (binary phi = \eqn{\phi = \frac{u}{\sqrt{N - 1}}}), 
+#'   \code{"default"} (binary phi), 
 #'   \code{"uvalue"} (hypergeometric \eqn{u}), or
 #'   \code{"ochiai"} (Ochiai coefficient).
 #' @param phi_standard Group-size equalization when \code{type = "phi"}:
@@ -64,11 +64,11 @@
 #'   \item \code{type = "mean" }  mean cover per group (\code{abund = "percentage"} only)
 #'   \item \code{type = "median" }  median cover per group (\code{abund = "percentage"} only)
 #'   \item \code{type = "phi" } species fidelity. The default corresponds to the
-#'    binary phi coefficient (Sokal & Rohlf 1995, Bruelheide 2000) with values between -1 and 1, expressing the
+#'    binary phi coefficient (= \eqn{\phi = \frac{u}{\sqrt{N - 1}}}; Sokal & Rohlf 1995, Bruelheide 2000) with values between -1 and 1, expressing the
 #'    avoidance or preference of a species for the target site group.
-#'    Alternatively, the Ochiai coefficient (see de Cáceres et al, 2008) or the hypergeometric \eqn{u}-value (see Chytrý et al., 2002) can be selected via \code{phi_method} 
-#'    Optional group-size equalization
-#'    follows Tichý & Chytrý (2006) via \code{phi_standard} and \code{phi_target_size}.
+#'    Alternatively, the hypergeometric \eqn{u}-value (see Chytrý et al., 2002), or the Ochiai coefficient (see de Cáceres et al, 2008) can be selected via \code{phi_method}. 
+#'    Optional group-size equalization follows Tichý & Chytrý (2006) via \code{phi_standard} and \code{phi_target_size}. A significance level for an optional zero-out of 
+#'    non-significant cells based on Fisher's exact test can be provided via \code{phi_alpha}.
 #'   \item \code{type = "diffspec" } differential character of species according to
 #'    Tsiripidis et al. 2009: p = positive, n = negative, pn = positive-
 #'    negative, or none (-). Consider that differential character is always
@@ -110,7 +110,7 @@
 #' Tsiripidis, I., Bergmeier, E., Fotiadis, G. & Dimopoulos, P. (2009): A new algorithm for the
 #' determination of differential taxa. \emph{Journal of Vegetation Science} \strong{20}: 233-240. \doi{10.1111/j.1654-1103.2009.05273.x}
 #'
-#' @author Jenny Schellenberg and Friedemann von Lampe
+#' @author Friedemann von Lampe, Jenny Schellenberg 
 #' @seealso \code{\link{synsort}}
 #' @examples
 #' ## Synoptic table of Scheden vegetation data

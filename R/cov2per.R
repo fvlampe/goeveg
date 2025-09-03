@@ -34,7 +34,7 @@
 #'
 #' @seealso \code{\link{scale_tabs}} for explanation and references of included conversion tables
 #'
-#' @author Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de})
+#' @author Friedemann von Lampe
 #' @import stats
 #' @export
 #' @returns A dataframe or vector containing the transformed data

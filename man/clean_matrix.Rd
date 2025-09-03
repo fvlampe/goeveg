@@ -33,5 +33,5 @@ schedenenv.clean <- scheden.clean$env
 
 }
 \author{
-Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de})
+Friedemann von Lampe
 }
