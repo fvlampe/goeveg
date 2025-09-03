@@ -49,7 +49,7 @@
 #'
 #' Tichý, L. & Holt, J. (2011): JUICE. Program for management, analysis and classification of ecological data. Vegetation Science Group, Masaryk University Brno, CZ.
 #' 
-#' @author Friedemann von Lampe (\email{fvonlampe@uni-goettingen.de})
+#' @author Friedemann von Lampe
 #' @export
 #' @import stats utils
 

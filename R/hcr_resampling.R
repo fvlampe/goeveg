@@ -78,11 +78,11 @@ hcr_resampling <- function(
     score_dist    = "bray",
     beta_dist     = c("bray","jaccard"),
     adaptive_n    = TRUE,
-    n_plots       = NA_integer_,
-    min_plots     = 10L,
-    max_plots     = 100L,
-    min_stratum_n = 10L,
-    trials        = 1000L,
+    n_plots       = NA,
+    min_plots     = 10,
+    max_plots     = 100,
+    min_stratum_n = 10,
+    trials        = 1000,
     group_vec     = NULL,
     group_limits  = NULL,
     write_csv     = NULL,
@@ -119,8 +119,8 @@ hcr_resampling <- function(
   if (!is.null(seed)) set.seed(seed)
   
   # fix positions: 1 = id, 2 = strata
-  dataset  <- data_wide[, c(1L, 2L, setdiff(seq_len(ncol(data_wide)), 1:2)), drop = FALSE]
-  dataset1 <- dataset[, -c(1L, 2L), drop = FALSE]
+  dataset  <- data_wide[, c(1, 2, setdiff(seq_len(ncol(data_wide)), 1:2)), drop = FALSE]
+  dataset1 <- dataset[, -c(1, 2), drop = FALSE]
   
   # coerce species to numeric
   non_num <- !vapply(dataset1, is.numeric, logical(1))
