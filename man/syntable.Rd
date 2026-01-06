@@ -16,7 +16,8 @@ syntable(
   phi_method = "default",
   phi_standard = "none",
   phi_target_size = NULL,
-  phi_alpha = NULL
+  phi_alpha = NULL,
+  nonzero_cover = TRUE
 )
 }
 \arguments{
@@ -71,6 +72,8 @@ If \code{NULL} (default), no test is performed.
 If a numeric value in (0, 1) is given, a Fisher exact p-value is computed for
 each species×group cell on the original 2×2 presence table; cells with
 \eqn{p \ge} \code{phi_alpha} are set to 0 in the output fidelity table.}
+
+\item{nonzero_cover}{logical; if TRUE (default), mean/median cover are calculated conditional on presence (only plots with cover > 0).}
 }
 \value{
 The function returns an (invisible) list of result components.
@@ -101,8 +104,8 @@ For synoptic table calculation, six types are available.
   \itemize{
   \item \code{type = "percfreq" }: percentage frequency of occurrence per group \emph{(default)}
   \item \code{type = "totalfreq" }: absolute frequency (number of plots with presence) per group
-  \item \code{type = "mean" }  mean cover per group (\code{abund = "percentage"} only)
-  \item \code{type = "median" }  median cover per group (\code{abund = "percentage"} only)
+  \item \code{type = "mean" }  mean (non-zero) cover per group (\code{abund = "percentage"} only)
+  \item \code{type = "median" }  median (non-zero) cover per group (\code{abund = "percentage"} only)
   \item \code{type = "phi" } species fidelity. The default corresponds to the
    binary phi coefficient (= \eqn{\phi = \frac{u}{\sqrt{N - 1}}}; Sokal & Rohlf 1995, Bruelheide 2000) with values between -1 and 1, expressing the
    avoidance or preference of a species for the target site group.
@@ -158,6 +161,11 @@ phiu
 percfreq <- syntable(schedenveg, schedenenv$comm, abund = "percentage",
                          type = "percfreq")
 percfreq
+
+## 5) Mean non-zero cover
+meancov <- syntable(schedenveg, pam1$clustering, abund = "percentage",
+                         type = "mean")
+meancov  
 
 }
 \references{

@@ -1,3 +1,6 @@
+# goeveg 0.7.10
+* `syntable()`: Now uses by default non-zero cover values for mean/median cover calculation. Added argument `nonzero_cover`
+
 # goeveg 0.7.9
 * `syntable()`: Fixes in fidelity calculation when using the u-value; added Fishers's exact test to exclude non-significant fidelity
 * `syntable()`: Added options for standardization of sample group size

@@ -6,7 +6,8 @@
 syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq", digits = NULL,
                           phi_method = "default", 
                           phi_standard = c("none", "target", "all"),
-                          phi_target_size = NULL, phi_alpha = NULL)  {   
+                          phi_target_size = NULL, phi_alpha = NULL,
+                          nonzero_cover = TRUE)  {   
   
   phi_standard <- match.arg(phi_standard)
   
@@ -107,11 +108,20 @@ syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq
     
   } else if (type == "mean" && abund == "percentage") {
     sums_Gp <- crossprod(Z, X)
-    means   <- t(sweep(sums_Gp, 1, b_vec, "/", check.margin = FALSE))
-    means[, b_vec == 0] <- NA
+    
+    if (isTRUE(nonzero_cover)) {
+      freq_Gp <- crossprod(Z, X > 0)                 # G x p (presence counts)
+      means   <- t(sums_Gp / pmax(freq_Gp, 1))       # p x G
+      means[t(freq_Gp) == 0] <- 0                    # absent species in non-empty group -> 0
+    } else {
+      means   <- t(sweep(sums_Gp, 1, b_vec, "/", check.margin = FALSE))
+    }
+    
+    means[, b_vec == 0] <- NA                        # empty groups -> NA
     means   <- round(means, digits = digits_nonphi)
     results <- list("syntable" = .finalize(means),
                     "samplesize" = b_vec)
+    
     
   } else if (type == "mean" && abund == "pa") {
     stop("Cannot calculate mean abundance in groups with presence/absence values.")
@@ -119,12 +129,22 @@ syntable_wide <- function(matrix, groups, abund = "percentage", type = "percfreq
   } else if (type == "median" && abund == "percentage") {
     med <- matrix(NA, nrow = p, ncol = length(grp_levels))
     for (j in seq_along(grp_levels)) {
-      idx <- which(grp_factor == grp_levels[j]) 
-      med[, j] <- if (length(idx)) apply(X[idx, , drop = FALSE], 2, stats::median) else NA
+      idx <- which(grp_factor == grp_levels[j])
+      if (!length(idx)) {
+        med[, j] <- NA
+      } else if (isTRUE(nonzero_cover)) {
+        med[, j] <- apply(X[idx, , drop = FALSE], 2, function(v) {
+          v <- v[v > 0]
+          if (length(v)) stats::median(v) else 0
+        })
+      } else {
+        med[, j] <- apply(X[idx, , drop = FALSE], 2, stats::median)
+      }
     }
     med <- round(med, digits = digits_nonphi)
     results <- list("syntable" = .finalize(med),
                     "samplesize" = b_vec)
+    
     
   } else if (type == "median" && abund == "pa") {
     stop("Cannot calculate median abundance in groups with presence/absence values.")

@@ -10,7 +10,7 @@ The ordination functions work as an addition to the functions from the `vegan`-p
 * Generation of species response curves (`specresponse` - function)
 * Scree/stress plots for NMDS (`screeplot_NMDS` - function)
 * Rank-abundance curve plotting for single or multiple samples (`racurve` and `racurves`-functions)
-* Calculation and sorting of synoptic tables with group-wise frequencies, fidelity and differential species assessment (`syntable` and `synsort` functions)
+* Calculation and sorting of synoptic tables including group-wise frequencies and cover values, as well as fidelity and differential species assessment (`syntable` and `synsort` functions)
 * Heterogeneity-constrained random (HCR) resampling (Lengyel, Chytrý & Tichý, 2011) of community data (`hcr_resampling` function)
 * Taxa merging for taxa with identical names (`merge_taxa` - function)
 * One-step cleaning and transposing of vegetation matrices: (`clean_matrix` and `trans_matrix` - functions)

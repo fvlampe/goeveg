@@ -13,7 +13,8 @@ syntable_long <- function(vegdata,
                           phi_standard = c("none", "target", "all"),
                           phi_target_size = NULL,  # % of N for the target group; default = 100/G
                           phi_alpha = NULL,
-                          group_col = NULL) {
+                          group_col = NULL,
+                          nonzero_cover = TRUE) {
   
   phi_standard <- match.arg(phi_standard)
   
@@ -157,12 +158,52 @@ syntable_long <- function(vegdata,
     sum_dt <- dt[, .(sum = sum(Abund)), by = .(TaxonName, groups = groups_dt)]
     syntab <- data.table::dcast(sum_dt, TaxonName ~ groups, value.var = "sum", fill = 0)
     syntab_df <- .finalize_syntab(syntab)
-    for (g in grp_levels) {
-      denom <- as.numeric(samplesize_vec[g])
-      syntab_df[[g]] <- if (denom > 0) round(syntab_df[[g]] / denom, digits = digits_nonphi) else NA
+    
+    if (isTRUE(nonzero_cover)) {
+      
+      # presence counts per (species x group) as number of UNIQUE samples with Abund > 0
+      dt_pa   <- unique(dt[Abund > 0, .(TaxonName, groups = groups_dt, Sample)])
+      pres_dt <- dt_pa[, .N, by = .(TaxonName, groups)]
+      data.table::setnames(pres_dt, "N", "freq")
+      
+      freq_tab <- data.table::dcast(pres_dt, TaxonName ~ groups, value.var = "freq", fill = 0)
+      
+      # ensure freq_tab contains ALL taxa and ALL group columns (avoid row/col mismatches)
+      all_taxa <- rownames(syntab_df)
+      
+      # add missing group columns (can happen if a group has no presences at all)
+      missing_groups <- setdiff(grp_levels, setdiff(names(freq_tab), "TaxonName"))
+      for (g in missing_groups) freq_tab[, (g) := 0L]
+      
+      # add missing taxa (taxa with no Abund>0 anywhere -> denom should be 0)
+      freq_tab <- merge(
+        data.table::data.table(TaxonName = all_taxa),
+        freq_tab,
+        by = "TaxonName",
+        all.x = TRUE
+      )
+      freq_tab[is.na(freq_tab)] <- 0
+      
+      freq_df <- .finalize_syntab(freq_tab)
+      # align row order exactly to syntab_df
+      freq_df <- freq_df[all_taxa, , drop = FALSE]
+      
+      for (g in grp_levels) {
+        denom <- freq_df[[g]]
+        syntab_df[[g]] <- round(ifelse(denom > 0, syntab_df[[g]] / denom, 0), digits = digits_nonphi)
+      }
+      
+    } else {
+      
+      for (g in grp_levels) {
+        denom <- as.numeric(samplesize_vec[g])
+        syntab_df[[g]] <- if (denom > 0) round(syntab_df[[g]] / denom, digits = digits_nonphi) else NA
+      }
     }
+    
     results <- list("syntable"  = syntab_df,
                     "samplesize" = samplesize_vec)
+    
     
   } else if (type == "mean" && abund == "pa") {
     
@@ -180,11 +221,21 @@ syntable_long <- function(vegdata,
     complete <- merge(complete, gmap, by = "Sample", all.x = TRUE)
     setnames(complete, "grp", "groups_dt")
     complete[is.na(Abund), Abund := 0]
-    med_dt <- complete[, .(value = stats::median(Abund)), by = .(TaxonName, groups = groups_dt)]
+    
+    if (isTRUE(nonzero_cover)) {
+      med_dt <- complete[, .(value = {
+        v <- Abund[Abund > 0]
+        if (length(v)) stats::median(v) else 0
+      }), by = .(TaxonName, groups = groups_dt)]
+    } else {
+      med_dt <- complete[, .(value = stats::median(Abund)), by = .(TaxonName, groups = groups_dt)]
+    }
+    
     syntab <- data.table::dcast(med_dt, TaxonName ~ groups, value.var = "value", fill = 0)
     syntab_df <- round(.finalize_syntab(syntab), digits = digits_nonphi)
     results <- list("syntable"  = syntab_df,
                     "samplesize" = samplesize_vec)
+    
     
   } else if (type == "median" && abund == "pa") {
     

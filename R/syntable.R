@@ -36,6 +36,7 @@
 #' @param type Output type. One of \code{c("percfreq","totalfreq","mean","median","diffspec","phi")}.
 #'   See \strong{Details}.
 #' @param digits Integer indicating the number of decimal places to be displayed in result tables (default 0; for phi 3)
+#' @param nonzero_cover logical; if TRUE (default), mean/median cover are calculated conditional on presence (only plots with cover > 0).
 #' @param phi_method Fidelity measure when \code{type = "phi"}:
 #'   \code{"default"} (binary phi), 
 #'   \code{"uvalue"} (hypergeometric \eqn{u}), or
@@ -61,8 +62,8 @@
 #'   \itemize{
 #'   \item \code{type = "percfreq" }: percentage frequency of occurrence per group \emph{(default)}
 #'   \item \code{type = "totalfreq" }: absolute frequency (number of plots with presence) per group
-#'   \item \code{type = "mean" }  mean cover per group (\code{abund = "percentage"} only)
-#'   \item \code{type = "median" }  median cover per group (\code{abund = "percentage"} only)
+#'   \item \code{type = "mean" }  mean (non-zero) cover per group (\code{abund = "percentage"} only)
+#'   \item \code{type = "median" }  median (non-zero) cover per group (\code{abund = "percentage"} only)
 #'   \item \code{type = "phi" } species fidelity. The default corresponds to the
 #'    binary phi coefficient (= \eqn{\phi = \frac{u}{\sqrt{N - 1}}}; Sokal & Rohlf 1995, Bruelheide 2000) with values between -1 and 1, expressing the
 #'    avoidance or preference of a species for the target site group.
@@ -149,6 +150,11 @@
 #' percfreq <- syntable(schedenveg, schedenenv$comm, abund = "percentage",
 #'                          type = "percfreq")
 #' percfreq
+#' 
+#' ## 5) Mean non-zero cover
+#' meancov <- syntable(schedenveg, pam1$clustering, abund = "percentage",
+#'                          type = "mean")
+#' meancov  
 #'
 #' @export
 
@@ -163,7 +169,8 @@ syntable <- function(vegdata,
                      phi_method = "default",
                      phi_standard = "none",
                      phi_target_size = NULL,
-                     phi_alpha = NULL) {
+                     phi_alpha = NULL,
+                     nonzero_cover = TRUE) {
   
   # Validate args (clear errors)
   type         <- match.arg(type,         c("percfreq","totalfreq","mean","median","diffspec","phi"))
@@ -200,7 +207,8 @@ syntable <- function(vegdata,
       phi_standard    = phi_standard,
       phi_target_size = phi_target_size,
       phi_alpha       = phi_alpha,
-      group_col       = group_col
+      group_col       = group_col,
+      nonzero_cover  = nonzero_cover
     )
   } else {
     
@@ -219,7 +227,8 @@ syntable <- function(vegdata,
       phi_method      = phi_method,
       phi_standard    = phi_standard,
       phi_target_size = phi_target_size,
-      phi_alpha       = phi_alpha
+      phi_alpha       = phi_alpha,
+      nonzero_cover = nonzero_cover
     )
   }
   
