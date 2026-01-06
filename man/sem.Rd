@@ -15,8 +15,8 @@ sem(x, na.rm = FALSE)
 A numeric scalar -- the standard error of the mean.
 }
 \description{
-Compute the standard error of the mean (SEM). The SEM is the standard deviation of the sample-mean's estimate of a population mean.
-It therefore describes the accuracy of the calculation of a sample's mean.
+Compute the standard error of the mean (SEM), defined as the standard deviation of the sampling distribution of the mean. 
+The SEM therefore quantifies the precision of the sample mean as an estimate of the population mean.
 If \code{na.rm} is \code{TRUE} then missing values are removed before computation proceeds.
 }
 \section{Details}{

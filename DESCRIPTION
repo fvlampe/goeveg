@@ -16,5 +16,6 @@ Imports: vegan, fields, mgcv, Hmisc, data.table
 Suggests: vegdata, BiodiversityR, cluster
 URL: https://github.com/fvlampe/goeveg
 BugReports: https://github.com/fvlampe/goeveg/issues
+Language: en-GB
 RoxygenNote: 7.3.3
 Encoding: UTF-8
